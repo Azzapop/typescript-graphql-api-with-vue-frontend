@@ -17,7 +17,7 @@ security:
   - basicAuth: []
 
 paths:
-  $ref: './routes/index.yaml'
+  $ref: '../routes/docs/index.yaml'
 
 components:
   securitySchemes:

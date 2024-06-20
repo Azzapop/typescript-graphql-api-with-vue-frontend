@@ -20,3 +20,5 @@ responses:
           properties:
             folder:
               $ref: './schemas.yaml#/Folder'
+  '500':
+    $ref: '../../docs/responses.yaml#/InternalServerError'

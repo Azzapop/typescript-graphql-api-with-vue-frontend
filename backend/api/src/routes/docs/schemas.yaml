@@ -1,0 +1,17 @@
+ErrorResponse:
+  type: object
+  required:
+    - message
+    - errorCodes
+  properties:
+    message:
+      type: string
+    errorCodes:
+      type: array
+      items:
+        $ref: '#/ErrorCodes'
+
+ErrorCodes:
+  type: string
+  enum:
+    - UNKNOWN

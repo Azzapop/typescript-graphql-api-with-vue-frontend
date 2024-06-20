@@ -32,6 +32,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Folder'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     post:
       summary: Create a Folder
       operationId: createFolder
@@ -53,6 +55,8 @@ paths:
                 properties:
                   folder:
                     $ref: '#/components/schemas/Folder'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /folders/{folderId}:
     get:
       summary: Return a specific folder
@@ -71,6 +75,8 @@ paths:
                 properties:
                   folder:
                     $ref: '#/components/schemas/Folder'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     post:
       summary: Update a Folder
       operationId: updateFolder
@@ -94,6 +100,8 @@ paths:
                 properties:
                   folder:
                     $ref: '#/components/schemas/Folder'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     delete:
       summary: Delete a specific folder
       operationId: deleteFolder
@@ -111,6 +119,8 @@ paths:
                 properties:
                   deletedFolder:
                     $ref: '#/components/schemas/Folder'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     basicAuth:
@@ -145,6 +155,22 @@ components:
           type: integer
         name:
           type: string
+    ErrorCodes:
+      type: string
+      enum:
+        - UNKNOWN
+    ErrorResponse:
+      type: object
+      required:
+        - message
+        - errorCodes
+      properties:
+        message:
+          type: string
+        errorCodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorCodes'
     CreateFolder:
       type: object
       required:
@@ -159,3 +185,10 @@ components:
       properties:
         name:
           type: string
+  responses:
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

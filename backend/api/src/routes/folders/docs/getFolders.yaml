@@ -16,3 +16,5 @@ responses:
               type: array
               items:
                 $ref: './schemas.yaml#/Folder'
+  '500':
+    $ref: '../../docs/responses.yaml#/InternalServerError'
