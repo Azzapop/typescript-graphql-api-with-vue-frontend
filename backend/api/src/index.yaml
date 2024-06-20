@@ -1,0 +1,26 @@
+openapi: 3.0.0
+
+info:
+  title: Folders API
+  description: API documentation for Folders
+  version: 0.1.0
+  license:
+    name: UNLICENSED
+    url: NONE
+
+servers:
+  - url: NONE
+    description: NONE
+
+# TODO update this from Basic to something else when auth is done
+security:
+  - basicAuth: []
+
+paths:
+  $ref: './routes/index.yaml'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

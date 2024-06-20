@@ -1,0 +1,16 @@
+summary: Delete a specific folder
+operationId: deleteFolder
+parameters:
+  - $ref: './parameters.yaml#/folderId'
+responses:
+  '200':
+    description: Expected response to a valid request
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - deletedFolder
+          properties:
+            deletedFolder:
+              $ref: './schemas.yaml#/Folder'

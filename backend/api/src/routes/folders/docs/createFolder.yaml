@@ -1,0 +1,20 @@
+summary: Create a Folder
+operationId: createFolder
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: './schemas.yaml#/CreateFolder'
+responses:
+  '200':
+    description: An array of random values
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - folder
+          properties:
+            folder:
+              $ref: './schemas.yaml#/Folder'

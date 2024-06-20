@@ -6,9 +6,10 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "lint": "npx eslint src/*",
-    "format:check": "npx prettier src --check",
-    "format:fix": "npx prettier src --write"
+    "lint": "eslint src/*",
+    "format:check": "prettier src --check",
+    "docs:lint": "redocly lint ./src/index.yaml",
+    "docs:bundle": "redocly bundle src/index.yaml -o src/swagger.yaml"
   },
   "keywords": [],
   "author": "",

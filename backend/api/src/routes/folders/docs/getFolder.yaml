@@ -1,0 +1,16 @@
+summary: Return a specific folder
+operationId: getFolder
+parameters:
+  - $ref: './parameters.yaml#/folderId'
+responses:
+  '200':
+    description: Expected response to a valid request
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - folder
+          properties:
+            folder:
+              $ref: './schemas.yaml#/Folder'
