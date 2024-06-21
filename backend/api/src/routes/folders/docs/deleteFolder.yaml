@@ -1,4 +1,6 @@
 summary: Delete a specific folder
+tags:
+  - folders
 operationId: deleteFolder
 parameters:
   - $ref: './parameters.yaml#/folderId'

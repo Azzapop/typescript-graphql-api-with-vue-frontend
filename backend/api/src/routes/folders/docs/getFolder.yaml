@@ -1,4 +1,6 @@
 summary: Return a specific folder
+tags:
+  - folders
 operationId: getFolder
 parameters:
   - $ref: './parameters.yaml#/folderId'

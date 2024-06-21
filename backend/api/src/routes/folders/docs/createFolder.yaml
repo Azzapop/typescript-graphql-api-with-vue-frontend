@@ -1,4 +1,6 @@
 summary: Create a Folder
+tags:
+  - folders
 operationId: createFolder
 requestBody:
   required: true

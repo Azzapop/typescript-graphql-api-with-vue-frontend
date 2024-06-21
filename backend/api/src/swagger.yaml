@@ -7,14 +7,19 @@ info:
     name: UNLICENSED
     url: NONE
 servers:
-  - url: NONE
-    description: NONE
+  - url: /
+    description: Base API endpoint
 security:
   - basicAuth: []
+externalDocs:
+  url: /docs
+  description: Documentation for the API
 paths:
   /folders:
     get:
       summary: Get the list of folders
+      tags:
+        - folders
       operationId: getFolders
       parameters:
         - $ref: '#/components/parameters/limit'
@@ -36,6 +41,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       summary: Create a Folder
+      tags:
+        - folders
       operationId: createFolder
       requestBody:
         required: true
@@ -60,6 +67,8 @@ paths:
   /folders/{folderId}:
     get:
       summary: Return a specific folder
+      tags:
+        - folders
       operationId: getFolder
       parameters:
         - $ref: '#/components/parameters/folderId'
@@ -79,6 +88,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       summary: Update a Folder
+      tags:
+        - folders
       operationId: updateFolder
       parameters:
         - $ref: '#/components/parameters/folderId'
@@ -104,6 +115,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     delete:
       summary: Delete a specific folder
+      tags:
+        - folders
       operationId: deleteFolder
       parameters:
         - $ref: '#/components/parameters/folderId'

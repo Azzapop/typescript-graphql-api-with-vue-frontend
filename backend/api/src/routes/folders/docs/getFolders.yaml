@@ -1,4 +1,6 @@
 summary: Get the list of folders
+tags:
+  - folders
 operationId: getFolders
 parameters:
   - $ref: './parameters.yaml#/limit'

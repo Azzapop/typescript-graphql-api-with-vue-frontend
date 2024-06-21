@@ -9,8 +9,8 @@ info:
     url: NONE
 
 servers:
-  - url: NONE
-    description: NONE
+  - url: /
+    description: Base API endpoint
 
 # TODO update this from Basic to something else when auth is done
 security:
@@ -24,3 +24,7 @@ components:
     basicAuth:
       type: http
       scheme: basic
+
+externalDocs:
+  url: /docs
+  description: Documentation for the API

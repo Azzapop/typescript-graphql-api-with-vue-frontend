@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Request, Response } from 'express';
 
-export const createFolder = (req: Request, res: Response) => {
+export const deleteFolder = (req: Request, res: Response) => {
   const { id } = req.params;
   const name = randomUUID();
 

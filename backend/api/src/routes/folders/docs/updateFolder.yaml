@@ -1,4 +1,6 @@
 summary: Update a Folder
+tags:
+  - folders
 operationId: updateFolder
 parameters:
   - $ref: './parameters.yaml#/folderId'

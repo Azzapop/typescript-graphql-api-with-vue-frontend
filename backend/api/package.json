@@ -8,8 +8,10 @@
     "dev": "nodemon src/index.ts",
     "lint": "eslint src",
     "format:check": "prettier src --check",
+    "docs": "npm run docs:lint & npm run docs:bundle & npm run docs:build",
     "docs:lint": "redocly lint ./src/docs/index.yaml",
-    "docs:bundle": "redocly bundle src/docs/index.yaml -o src/swagger.yaml"
+    "docs:bundle": "redocly bundle src/docs/index.yaml -o src/swagger.yaml",
+    "docs:build": "redocly build-docs src/docs/index.yaml -o src/routes/docs/index.html"
   },
   "keywords": [],
   "author": "",
