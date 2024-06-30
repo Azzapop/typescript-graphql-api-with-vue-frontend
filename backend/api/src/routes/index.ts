@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import type { Router } from 'express';
+import { getDocs } from './docs/getDocs';
+import { createFolder } from './folders/createFolder';
+import { deleteFolder } from './folders/deleteFolder';
 import { getFolder } from './folders/getFolder';
 import { getFolders } from './folders/getFolders';
-import { createFolder } from './folders/createFolder';
 import { updateFolder } from './folders/updateFolder';
-import { deleteFolder } from './folders/deleteFolder';
-import { getDocs } from './docs/getDocs';
 
 export const injectRoutes = (router: Router): Router => {
   router.get('/folders', getFolders);

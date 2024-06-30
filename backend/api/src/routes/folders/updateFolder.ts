@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 export const updateFolder = (req: Request, res: Response) => {
   const { params, body } = req;
-  const id = params.folderId;
-  const name = body.name;
+  const { folderId: id } = params;
+  const { name } = body;
 
   const folder = { id, name };
 

@@ -2,16 +2,34 @@ ErrorResponse:
   type: object
   required:
     - message
-    - errorCodes
+    - errordetails
   properties:
     message:
       type: string
-    errorCodes:
+    errorDetails:
       type: array
       items:
-        $ref: '#/ErrorCodes'
+        $ref: '#/ErrorDetail'
+  additionalProperties: false
+
+ErrorDetail:
+  type: object
+  required:
+    - errorCode
+  properties:
+    errorCode:
+      $ref: '#/ErrorCodes'
+    paramType:
+      type: string
+      enum:
+        - body
+    locationPath:
+      type: string
+  additionalProperties: false
 
 ErrorCodes:
   type: string
   enum:
     - UNKNOWN
+    - MISSING_AUTH_ERROR
+    - MUST_BE_STRING_VALUE

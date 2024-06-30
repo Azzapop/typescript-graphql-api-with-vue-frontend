@@ -1,8 +1,10 @@
 import { randomUUID } from 'crypto';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 export const deleteFolder = (req: Request, res: Response) => {
-  const { id } = req.params;
+  const {
+    params: { id },
+  } = req;
   const name = randomUUID();
 
   const deletedFolder = { id, name };

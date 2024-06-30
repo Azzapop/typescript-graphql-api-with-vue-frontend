@@ -1,5 +1,5 @@
 import { randomInt, randomUUID } from 'crypto';
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 
 export const getFolders = (req: Request, res: Response) => {
   const limit: number = Number(req.params.limit) || 100;
