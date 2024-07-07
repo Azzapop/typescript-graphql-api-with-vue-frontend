@@ -21,8 +21,8 @@ type CustomApiErrorDetail = BadRequestApiErrorDetail;
 
 type StandardApiErrorDetail = {
   errorCode: Exclude<ApiErrorCode, CustomApiErrorDetail['errorCode']>;
-  paramType: undefined;
-  locationPath: undefined;
+  paramType?: undefined;
+  locationPath?: undefined;
 };
 
 export type ApiErrorDetail = StandardApiErrorDetail | CustomApiErrorDetail;

@@ -1,6 +1,6 @@
-import type { Request, Response } from 'express';
+import type { Folders } from '@services/api';
 
-export const updateFolder = (req: Request, res: Response) => {
+export const updateFolder: Folders.UpdateFolder.Handler = (req, res) => {
   const { params, body } = req;
   const { folderId: id } = params;
   const { name } = body;

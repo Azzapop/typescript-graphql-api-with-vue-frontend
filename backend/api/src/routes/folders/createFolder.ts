@@ -1,7 +1,7 @@
+import type { Folders } from '@services/api';
 import { randomInt } from 'crypto';
-import type { Request, Response } from 'express';
 
-export const createFolder = (req: Request, res: Response) => {
+export const createFolder: Folders.CreateFolder.Handler = (req, res) => {
   const {
     body: { name },
   } = req;

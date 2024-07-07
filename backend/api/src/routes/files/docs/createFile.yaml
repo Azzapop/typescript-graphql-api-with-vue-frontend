@@ -1,0 +1,24 @@
+summary: Create a File
+tags:
+  - files
+operationId: createFile
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: './schemas.yaml#/CreateFile'
+responses:
+  '200':
+    description: An array of random values
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - file
+          properties:
+            file:
+              $ref: './schemas.yaml#/File'
+  '500':
+    $ref: '../../docs/responses.yaml#/InternalServerError'

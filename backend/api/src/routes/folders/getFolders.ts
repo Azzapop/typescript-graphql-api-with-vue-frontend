@@ -1,8 +1,10 @@
+import type { Folders } from '@services/api';
 import { randomInt, randomUUID } from 'crypto';
-import type { Request, Response } from 'express';
 
-export const getFolders = (req: Request, res: Response) => {
-  const limit: number = Number(req.params.limit) || 100;
+export const getFolders: Folders.GetFolders.Handler = (req, res) => {
+  const {
+    query: { limit },
+  } = req;
 
   const folders = [];
   for (let i = 0; i < limit; i++) {

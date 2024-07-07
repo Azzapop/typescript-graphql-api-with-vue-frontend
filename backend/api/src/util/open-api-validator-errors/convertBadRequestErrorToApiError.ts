@@ -2,9 +2,11 @@ import type { BadRequest } from 'express-openapi-validator/dist/framework/types'
 import { ApiError } from '../api-errors/ApiError';
 import type { ApiErrorDetail } from '../api-errors/types';
 
-const isValidParamType = (val?: string): val is NonNullable<ApiErrorDetail['paramType']> => {
-  return val === 'body'
-}
+const isValidParamType = (
+  val?: string
+): val is NonNullable<ApiErrorDetail['paramType']> => {
+  return val === 'body';
+};
 
 export const convertBadRequestErrorToApiError = (err: BadRequest): ApiError => {
   const { status: statusCode, errors } = err;

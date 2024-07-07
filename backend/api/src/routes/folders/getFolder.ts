@@ -1,11 +1,11 @@
+import type { Folder, Folders } from '@services/api';
 import { randomUUID } from 'crypto';
-import type { Request, Response } from 'express';
 
-export const getFolder = (req: Request, res: Response) => {
+export const getFolder: Folders.GetFolder.Handler = (req, res) => {
   const {
     params: { folderId: id },
   } = req;
 
-  const folder: unknown = { id, name: randomUUID() };
+  const folder: Folder = { id, name: randomUUID() };
   res.json({ folder });
 };

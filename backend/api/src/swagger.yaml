@@ -7,7 +7,7 @@ info:
     name: UNLICENSED
     url: NONE
 servers:
-  - url: /
+  - url: /api
     description: Base API endpoint
 security:
   - basicAuth: []
@@ -134,6 +134,125 @@ paths:
                     $ref: '#/components/schemas/Folder'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /files:
+    get:
+      summary: Get the list of files
+      tags:
+        - files
+      operationId: getFiles
+      parameters:
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: An array of files
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - files
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/File'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create a File
+      tags:
+        - files
+      operationId: createFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFile'
+      responses:
+        '200':
+          description: An array of random values
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - file
+                properties:
+                  file:
+                    $ref: '#/components/schemas/File'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /files/{fileId}:
+    get:
+      summary: Return a specific file
+      tags:
+        - files
+      operationId: getFile
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - file
+                properties:
+                  file:
+                    $ref: '#/components/schemas/File'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Update a File
+      tags:
+        - files
+      operationId: updateFile
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFile'
+      responses:
+        '200':
+          description: An array of random values
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - file
+                properties:
+                  file:
+                    $ref: '#/components/schemas/File'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete a specific file
+      tags:
+        - files
+      operationId: deleteFile
+      parameters:
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - deletedFile
+                properties:
+                  deletedFile:
+                    $ref: '#/components/schemas/File'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 components:
   securitySchemes:
     basicAuth:
@@ -157,6 +276,13 @@ components:
       description: The id of the folder to return
       schema:
         type: integer
+    fileId:
+      name: fileId
+      in: path
+      required: true
+      description: The id of the file to return
+      schema:
+        type: integer
   schemas:
     Folder:
       type: object
@@ -172,18 +298,34 @@ components:
       type: string
       enum:
         - UNKNOWN
+        - MISSING_AUTH_ERROR
+        - MUST_BE_STRING_VALUE
+    ErrorDetail:
+      type: object
+      required:
+        - errorCode
+      properties:
+        errorCode:
+          $ref: '#/components/schemas/ErrorCodes'
+        paramType:
+          type: string
+          enum:
+            - body
+        locationPath:
+          type: string
+      additionalProperties: false
     ErrorResponse:
       type: object
       required:
         - message
-        - errorCodes
+        - errordetails
       properties:
         message:
           type: string
-        errorCodes:
+        errorDetails:
           type: array
           items:
-            $ref: '#/components/schemas/ErrorCodes'
+            $ref: '#/components/schemas/ErrorDetail'
       additionalProperties: false
     CreateFolder:
       type: object
@@ -193,6 +335,30 @@ components:
         name:
           type: string
     UpdateFolder:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    File:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    CreateFile:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    UpdateFile:
       type: object
       required:
         - name

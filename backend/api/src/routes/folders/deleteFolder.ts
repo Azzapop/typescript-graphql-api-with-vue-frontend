@@ -1,13 +1,13 @@
+import type { Folders } from '@services/api';
 import { randomUUID } from 'crypto';
-import type { Request, Response } from 'express';
 
-export const deleteFolder = (req: Request, res: Response) => {
+export const deleteFolder: Folders.DeleteFolder.Handler = (req, res) => {
   const {
-    params: { id },
+    params: { folderId },
   } = req;
   const name = randomUUID();
 
-  const deletedFolder = { id, name };
+  const deletedFolder = { id: folderId, name };
 
   res.json({ deletedFolder });
 };

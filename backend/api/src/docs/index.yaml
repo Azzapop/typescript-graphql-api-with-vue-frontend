@@ -9,7 +9,7 @@ info:
     url: NONE
 
 servers:
-  - url: /
+  - url: /api
     description: Base API endpoint
 
 # TODO update this from Basic to something else when auth is done

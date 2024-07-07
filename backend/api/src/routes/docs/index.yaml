@@ -10,3 +10,16 @@
     $ref: '../folders/docs/updateFolder.yaml'
   delete:
     $ref: '../folders/docs/deleteFolder.yaml'
+
+/files:
+  get:
+    $ref: '../files/docs/getFiles.yaml'
+  post:
+    $ref: '../files/docs/createFile.yaml'
+/files/{fileId}:
+  get:
+    $ref: '../files/docs/getFile.yaml'
+  post:
+    $ref: '../files/docs/updateFile.yaml'
+  delete:
+    $ref: '../files/docs/deleteFile.yaml'

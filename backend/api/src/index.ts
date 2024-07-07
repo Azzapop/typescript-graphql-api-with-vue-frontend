@@ -1,5 +1,7 @@
-// src/index.js
+// We must import our aliases first to ensure we can import everything correctly in production``
+// Import everything else
 import dotenv from 'dotenv';
+import 'module-alias/register';
 import { createApi } from './api';
 
 dotenv.config();
