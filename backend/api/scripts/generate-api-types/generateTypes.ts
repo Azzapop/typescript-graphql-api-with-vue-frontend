@@ -8,7 +8,7 @@ const OUTPUT_DIR = './src/services/api'
 
 /* NOTE: all fields are optional expect one of `input`, `url`, `spec` */
 generateApi({
-  input: path.resolve(process.cwd(), "./src/swagger.yaml"),
+  input: path.resolve(process.cwd(), "./src/api/swagger.yaml"),
   output: path.resolve(process.cwd(), OUTPUT_DIR),
   templates: path.resolve(process.cwd(), "./scripts/generate-api-types/templates"),
 

@@ -1,7 +1,5 @@
 /* eslint-disable */
-
 /* tslint:disable */
-
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -10,15 +8,11 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-import {
-  CreateFolder,
-  ErrorResponse,
-  Folder,
-  UpdateFolder,
-} from './data-contracts';
+
+import { CreateFile, CreateFolder, ErrorResponse, File, Folder, UpdateFile, UpdateFolder } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
-export class Folders<SecurityDataType = unknown> {
+export class FoldersClient<SecurityDataType = unknown> {
   http: HttpClient<SecurityDataType>;
 
   constructor(http: HttpClient<SecurityDataType>) {
@@ -107,7 +101,7 @@ export class Folders<SecurityDataType = unknown> {
 }` Expected response to a valid request
  * @response `500` `ErrorResponse`
  */
-  getFolder = (folderId: number, params: RequestParams = {}) =>
+  getFolder = (folderId: string, params: RequestParams = {}) =>
     this.http.request<
       {
         folder: Folder;
@@ -134,11 +128,7 @@ export class Folders<SecurityDataType = unknown> {
 }` An array of random values
  * @response `500` `ErrorResponse`
  */
-  updateFolder = (
-    folderId: number,
-    data: UpdateFolder,
-    params: RequestParams = {}
-  ) =>
+  updateFolder = (folderId: string, data: UpdateFolder, params: RequestParams = {}) =>
     this.http.request<
       {
         folder: Folder;
@@ -167,7 +157,7 @@ export class Folders<SecurityDataType = unknown> {
 }` Expected response to a valid request
  * @response `500` `ErrorResponse`
  */
-  deleteFolder = (folderId: number, params: RequestParams = {}) =>
+  deleteFolder = (folderId: string, params: RequestParams = {}) =>
     this.http.request<
       {
         deletedFolder: Folder;
@@ -175,6 +165,158 @@ export class Folders<SecurityDataType = unknown> {
       ErrorResponse
     >({
       path: `/folders/${folderId}`,
+      method: 'DELETE',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+ * No description
+ *
+ * @tags files
+ * @name GetFolderFiles
+ * @summary Get the list of files
+ * @request GET:/folders/{folderId}/files
+ * @secure
+ * @response `200` `{
+    files: (File)[],
+
+}` An array of files
+ * @response `500` `ErrorResponse`
+ */
+  getFolderFiles = (
+    folderId: string,
+    query: {
+      /**
+       * Limit the amount of items returned
+       * @format int32
+       * @min 0
+       * @max 100
+       */
+      limit: number;
+    },
+    params: RequestParams = {}
+  ) =>
+    this.http.request<
+      {
+        files: File[];
+      },
+      ErrorResponse
+    >({
+      path: `/folders/${folderId}/files`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+ * No description
+ *
+ * @tags files
+ * @name CreateFolderFile
+ * @summary Create a File
+ * @request POST:/folders/{folderId}/files
+ * @secure
+ * @response `200` `{
+    file: File,
+
+}` An array of random values
+ * @response `500` `ErrorResponse`
+ */
+  createFolderFile = (folderId: string, data: CreateFile, params: RequestParams = {}) =>
+    this.http.request<
+      {
+        file: File;
+      },
+      ErrorResponse
+    >({
+      path: `/folders/${folderId}/files`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+ * No description
+ *
+ * @tags files
+ * @name GetFolderFile
+ * @summary Return a specific file
+ * @request GET:/folders/{folderId}/files/{fileId}
+ * @secure
+ * @response `200` `{
+    file: File,
+
+}` Expected response to a valid request
+ * @response `500` `ErrorResponse`
+ */
+  getFolderFile = (folderId: string, fileId: string, params: RequestParams = {}) =>
+    this.http.request<
+      {
+        file: File;
+      },
+      ErrorResponse
+    >({
+      path: `/folders/${folderId}/files/${fileId}`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+ * No description
+ *
+ * @tags files
+ * @name UpdateFolderFile
+ * @summary Update a File
+ * @request POST:/folders/{folderId}/files/{fileId}
+ * @secure
+ * @response `200` `{
+    file: File,
+
+}` An array of random values
+ * @response `500` `ErrorResponse`
+ */
+  updateFolderFile = (folderId: string, fileId: string, data: UpdateFile, params: RequestParams = {}) =>
+    this.http.request<
+      {
+        file: File;
+      },
+      ErrorResponse
+    >({
+      path: `/folders/${folderId}/files/${fileId}`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+ * No description
+ *
+ * @tags files
+ * @name DeleteFolderFile
+ * @summary Delete a specific file
+ * @request DELETE:/folders/{folderId}/files/{fileId}
+ * @secure
+ * @response `200` `{
+    deletedFile: File,
+
+}` Expected response to a valid request
+ * @response `500` `ErrorResponse`
+ */
+  deleteFolderFile = (folderId: string, fileId: string, params: RequestParams = {}) =>
+    this.http.request<
+      {
+        deletedFile: File;
+      },
+      ErrorResponse
+    >({
+      path: `/folders/${folderId}/files/${fileId}`,
       method: 'DELETE',
       secure: true,
       format: 'json',

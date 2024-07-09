@@ -1,0 +1,25 @@
+/folders:
+  get:
+    $ref: '../folders/docs/getFolders.yaml'
+  post:
+    $ref: '../folders/docs/createFolder.yaml'
+/folders/{folderId}:
+  get:
+    $ref: '../folders/docs/getFolder.yaml'
+  post:
+    $ref: '../folders/docs/updateFolder.yaml'
+  delete:
+    $ref: '../folders/docs/deleteFolder.yaml'
+
+/folders/{folderId}/files:
+  get:
+    $ref: '../folders/files/docs/getFolderFiles.yaml'
+  post:
+    $ref: '../folders/files/docs/createFolderFile.yaml'
+/folders/{folderId}/files/{fileId}:
+  get:
+    $ref: '../folders/files/docs/getFolderFile.yaml'
+  post:
+    $ref: '../folders/files/docs/updateFolderFile.yaml'
+  delete:
+    $ref: '../folders/files/docs/deleteFolderFile.yaml'

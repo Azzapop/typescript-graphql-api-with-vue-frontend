@@ -1,0 +1,23 @@
+summary: Get the list of files
+tags:
+  - files
+operationId: getFolderFiles
+parameters:
+  - $ref: '../../docs/parameters.yaml#/folderId'
+  - $ref: './parameters.yaml#/limit'
+responses:
+  '200':
+    description: An array of files
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - files
+          properties:
+            files:
+              type: array
+              items:
+                $ref: './schemas.yaml#/File'
+  '500':
+    $ref: '../../../docs/responses.yaml#/InternalServerError'

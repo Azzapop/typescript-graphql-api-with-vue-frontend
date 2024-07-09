@@ -10,14 +10,12 @@
  */
 
 export interface Folder {
-  id: number;
+  /** @format uuid */
+  id: string;
   name: string;
 }
 
-export type ErrorCodes =
-  | 'UNKNOWN'
-  | 'MISSING_AUTH_ERROR'
-  | 'MUST_BE_STRING_VALUE';
+export type ErrorCodes = 'UNKNOWN' | 'MISSING_AUTH_ERROR' | 'MUST_BE_STRING_VALUE';
 
 export interface ErrorDetail {
   errorCode: ErrorCodes;
@@ -39,7 +37,10 @@ export interface UpdateFolder {
 }
 
 export interface File {
-  id: number;
+  /** @format uuid */
+  id: string;
+  /** @format uuid */
+  folderId: string;
   name: string;
 }
 

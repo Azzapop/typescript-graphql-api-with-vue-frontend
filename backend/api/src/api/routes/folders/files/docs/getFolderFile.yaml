@@ -1,0 +1,21 @@
+summary: Return a specific file
+tags:
+  - files
+operationId: getFolderFile
+parameters:
+  - $ref: '../../docs/parameters.yaml#/folderId'
+  - $ref: './parameters.yaml#/fileId'
+responses:
+  '200':
+    description: Expected response to a valid request
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - file
+          properties:
+            file:
+              $ref: './schemas.yaml#/File'
+  '500':
+    $ref: '../../../docs/responses.yaml#/InternalServerError'

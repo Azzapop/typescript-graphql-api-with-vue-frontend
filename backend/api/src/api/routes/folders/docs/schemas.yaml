@@ -1,0 +1,27 @@
+Folder:
+  type: object
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: string
+      format: uuid
+    name:
+      type: string
+
+CreateFolder:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
+
+UpdateFolder:
+  type: object
+  required:
+    - name
+  properties:
+    name:
+      type: string
