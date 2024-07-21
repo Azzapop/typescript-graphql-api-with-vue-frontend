@@ -1,6 +1,6 @@
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import request from 'supertest';
-import { api } from '../../..';
+import api from '../../..';
 
 describe('createFile', () => {
   let app: ReturnType<typeof request>;
@@ -19,7 +19,7 @@ describe('createFile', () => {
     expect(response.status).toEqual(StatusCodes.OK);
     expect(response.body).toEqual({
       file: {
-        id: expect.any(Number),
+        id: expect.any(String),
         name,
       },
     });

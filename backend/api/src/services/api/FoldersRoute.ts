@@ -1,5 +1,7 @@
 /* eslint-disable */
+
 /* tslint:disable */
+
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,9 +10,15 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
 import { RequestHandler } from 'express';
-import { CreateFile, CreateFolder, File, Folder, UpdateFile, UpdateFolder } from './data-contracts';
+import {
+  CreateFile,
+  CreateFolder,
+  File,
+  Folder,
+  UpdateFile,
+  UpdateFolder,
+} from './data-contracts';
 
 // This is a custom comment to test it is working mark 2
 // This is a custom comment to test it is working mark 2
@@ -42,7 +50,7 @@ export namespace Folders {
        */
       limit: number;
     };
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       folders: Folder[];
@@ -72,7 +80,7 @@ export namespace Folders {
   export namespace CreateFolder {
     export type RequestParams = {};
     export type RequestQuery = {};
-    export type RequestBody = CreateFolder;
+    export type RequestBody = CreateFolder; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       folder: Folder;
@@ -108,7 +116,7 @@ export namespace Folders {
       folderId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       folder: Folder;
@@ -144,7 +152,7 @@ export namespace Folders {
       folderId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = UpdateFolder;
+    export type RequestBody = UpdateFolder; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       folder: Folder;
@@ -180,7 +188,7 @@ export namespace Folders {
       folderId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       deletedFolder: Folder;
@@ -224,7 +232,7 @@ export namespace Folders {
        */
       limit: number;
     };
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       files: File[];
@@ -260,7 +268,7 @@ export namespace Folders {
       folderId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = CreateFile;
+    export type RequestBody = CreateFile; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       file: File;
@@ -301,7 +309,7 @@ export namespace Folders {
       fileId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       file: File;
@@ -342,7 +350,7 @@ export namespace Folders {
       fileId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = UpdateFile;
+    export type RequestBody = UpdateFile; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       file: File;
@@ -383,7 +391,7 @@ export namespace Folders {
       fileId: string;
     };
     export type RequestQuery = {};
-    export type RequestBody = never;
+    export type RequestBody = {}; // TODO verify what express puts here
     export type RequestHeaders = {};
     export type ResponseBody = {
       deletedFile: File;

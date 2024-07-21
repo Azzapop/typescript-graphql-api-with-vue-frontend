@@ -31,5 +31,5 @@ ErrorCodes:
   type: string
   enum:
     - UNKNOWN
-    - MISSING_AUTH_ERROR
+    - MISSING_AUTH_HEADER
     - MUST_BE_STRING_VALUE

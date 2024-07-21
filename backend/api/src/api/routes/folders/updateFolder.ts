@@ -6,7 +6,7 @@ export const updateFolder: Folders.UpdateFolder.Handler = async (req, res) => {
   const { folderId: id } = params;
   const { name } = body;
 
-  const folder = await prisma.folder.update({ where: { id }, data: { name } })
+  const folder = await prisma.folder.update({ where: { id }, data: { name } });
 
   res.json({ folder });
 };

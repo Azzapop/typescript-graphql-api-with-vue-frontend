@@ -6,7 +6,7 @@ export const deleteFolder: Folders.DeleteFolder.Handler = async (req, res) => {
     params: { folderId },
   } = req;
 
-  const folder = await prisma.folder.delete({ where: { id: folderId } })
+  const folder = await prisma.folder.delete({ where: { id: folderId } });
 
   res.json({ deletedFolder: folder });
 };

@@ -15,7 +15,10 @@ export interface Folder {
   name: string;
 }
 
-export type ErrorCodes = 'UNKNOWN' | 'MISSING_AUTH_ERROR' | 'MUST_BE_STRING_VALUE';
+export type ErrorCodes =
+  | 'UNKNOWN'
+  | 'MISSING_AUTH_ERROR'
+  | 'MUST_BE_STRING_VALUE';
 
 export interface ErrorDetail {
   errorCode: ErrorCodes;

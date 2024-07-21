@@ -1,6 +1,6 @@
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import request from 'supertest';
-import { api } from '../..';
+import { api } from '../../index';
 
 describe('createFolder', () => {
   let app: ReturnType<typeof request>;
@@ -9,17 +9,18 @@ describe('createFolder', () => {
   });
 
   it('returns an OK response', async () => {
-    const name = 'folder-abc-xyz';
+    const name = 1234;
     const response = await app
-      .post('/folders')
+      .post('/api/folders')
       .set('Authorization', 'Basic am9obkBleGFtcGxlLmNvbTphYmMxMjM=')
       .set('Accept', 'application/json')
       .send({ name });
 
     expect(response.status).toEqual(StatusCodes.OK);
+    console.log(response.body);
     expect(response.body).toEqual({
       folder: {
-        id: expect.any(Number),
+        id: expect.any(String),
         name,
       },
     });
@@ -40,7 +41,7 @@ describe('createFolder', () => {
   });
 
   it('returns a BAD_REQUEST when the request data is malformed', async () => {
-    const name = 1234;
+    const name = 'folder-abc-xyz';
     const response = await app
       .post('/folders')
       .set('Authorization', 'Basic am9obkBleGFtcGxlLmNvbTphYmMxMjM=')

@@ -1,31 +1,51 @@
-import globals from 'globals';
 import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-// TODO config broken
-// TODO add prefer destructuring
+// TODO add linting for what imports/exports are allowed
+// esint-plugin-import not supporting flat-config yet
+// https://github.com/import-js/eslint-plugin-import/issues/2556
 
 export default [
   {
-    languageOptions: { globals: globals.browser },
+    ignores: ['**/services'],
+  },
+  {
+    languageOptions: {
+      globals: globals.browser,
+    },
     files: ['**/*.ts'],
     rules: {
-      "@typescript-eslint/consistent-type-imports": "error",
-      "prefer-destructuring": ["error", {
-        "VariableDeclarator": {
-          "array": true,
-          "object": true
+      '@typescript-eslint/consistent-type-imports': 'error',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
         },
-        "AssignmentExpression": {
-          "array": true,
-          "object": true
-        }
-      }, {
-          "enforceForRenamedProperties": true
-        }]
-    }
+      ],
+      'prefer-destructuring': [
+        'error',
+        {
+          VariableDeclarator: {
+            array: true,
+            object: true,
+          },
+          AssignmentExpression: {
+            array: true,
+            object: true,
+          },
+        },
+        {
+          enforceForRenamedProperties: true,
+        },
+      ],
+    },
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,

@@ -1,3 +1,3 @@
-import { PrismaClient } from "@services/domain-model/client";
+import { PrismaClient } from '@services/domain-model/client';
 
-export const prisma = new PrismaClient()
+export const prisma = new PrismaClient();

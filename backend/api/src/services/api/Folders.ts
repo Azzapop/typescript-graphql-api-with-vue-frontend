@@ -1,5 +1,7 @@
 /* eslint-disable */
+
 /* tslint:disable */
+
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -8,8 +10,15 @@
  * ## SOURCE: https://github.com/acacode/swagger-typescript-api ##
  * ---------------------------------------------------------------
  */
-
-import { CreateFile, CreateFolder, ErrorResponse, File, Folder, UpdateFile, UpdateFolder } from './data-contracts';
+import {
+  CreateFile,
+  CreateFolder,
+  ErrorResponse,
+  File,
+  Folder,
+  UpdateFile,
+  UpdateFolder,
+} from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class FoldersClient<SecurityDataType = unknown> {
@@ -128,7 +137,11 @@ export class FoldersClient<SecurityDataType = unknown> {
 }` An array of random values
  * @response `500` `ErrorResponse`
  */
-  updateFolder = (folderId: string, data: UpdateFolder, params: RequestParams = {}) =>
+  updateFolder = (
+    folderId: string,
+    data: UpdateFolder,
+    params: RequestParams = {}
+  ) =>
     this.http.request<
       {
         folder: Folder;
@@ -224,7 +237,11 @@ export class FoldersClient<SecurityDataType = unknown> {
 }` An array of random values
  * @response `500` `ErrorResponse`
  */
-  createFolderFile = (folderId: string, data: CreateFile, params: RequestParams = {}) =>
+  createFolderFile = (
+    folderId: string,
+    data: CreateFile,
+    params: RequestParams = {}
+  ) =>
     this.http.request<
       {
         file: File;
@@ -253,7 +270,11 @@ export class FoldersClient<SecurityDataType = unknown> {
 }` Expected response to a valid request
  * @response `500` `ErrorResponse`
  */
-  getFolderFile = (folderId: string, fileId: string, params: RequestParams = {}) =>
+  getFolderFile = (
+    folderId: string,
+    fileId: string,
+    params: RequestParams = {}
+  ) =>
     this.http.request<
       {
         file: File;
@@ -280,7 +301,12 @@ export class FoldersClient<SecurityDataType = unknown> {
 }` An array of random values
  * @response `500` `ErrorResponse`
  */
-  updateFolderFile = (folderId: string, fileId: string, data: UpdateFile, params: RequestParams = {}) =>
+  updateFolderFile = (
+    folderId: string,
+    fileId: string,
+    data: UpdateFile,
+    params: RequestParams = {}
+  ) =>
     this.http.request<
       {
         file: File;
@@ -309,7 +335,11 @@ export class FoldersClient<SecurityDataType = unknown> {
 }` Expected response to a valid request
  * @response `500` `ErrorResponse`
  */
-  deleteFolderFile = (folderId: string, fileId: string, params: RequestParams = {}) =>
+  deleteFolderFile = (
+    folderId: string,
+    fileId: string,
+    params: RequestParams = {}
+  ) =>
     this.http.request<
       {
         deletedFile: File;

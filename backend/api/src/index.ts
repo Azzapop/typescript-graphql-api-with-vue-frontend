@@ -1,8 +1,7 @@
-// We must import our aliases first to ensure we can import everything correctly in production``
-// Import everything else
 import dotenv from 'dotenv';
-import 'module-alias/register';
 import { server } from './server';
+
+// "./node_modules/@trivago/prettier-plugin-sort-imports/lib/src/index.js",
 
 dotenv.config();
 

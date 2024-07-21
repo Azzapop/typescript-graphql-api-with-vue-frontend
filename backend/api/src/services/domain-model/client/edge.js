@@ -147,6 +147,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {

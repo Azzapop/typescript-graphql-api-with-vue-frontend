@@ -6,7 +6,7 @@ export const getFolders: Folders.GetFolders.Handler = async (req, res) => {
     query: { limit },
   } = req;
 
-  const folders = await prisma.folder.findMany({ take: limit })
+  const folders = await prisma.folder.findMany({ take: limit });
 
   res.json({ folders });
 };
