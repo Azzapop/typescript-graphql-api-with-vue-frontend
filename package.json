@@ -14,7 +14,7 @@
     "docs:lint": "redocly lint ./src/api/docs/index.yaml",
     "docs:bundle": "redocly bundle src/api/docs/index.yaml -o src/api/swagger.yaml",
     "docs:build": "redocly build-docs src/api/docs/index.yaml -o src/api/routes/docs/index.html",
-    "spec": "npm run spec:unit && npm run spec:int",
+    "test": "npm run spec:unit && npm run spec:int",
     "spec:unit": "jest --config ./jest.unit.config.ts",
     "spec:int": "jest --config ./jest.int.config.ts --detectOpenHandles",
     "db:format": "prisma format",
