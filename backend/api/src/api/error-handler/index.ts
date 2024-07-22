@@ -31,7 +31,6 @@ export const errorHandler: ErrorRequestHandler = (
     ]);
   };
 
-  console.log('in the error handler');
   // Log it
   if (isStandardError(err)) {
     const { message } = err;

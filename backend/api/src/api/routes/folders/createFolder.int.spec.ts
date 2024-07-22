@@ -17,7 +17,6 @@ describe('createFolder', () => {
       .send({ name });
 
     expect(response.status).toEqual(StatusCodes.OK);
-    console.log(response.body);
     expect(response.body).toEqual({
       folder: {
         id: expect.any(String),
@@ -48,7 +47,6 @@ describe('createFolder', () => {
       .set('Accept', 'application/json')
       .send({ name });
 
-    // console.log(response);
     expect(response.status).toEqual(StatusCodes.BAD_REQUEST);
     expect(response.body).toEqual({
       message: getReasonPhrase(StatusCodes.BAD_REQUEST),

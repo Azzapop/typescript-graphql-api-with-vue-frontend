@@ -6,9 +6,7 @@ export const createFolder: Folders.CreateFolder.Handler = async (req, res) => {
     body: { name },
   } = req;
 
-  console.log('here');
   const folder = await prisma.folder.create({ data: { name } });
-  console.log('here2');
 
   res.json({ folder });
 };

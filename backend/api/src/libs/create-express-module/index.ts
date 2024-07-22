@@ -1,5 +1,5 @@
-import type { Router, ErrorRequestHandler, Express } from 'express';
-import express from 'express';
+import type { ErrorRequestHandler, Express } from 'express';
+import express, { Router } from 'express';
 import { injectRoutes } from './inject-routes';
 import type { Routes } from './types';
 
@@ -13,9 +13,7 @@ export const createExpressModule = (opts: {
   const app = express();
 
   const router = injectRoutes({
-    // Need to cast this to Router as the express types don't catch up
-    // TODO monkey patch it?
-    router: app.router as unknown as Router,
+    router: Router(),
     routes,
   });
   app.use(basePath, router);

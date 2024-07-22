@@ -12,7 +12,7 @@ const handler = (
   method: RouteType,
   routeDefinition: RouteDefinition
 ): RequestHandler[] => {
-  const { [method]: handlers } = routeDefinition;
+  const handlers = routeDefinition[method];
 
   if (handlers) return handlers;
 
@@ -55,6 +55,8 @@ export const injectRoutes = (opts: {
         .delete(handler('DELETE', routeDefinition));
     }
   });
+
+  router.route('*').all(notImplemented);
 
   return router;
 };
