@@ -9,7 +9,6 @@ import { isBadRequestError } from './isBadRequestError';
 export const convertOpenApiValidatorErrorToApiError = (
   err: HttpError
 ): ApiError => {
-
   if (isAuthorizationError(err)) {
     return convertAuthorizationErrorToApiError(err);
   }
