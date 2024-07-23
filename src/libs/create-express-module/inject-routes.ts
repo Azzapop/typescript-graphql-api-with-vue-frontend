@@ -12,7 +12,7 @@ const handler = (
   method: RouteType,
   routeDefinition: RouteDefinition
 ): RequestHandler[] => {
-  const handlers = routeDefinition[method];
+  const { [method]: handlers } = routeDefinition;
 
   if (handlers) return handlers;
 
