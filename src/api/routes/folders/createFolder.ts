@@ -1,7 +1,8 @@
+import { asyncHanlder } from '@libs/async-handler';
 import type { Folders } from '@services/api';
 import { prisma } from '@services/domain-model/prisma';
 
-export const createFolder: Folders.CreateFolder.Handler = async (req, res) => {
+const handler: Folders.CreateFolder.Handler = async (req, res) => {
   const {
     body: { name },
   } = req;
@@ -10,3 +11,5 @@ export const createFolder: Folders.CreateFolder.Handler = async (req, res) => {
 
   res.json({ folder });
 };
+
+export const createFolder = asyncHanlder(handler);

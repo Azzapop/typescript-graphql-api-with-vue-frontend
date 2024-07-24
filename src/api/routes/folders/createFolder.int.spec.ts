@@ -9,7 +9,7 @@ describe('createFolder', () => {
   });
 
   it('returns an OK response', async () => {
-    const name = 1234;
+    const name = '1234';
     const response = await app
       .post('/api/folders')
       .set('Authorization', 'Basic am9obkBleGFtcGxlLmNvbTphYmMxMjM=')
@@ -28,7 +28,7 @@ describe('createFolder', () => {
   it('returns an UNAUTHORISED when missing the auth header', async () => {
     const name = 'folder-abc-xyz';
     const response = await app
-      .post('/folders')
+      .post('/api/folders')
       .set('Accept', 'application/json')
       .send({ name });
 
@@ -40,9 +40,9 @@ describe('createFolder', () => {
   });
 
   it('returns a BAD_REQUEST when the request data is malformed', async () => {
-    const name = 'folder-abc-xyz';
+    const name = 1234;
     const response = await app
-      .post('/folders')
+      .post('/api/folders')
       .set('Authorization', 'Basic am9obkBleGFtcGxlLmNvbTphYmMxMjM=')
       .set('Accept', 'application/json')
       .send({ name });
