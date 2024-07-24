@@ -11,7 +11,7 @@ on:
 
 env:
   PORT: 3000
-  DATABASE_URL: 'mysql://financial_planner_dev_user:${{secrets.db_password}}@localhost:3306/financial_planner_dev'
+  DATABASE_URL: 'mysql://root:${{secrets.db_password}}@localhost:3306/financial_planner_dev'
 
 jobs:
   build:
@@ -30,13 +30,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Update apt-get
-        run: |
-          apt update
-          apt install sudo
       - name: Verify MySQL connection from host
         run: |
-          apt-get install -y mysql-client
+          sudo apt-get install -y mysql-client
           mysql --host mydb -uroot -p${{ secrets.db_password }} -e "SHOW DATABASES"
       - run: npm run db:migrate
       - name: Use Node.js ${{ matrix.node-version }}
