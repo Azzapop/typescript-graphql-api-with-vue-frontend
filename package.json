@@ -4,7 +4,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "start": "node dist/index.bundle.js",
-    "dev": "webpack --mode development --watch",
+    "dev:server": "webpack --config .webpack/dev.config.ts --watch",
+    "dev:client": "webpack --config .webpack/client.config.ts --watch",
     "types": "ts-node scripts/generate-api-types/generateTypes.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
@@ -33,7 +34,10 @@
     "express": "^4.19.2",
     "express-openapi-validator": "^5.2.0",
     "http-status-codes": "^2.3.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "serve-index": "^1.9.1",
+    "vue": "^3.4.35",
+    "vue-router": "^4.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",
@@ -48,6 +52,8 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.6.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
     "globals": "^15.6.0",
     "html-loader": "^5.0.0",
     "html-webpack-plugin": "^5.6.0",
@@ -67,6 +73,8 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.13.0",
+    "vue-loader": "^17.4.2",
+    "vue-template-compiler": "^2.7.16",
     "webpack": "^5.92.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-middleware": "^7.2.1",

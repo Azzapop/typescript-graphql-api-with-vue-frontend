@@ -3,6 +3,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import vuePlugin from 'eslint-plugin-vue';
 
 // TODO add linting for what imports/exports are allowed
 // esint-plugin-import not supporting flat-config yet
@@ -51,4 +52,5 @@ export default [
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
   jest.configs['flat/recommended'],
+  vuePlugin.configs['flat/essential'],
 ];

@@ -1,17 +1,13 @@
-import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import path from 'path';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import TsConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { VueLoaderPlugin } from 'vue-loader';
 import { Configuration } from 'webpack';
-import nodeExternals from 'webpack-node-externals';
-import yaml from 'yamljs';
 
 const config: Configuration = {
-  target: 'node',
+  target: 'web',
   entry: {
-    index: './src/index.ts',
+    client: './src/app/client.ts',
   },
   module: {
     rules: [
@@ -26,13 +22,6 @@ const config: Configuration = {
         exclude: [/node_modules/, /\.spec\.tsx?$/],
       },
       {
-        test: /\.yaml$/i,
-        type: 'json',
-        parser: {
-          parse: yaml.parse,
-        },
-      },
-      {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
@@ -42,24 +31,11 @@ const config: Configuration = {
     extensions: ['.tsx', '.ts', '.js', '.vue'],
     plugins: [new TsConfigPathsPlugin({ configFile: 'tsconfig.webpack.json' })],
   },
-  plugins: [
-    new ForkTsCheckerWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Index',
-      inject: false,
-      filename: 'index.html',
-      template: './src/api/routes/docs/index.html',
-      chunks: ['index'],
-    }),
-    new NodePolyfillPlugin(),
-    new VueLoaderPlugin(),
-  ],
+  plugins: [new ForkTsCheckerWebpackPlugin(), new VueLoaderPlugin()],
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, '../dist'), // TODO better way for this
-    clean: true,
+    path: path.resolve(__dirname, '../dist/public'), // TODO better way for this
   },
-  externals: [nodeExternals()],
 };
 
 export default config;

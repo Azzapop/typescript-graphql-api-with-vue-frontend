@@ -17,4 +17,6 @@ export type RouteDefinition = Partial<
 >;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export type Routes = Array<[string, RouteDefinition]>;
+type NullablePath = string | null
+
+export type Routes = Array<[NullablePath, RouteDefinition]>;

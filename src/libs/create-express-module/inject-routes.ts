@@ -41,10 +41,16 @@ export const injectRoutes = (opts: {
 
   routes.forEach(([path, routeDefinition]) => {
     if (hasMiddleware(routeDefinition)) {
-      router.use(handler('USE', routeDefinition));
+      path !== null
+        ? router.use(path, handler('USE', routeDefinition))
+        : router.use(handler('USE', routeDefinition));
     }
 
     if (hasRoute(routeDefinition)) {
+      if (path === null) {
+        throw new Error('Undefined route received.');
+      }
+
       router
         .route(path)
         .all(handler('ALL', routeDefinition))

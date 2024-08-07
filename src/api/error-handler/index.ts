@@ -34,7 +34,8 @@ export const errorHandler: ErrorRequestHandler = (
   // Log it
   if (isStandardError(err)) {
     const { message } = err;
-    console.error({ message, err });
+    // @ts-ignore
+    console.error({ message, err, errors: err.errors });
   } else {
     console.error('Non error object received:', { err });
   }
