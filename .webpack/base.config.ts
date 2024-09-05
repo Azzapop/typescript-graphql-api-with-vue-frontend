@@ -1,5 +1,4 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import NodePolyfillPlugin from 'node-polyfill-webpack-plugin';
 import path from 'path';
 import TsConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
@@ -44,13 +43,6 @@ const config: Configuration = {
   },
   plugins: [
     new ForkTsCheckerWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Index',
-      inject: false,
-      filename: 'index.html',
-      template: './src/api/routes/docs/index.html',
-      chunks: ['index'],
-    }),
     new NodePolyfillPlugin(),
     new VueLoaderPlugin(),
   ],

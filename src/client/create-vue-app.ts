@@ -1,10 +1,11 @@
 import { createSSRApp } from 'vue';
-import App from './App.vue';
-import { createVueRouter } from './router';
+import App from './app/App.vue';
+import { createVueRouter } from './app/create-vue-router';
 
 export function createVueApp(opts: { isServer: boolean }) {
-  const router = createVueRouter(opts);
   const app = createSSRApp(App);
+
+  const router = createVueRouter(opts);
   app.use(router);
 
   return { app, router };

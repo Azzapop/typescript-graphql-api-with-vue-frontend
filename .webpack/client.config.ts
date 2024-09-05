@@ -1,5 +1,5 @@
-import path from 'path';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import path from 'path';
 import TsConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import { VueLoaderPlugin } from 'vue-loader';
 import { Configuration } from 'webpack';
@@ -7,7 +7,7 @@ import { Configuration } from 'webpack';
 const config: Configuration = {
   target: 'web',
   entry: {
-    client: './src/app/client.ts',
+    client: './src/client/client-entry.ts',
   },
   module: {
     rules: [

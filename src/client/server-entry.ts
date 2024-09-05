@@ -1,14 +1,16 @@
+import { asyncHanlder } from '@libs/async-handler';
 import { RequestHandler } from 'express';
 import { renderToString } from 'vue/server-renderer';
-import { createVueApp } from './app';
+import { createVueApp } from './create-vue-app';
 
-export const server: RequestHandler = async (req, res) => {
+const handler: RequestHandler = async (req, res) => {
   const { app, router } = createVueApp({ isServer: true });
 
   router.push(req.url);
 
   await router.isReady();
   const html = await renderToString(app);
+
   res.send(
     `<!DOCTYPE html>
     <html>
@@ -29,3 +31,5 @@ export const server: RequestHandler = async (req, res) => {
     </html>`
   );
 };
+
+export const serverEntry = asyncHanlder(handler);

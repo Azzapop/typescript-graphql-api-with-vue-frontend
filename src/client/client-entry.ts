@@ -1,4 +1,4 @@
-import { createVueApp } from './app';
+import { createVueApp } from './create-vue-app';
 
 const { app } = createVueApp({ isServer: false });
 
