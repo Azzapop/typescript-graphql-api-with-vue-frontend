@@ -1,28 +1,29 @@
 import { asyncHanlder } from '@libs/async-handler';
 import { RequestHandler } from 'express';
-import { renderToString } from 'vue/server-renderer';
-import { createVueApp } from './create-vue-app';
+// import { renderToString } from 'vue/server-renderer';
+// import { createVueApp } from './create-vue-app';
 
-const handler: RequestHandler = async (req, res) => {
-  const { app, router } = createVueApp({ isServer: true });
+// Currently unable to render this in server mode due to the fact that there are ESM/CJS issues
+// downstream in @apollo/client
+//
+// See issue for further details: https://github.com/vuejs/apollo/issues/1502
+//
+// When resolved downstream, uncomment all lines here to enable SSR again
 
-  router.push(req.url);
-
-  await router.isReady();
-  const html = await renderToString(app);
+const handler: RequestHandler = async (_req, res) => {
+  // const { app, router } = createVueApp({ isServer: true });
+  //
+  // router.push(req.url);
+  //
+  // await router.isReady();
+  // const html = await renderToString(app);
+  const html = ''
 
   res.send(
     `<!DOCTYPE html>
     <html>
       <head>
         <title>Vue SSR Example</title>
-        <script type="importmap">
-          {
-            "imports": {
-              "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
-            }
-          }
-        </script>
         <script type="module" src="/public/client.bundle.js"></script>
       </head>
       <body>

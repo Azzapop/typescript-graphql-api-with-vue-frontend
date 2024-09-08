@@ -15,6 +15,7 @@ const increment = () => {
   <about></about>
   <RouterLink to="/">Go To Home</RouterLink>
   <RouterLink to="/about">Go To About</RouterLink>
+  <RouterLink to="/painters">Go To Painters</RouterLink>
   <Suspense>
     <RouterView></RouterView>
   </Suspense>
