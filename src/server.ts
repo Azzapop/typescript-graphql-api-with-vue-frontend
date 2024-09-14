@@ -1,9 +1,11 @@
+import compression from 'compression';
 import cors from 'cors';
 import express, { Express } from 'express';
 import http, { Server as HttpServer } from 'http';
 import path from 'path';
-import serveIndex from 'serve-index';
-import { serverEntry as clientServerEntry } from './client';
+// import serveIndex from 'serve-index';
+import serveStatic from 'serve-static';
+import { serverEntry as clientServerEntry } from './client/server-entry/index';
 import { graphql } from './graphql';
 
 const configureExpressServer = async (
@@ -12,20 +14,34 @@ const configureExpressServer = async (
 ): Promise<void> => {
   const { httpServer } = opts;
 
+  console.log('test7');
+
+  // Compress requests that come through
+  expressServer.use(compression());
+
   // Configure public path to load assets
-  const publicPath = path.join(__dirname, 'public');
+  const publicPath = path.join(import.meta.dirname, 'public');
   expressServer.use(
     '/public',
     express.static(publicPath),
-    serveIndex(publicPath, { icons: true, view: 'details' })
+    serveStatic(`/dist${publicPath}`, { index: false })
+    // TODO the Batch import in this package is causing issues with importing 'emitter'
+    // serveIndex(publicPath, { icons: true, view: 'details' })
   );
 
   // Configure graphql server for data
   const graphqlServer = await graphql({ httpServer });
   expressServer.use('/graphql', cors(), express.json(), graphqlServer);
 
+  const { vite, serverHandler: clientServerHandler } =
+    await clientServerEntry();
+
+  if (vite) {
+    expressServer.use(vite.middlewares);
+  }
+
   // All other paths load our client
-  expressServer.use('*', clientServerEntry);
+  expressServer.use('*', clientServerHandler);
 
   // @ts-expect-error
   // TODO move this out to a util function again

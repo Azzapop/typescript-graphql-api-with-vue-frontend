@@ -6,6 +6,7 @@ export const resolvers = {
     paintings: (): any => paintings,
     painter(_: any, { name }: any): any {
       console.log(name);
+      console.log(name);
       return painters.find((painter) => painter.name === name);
     },
     painting(_: any, { title }: any): any {

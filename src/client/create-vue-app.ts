@@ -1,6 +1,7 @@
 import { apolloClient } from '@services/graphql/client';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createSSRApp, h, provide } from 'vue';
+// @ts-ignore
 import App from './app/App.vue';
 import { createVueRouter } from './app/create-vue-router';
 
