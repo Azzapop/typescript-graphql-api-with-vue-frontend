@@ -6,13 +6,13 @@ import express from 'express';
 import type { Server as HttpServer } from 'http';
 import http from 'http';
 import fs from 'node:fs';
-import path from 'path';
+import { resolve as pathResolve, join as pathJoin } from 'path';
 // import serveIndex from 'serve-index';
 import serveStatic from 'serve-static';
-import { serverHandler } from './client/server-handler';
+import { serverHandler } from './client/server-entry/server-handler';
 import { graphql } from './graphql';
 
-const resolve = (p: string) => path.resolve(import.meta.dirname, p);
+const resolve = (p: string) => pathResolve(import.meta.dirname, p);
 
 const configureExpressServer = async (
   expressServer: Express,
@@ -31,7 +31,7 @@ const configureExpressServer = async (
     expressServer.use(compression());
 
     // Configure public path to load assets
-    const publicPath = path.join(import.meta.dirname, '../client/assets');
+    const publicPath = pathJoin(import.meta.dirname, '../client/assets');
     console.log(publicPath);
     expressServer.use(
       '/assets',
@@ -49,7 +49,6 @@ const configureExpressServer = async (
     const appServerHandler = serverHandler({ manifest, template });
     expressServer.use('*', appServerHandler);
   } else {
-    console.log('this one here');
     const vite = await createViteServer();
     expressServer.use(vite.middlewares);
 
