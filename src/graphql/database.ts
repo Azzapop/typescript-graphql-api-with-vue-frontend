@@ -1,4 +1,4 @@
-import { Painter, Painting } from '@services/graphql/types';
+import type { Painter, Painting } from '@services/graphql/types';
 
 export const painters: Painter[] = [
   { name: 'Steve', country: 'Aus', techniques: ['drawing'] },

@@ -1,6 +1,6 @@
 import { asyncHanlder } from '@libs/async-handler';
-import { RequestHandler } from 'express';
-import { ViteDevServer } from 'vite';
+import type { RequestHandler } from 'express';
+import type { ViteDevServer } from 'vite';
 import { renderHtml } from './server-entry/render';
 
 export const serverHandler = (opts: {

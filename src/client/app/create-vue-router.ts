@@ -1,8 +1,8 @@
+import type { Router } from 'vue-router';
 import {
   createRouter,
   createWebHistory,
   createMemoryHistory,
-  Router,
 } from 'vue-router';
 import About from './pages/About.vue';
 import Everything from './pages/Everything.vue';

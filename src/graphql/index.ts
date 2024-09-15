@@ -1,5 +1,5 @@
 import { expressMiddleware } from '@apollo/server/express4';
-import { Server as HttpServer } from 'http';
+import type { Server as HttpServer } from 'http';
 import { createApolloServer } from './server';
 
 export const graphql = async (opts: {

@@ -52,5 +52,5 @@ export default [
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
   jest.configs['flat/recommended'],
-  vuePlugin.configs['flat/essential'],
+  ...vuePlugin.configs['flat/essential'],
 ];

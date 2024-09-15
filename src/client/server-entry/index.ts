@@ -1,9 +1,9 @@
 import { asyncHanlder } from '@libs/async-handler';
 import { createViteServer } from '@libs/vite';
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
-import { ViteDevServer } from 'vite';
+import type { ViteDevServer } from 'vite';
 import { renderHtml } from './render';
 import { template as baseTemplate } from './template';
 

@@ -1,8 +1,10 @@
 import { createViteServer } from '@libs/vite';
 import compression from 'compression';
 import cors from 'cors';
-import express, { Express } from 'express';
-import http, { Server as HttpServer } from 'http';
+import type { Express } from 'express';
+import express from 'express';
+import type { Server as HttpServer } from 'http';
+import http from 'http';
 import fs from 'node:fs';
 import path from 'path';
 // import serveIndex from 'serve-index';

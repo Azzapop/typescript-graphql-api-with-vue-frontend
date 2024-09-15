@@ -1,5 +1,5 @@
 import { asyncHanlder } from '@libs/async-handler';
-import { RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { basename } from 'node:path';
 import { renderToString } from 'vue/server-renderer';
 import { createVueApp } from './create-vue-app';

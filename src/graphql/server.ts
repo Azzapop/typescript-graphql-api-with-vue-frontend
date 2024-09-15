@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { Server as HttpServer } from 'http';
+import type { Server as HttpServer } from 'http';
 import { resolvers } from './resolvers';
 import { typeDefs } from './type-defs';
 

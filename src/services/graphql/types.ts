@@ -1,17 +1,30 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
+export type MakeEmpty<
+  T extends { [key: string]: unknown },
+  K extends keyof T,
+> = { [_ in K]?: never };
+export type Incremental<T> =
+  | T
+  | {
+      [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
+    };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
 };
 
 export type Mutation = {
@@ -20,11 +33,9 @@ export type Mutation = {
   createPainting: Painting;
 };
 
-
 export type MutationCreatePainterArgs = {
   input: PainterInput;
 };
-
 
 export type MutationCreatePaintingArgs = {
   input: PaintingInput;
@@ -66,17 +77,21 @@ export type Query = {
   paintings: Array<Maybe<Painting>>;
 };
 
-
 export type QueryPainterArgs = {
   name: InputMaybe<Scalars['String']['input']>;
 };
-
 
 export type QueryPaintingArgs = {
   title: InputMaybe<Scalars['String']['input']>;
 };
 
-export type GetPaintersQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetPaintersQueryVariables = Exact<{ [key: string]: never }>;
 
-
-export type GetPaintersQuery = { __typename?: 'Query', painters: Array<{ __typename?: 'Painter', name: string, country: string } | null> };
+export type GetPaintersQuery = {
+  __typename?: 'Query';
+  painters: Array<{
+    __typename?: 'Painter';
+    name: string;
+    country: string;
+  } | null>;
+};

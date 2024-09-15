@@ -3,6 +3,10 @@
  * https://jestjs.io/docs/configuration
  */
 import type { Config } from 'jest';
+import tsconfigPathsJest from 'tsconfig-paths-jest';
+import tsconfig from './tsconfig.json';
+
+const moduleNameMapper = tsconfigPathsJest(tsconfig);
 
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
@@ -80,10 +84,11 @@ const config: Config = {
   moduleFileExtensions: ['js', 'ts', 'tsx', 'yaml'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  moduleNameMapper: {
-    '^@services(.*)$': '<rootDir>/src/services$1',
-    '^@libs(.*)$': '<rootDir>/src/libs$1',
-  },
+  moduleNameMapper,
+  // moduleNameMapper: {
+  //   '^@services(.*)$': '<rootDir>/src/services$1',
+  //   '^@libs(.*)$': '<rootDir>/src/libs$1',
+  // },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -175,7 +180,6 @@ const config: Config = {
         useESM: true,
       },
     ],
-    '\\.yaml$': 'jest-transform-yaml',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
