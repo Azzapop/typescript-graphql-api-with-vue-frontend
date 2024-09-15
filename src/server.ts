@@ -1,12 +1,16 @@
+import { createViteServer } from '@libs/vite';
 import compression from 'compression';
 import cors from 'cors';
 import express, { Express } from 'express';
 import http, { Server as HttpServer } from 'http';
+import fs from 'node:fs';
 import path from 'path';
 // import serveIndex from 'serve-index';
 import serveStatic from 'serve-static';
-import { serverEntry as clientServerEntry } from './client/server-entry/index';
+import { serverHandler } from './client/server-handler';
 import { graphql } from './graphql';
+
+const resolve = (p: string) => path.resolve(import.meta.dirname, p);
 
 const configureExpressServer = async (
   expressServer: Express,
@@ -14,34 +18,44 @@ const configureExpressServer = async (
 ): Promise<void> => {
   const { httpServer } = opts;
 
-  console.log('test7');
-
-  // Compress requests that come through
-  expressServer.use(compression());
-
-  // Configure public path to load assets
-  const publicPath = path.join(import.meta.dirname, 'public');
-  expressServer.use(
-    '/public',
-    express.static(publicPath),
-    serveStatic(`/dist${publicPath}`, { index: false })
-    // TODO the Batch import in this package is causing issues with importing 'emitter'
-    // serveIndex(publicPath, { icons: true, view: 'details' })
-  );
-
   // Configure graphql server for data
   const graphqlServer = await graphql({ httpServer });
   expressServer.use('/graphql', cors(), express.json(), graphqlServer);
 
-  const { vite, serverHandler: clientServerHandler } =
-    await clientServerEntry();
+  // For production we serve our pre-compiled static assets direct from the dist directory.
+  // For all other environments we allow the vite dev server to serve our assets for us.
+  if (process.env.NODE_ENV === 'production') {
+    // Compress requests that come through
+    expressServer.use(compression());
 
-  if (vite) {
+    // Configure public path to load assets
+    const publicPath = path.join(import.meta.dirname, '../client/assets');
+    console.log(publicPath);
+    expressServer.use(
+      '/assets',
+      express.static(publicPath),
+      serveStatic(`/dist${publicPath}`, { index: false })
+      // TODO the Batch import in this package is causing issues with importing 'emitter'
+      // serveIndex(publicPath, { icons: true, view: 'details' })
+    );
+
+    const manifest = JSON.parse(
+      fs.readFileSync(resolve('../client/.vite/ssr-manifest.json'), 'utf-8')
+    );
+    const template = fs.readFileSync(resolve('../client/index.html'), 'utf-8');
+
+    const appServerHandler = serverHandler({ manifest, template });
+    expressServer.use('*', appServerHandler);
+  } else {
+    console.log('this one here');
+    const vite = await createViteServer();
     expressServer.use(vite.middlewares);
-  }
 
-  // All other paths load our client
-  expressServer.use('*', clientServerHandler);
+    const template = fs.readFileSync(resolve('../index.html'), 'utf-8');
+
+    const appServerHandler = serverHandler({ vite, template });
+    expressServer.use('*', appServerHandler);
+  }
 
   // @ts-expect-error
   // TODO move this out to a util function again

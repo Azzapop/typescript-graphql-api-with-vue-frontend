@@ -66,11 +66,10 @@ export const renderHtml = async (opts: {
   // components that have been instantiated during this render call.
   const context: { modules?: unknown } = {};
 
-  console.log('this is a test6');
-
   const appHtml = await renderToString(app, context);
-  // const preloadLinks = renderPreloadLinks(context.modules, manifest);
-  const preloadLinks = '';
+
+  console.log(context.modules);
+  const preloadLinks = renderPreloadLinks(context.modules, manifest);
 
   const html = template
     .replace(`<!--preload-links-->`, preloadLinks)

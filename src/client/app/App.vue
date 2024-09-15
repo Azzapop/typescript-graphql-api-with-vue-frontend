@@ -16,7 +16,30 @@ const increment = () => {
   <RouterLink to="/">Go To Home</RouterLink>
   <RouterLink to="/about">Go To About</RouterLink>
   <RouterLink to="/painters">Go To Painters</RouterLink>
+  <RouterLink to="/everything">Go To Everything</RouterLink>
   <Suspense>
     <RouterView></RouterView>
   </Suspense>
 </template>
+<style>
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src:
+    url('./assets/fonts/Inter-Italic.woff2#iefix') format('woff2'),
+    url('./assets/fonts/Inter-Italic.woff') format('woff');
+}
+.inter {
+  font-family: 'Inter';
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>

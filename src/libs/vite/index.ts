@@ -5,17 +5,15 @@ import { ViteDevServer, createServer } from 'vite';
 export const createViteServer = async (
   opts: {
     root?: string;
-    env?: 'prod' | 'dev' | 'test';
     hmrPort?: number;
   } = {}
-): Promise<ViteDevServer | undefined> => {
-  if (opts.env === 'prod') return;
-  const { root = process.cwd(), env = 'dev', hmrPort } = opts;
+): Promise<ViteDevServer> => {
+  const { root = process.cwd(), hmrPort } = opts;
 
   return await createServer({
     base: '/public/',
     root,
-    logLevel: env === 'test' ? 'error' : 'info',
+    logLevel: 'error', // TODO config this
     server: {
       middlewareMode: true,
       watch: {
