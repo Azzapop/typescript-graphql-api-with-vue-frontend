@@ -1,18 +1,10 @@
-import { createViteServer } from '@libs/vite';
-import compression from 'compression';
-import cors from 'cors';
 import type { Express } from 'express';
 import express from 'express';
 import type { Server as HttpServer } from 'http';
 import http from 'http';
-import fs from 'node:fs';
-import { resolve as pathResolve, join as pathJoin } from 'path';
-// import serveIndex from 'serve-index';
-import serveStatic from 'serve-static';
-import { serverHandler } from './client/server-entry/server-handler';
+import { devEntry } from './client/server-entry-dev';
+import { productionEntry } from './client/server-entry-production';
 import { graphql } from './graphql';
-
-const resolve = (p: string) => pathResolve(import.meta.dirname, p);
 
 const configureExpressServer = async (
   expressServer: Express,
@@ -21,41 +13,24 @@ const configureExpressServer = async (
   const { httpServer } = opts;
 
   // Configure graphql server for data
-  const graphqlServer = await graphql({ httpServer });
-  expressServer.use('/graphql', cors(), express.json(), graphqlServer);
+  const { inject: injectGraphqlServer } = await graphql({ httpServer });
+  injectGraphqlServer(expressServer);
 
-  // For production we serve our pre-compiled static assets direct from the dist directory.
-  // For all other environments we allow the vite dev server to serve our assets for us.
+  /*
+   *  Configure our client application with SSR
+   *
+   *  For production we serve our pre-compiled static assets direct from the dist directory.
+   *  For all other environments we allow the vite dev server to serve our assets for us.
+   *
+   *  TODO Change to dynamic imports here so that we can tree shake either path out. Will need
+   *  to use vite.ssrLoadModule for dev and inject it into the entry point
+   */
   if (process.env.NODE_ENV === 'production') {
-    // Compress requests that come through
-    expressServer.use(compression());
-
-    // Configure public path to load assets
-    const publicPath = pathJoin(import.meta.dirname, '../client/assets');
-    console.log(publicPath);
-    expressServer.use(
-      '/assets',
-      express.static(publicPath),
-      serveStatic(`/dist${publicPath}`, { index: false })
-      // TODO the Batch import in this package is causing issues with importing 'emitter'
-      // serveIndex(publicPath, { icons: true, view: 'details' })
-    );
-
-    const manifest = JSON.parse(
-      fs.readFileSync(resolve('../client/.vite/ssr-manifest.json'), 'utf-8')
-    );
-    const template = fs.readFileSync(resolve('../client/index.html'), 'utf-8');
-
-    const appServerHandler = serverHandler({ manifest, template });
-    expressServer.use('*', appServerHandler);
+    const { inject: injectProductionClientEntry } = productionEntry();
+    injectProductionClientEntry(expressServer);
   } else {
-    const vite = await createViteServer();
-    expressServer.use(vite.middlewares);
-
-    const template = fs.readFileSync(resolve('../index.html'), 'utf-8');
-
-    const appServerHandler = serverHandler({ vite, template });
-    expressServer.use('*', appServerHandler);
+    const { inject: injectDevClientEntry } = await devEntry();
+    injectDevClientEntry(expressServer);
   }
 
   // @ts-expect-error

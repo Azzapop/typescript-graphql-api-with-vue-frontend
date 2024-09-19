@@ -1,13 +1,36 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { defineStore } from 'pinia';
+import { ref, onServerPrefetch, onMounted } from 'vue';
+import { GetPaintersQuery } from '../../../services/graphql/types';
 import { usePainters } from './usePainters';
 
-const result = await usePainters();
+const usePaintersStore = defineStore('painters', () => {
+  const painters = ref<GetPaintersQuery['painters'] | null>(null);
 
-const painters = computed(() => result.result.value?.painters);
+  const loadData = async () => {
+    const query = await usePainters();
+    query.onResult((result) => {
+      painters.value = result.data?.painters;
+    });
+  };
+
+  return { painters, loadData };
+});
+
+const store = usePaintersStore();
+
+onServerPrefetch(async () => {
+  await store.loadData();
+});
+
+onMounted(async () => {
+  if (store.painters === null) {
+    await store.loadData();
+  }
+});
 </script>
 <template>
-  <div v-for="painter in painters">
+  <div v-if="store.painters !== null" v-for="painter in store.painters">
     <p>{{ painter?.name }}</p>
   </div>
 </template>

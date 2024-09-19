@@ -2,11 +2,12 @@ import { painters, paintings } from './database';
 
 export const resolvers = {
   Query: {
-    painters: (): any => painters,
+    painters: (): any => {
+      console.log({ painters });
+      return painters;
+    },
     paintings: (): any => paintings,
     painter(_: any, { name }: any): any {
-      console.log(name);
-      console.log(name);
       return painters.find((painter) => painter.name === name);
     },
     painting(_: any, { title }: any): any {

@@ -1,16 +1,15 @@
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import type { Server as HttpServer } from 'http';
-import { resolvers } from './resolvers';
-import { typeDefs } from './type-defs';
+import { createSchema } from './createSchema';
 
 interface MyContext {
   token?: string;
 }
 
-export const createApolloServer = async (opts: {
+export const createApolloServer = (opts: {
   httpServer?: HttpServer;
-}): Promise<ApolloServer> => {
+}): ApolloServer => {
   const { httpServer } = opts;
 
   const plugins = [];
@@ -19,9 +18,10 @@ export const createApolloServer = async (opts: {
     plugins.push(ApolloServerPluginDrainHttpServer({ httpServer }));
   }
 
+  const schema = createSchema();
+
   const apolloServer = new ApolloServer<MyContext>({
-    typeDefs,
-    resolvers,
+    schema,
     plugins,
   });
 

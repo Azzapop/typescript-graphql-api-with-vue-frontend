@@ -1,8 +1,10 @@
 import { basename } from 'node:path';
 import { renderToString } from 'vue/server-renderer';
-import { createVueApp } from '../create-vue-app';
+import { createVueApp } from './create-vue-app';
 
+// TODO split out to individual files
 const renderPreloadLinks = (modules: any, manifest: any) => {
+  if (!modules) return '';
   let links = '';
   const seen = new Set();
   modules.forEach((id: any) => {
@@ -54,7 +56,7 @@ export const renderHtml = async (opts: {
 }) => {
   const { template, url, manifest } = opts;
 
-  const { app, router } = createVueApp({ isServer: true });
+  const { app, router, store } = createVueApp({ isServer: true });
 
   await router.push(url);
 
@@ -66,13 +68,17 @@ export const renderHtml = async (opts: {
   // components that have been instantiated during this render call.
   const context: { modules?: unknown } = {};
 
+  const preloadLinks = renderPreloadLinks(context.modules, manifest);
+
   const appHtml = await renderToString(app, context);
 
-  console.log(context.modules);
-  const preloadLinks = renderPreloadLinks(context.modules, manifest);
+  console.log('appHtml', appHtml)
+
+  const appStore = `window.__app_store = '${JSON.stringify(store.state.value)}'`;
 
   const html = template
     .replace(`<!--preload-links-->`, preloadLinks)
+    .replace(`<!--app-store-->`, appStore)
     .replace(`<!--app-html-->`, appHtml);
 
   return html;

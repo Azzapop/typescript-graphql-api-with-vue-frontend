@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [tsconfigPaths(), vue()],
   optimizeDeps: { exclude: ['fsevents'] },
   build: {
+    target: 'esnext',
     manifest: false,
     minify: true,
     cssMinify: true,
