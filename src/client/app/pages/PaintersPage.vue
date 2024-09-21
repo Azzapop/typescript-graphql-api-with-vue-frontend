@@ -29,8 +29,8 @@ onMounted(async () => {
   }
 });
 </script>
-<template>
-  <div v-if="store.painters !== null" v-for="painter in store.painters">
+<template v-if="store.painters !== null">
+  <div v-for="painter in store.painters" v-bind:key="painter?.name">
     <p>{{ painter?.name }}</p>
   </div>
 </template>

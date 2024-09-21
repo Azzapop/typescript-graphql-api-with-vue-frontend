@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
-import ImportType from '../components/ImportType.vue';
 import Button from '../components/button';
 
 const state = reactive({
@@ -30,6 +29,4 @@ a {
     encrypted message:
     <p class="encrypted-msg"></p>
   </div>
-
-  <ImportType />
 </template>

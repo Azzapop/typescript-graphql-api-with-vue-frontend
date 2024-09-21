@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, Suspense } from 'vue';
+import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import About from './pages/About.vue';
+import AboutPage from './pages/AboutPage.vue';
 
 const count = ref(0);
 
@@ -12,14 +12,12 @@ const increment = () => {
 <template>
   Hello World!
   <button @click="increment">Count is: {{ count }}</button>
-  <about></about>
+  <about-page></about-page>
   <RouterLink to="/">Go To Home</RouterLink>
   <RouterLink to="/about">Go To About</RouterLink>
   <RouterLink to="/painters">Go To Painters</RouterLink>
   <RouterLink to="/everything">Go To Everything</RouterLink>
-  <Suspense>
-    <RouterView></RouterView>
-  </Suspense>
+  <RouterView></RouterView>
 </template>
 <style>
 @font-face {

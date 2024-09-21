@@ -1,25 +1,38 @@
+import type {
+  MutationCreatePainterArgs,
+  MutationCreatePaintingArgs,
+  Painter,
+  PainterInput,
+  Painting,
+  PaintingInput,
+} from '@services/graphql/types';
 import { painters, paintings } from './database';
 
 export const resolvers = {
   Query: {
-    painters: (): any => {
-      console.log({ painters });
+    painters: (): Painter[] => {
       return painters;
     },
-    paintings: (): any => paintings,
-    painter(_: any, { name }: any): any {
+    paintings: (): Painting[] => paintings,
+    painter(_: unknown, { name }: PainterInput): Painter | undefined {
       return painters.find((painter) => painter.name === name);
     },
-    painting(_: any, { title }: any): any {
+    painting(_: unknown, { title }: PaintingInput): Painting | undefined {
       return paintings.find((painting) => painting.title === title);
     },
   },
   Mutation: {
-    createPainter(_: any, { input: painter }: any): any {
+    createPainter(
+      _: unknown,
+      { input: painter }: MutationCreatePainterArgs
+    ): Painter {
       painters.push(painter);
       return painter;
     },
-    createPainting(_: any, { input: painting }: any): any {
+    createPainting(
+      _: unknown,
+      { input: painting }: MutationCreatePaintingArgs
+    ): Painting {
       paintings.push(painting);
       return painting;
     },

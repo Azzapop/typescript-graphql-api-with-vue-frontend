@@ -6,13 +6,13 @@ import { renderHtml } from './render';
 export const serverHandler = (opts: {
   vite?: ViteDevServer;
   template: string;
-  manifest?: Record<any, any>;
+  manifest?: Record<string, unknown>;
 }): RequestHandler => {
   const { vite, template: baseTemplate, manifest } = opts;
 
   const handler: RequestHandler = async (req, res) => {
     try {
-      const url = req.originalUrl;
+      const { originalUrl: url } = req;
 
       let template = baseTemplate;
       if (vite) {
@@ -26,13 +26,15 @@ export const serverHandler = (opts: {
 
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (e) {
+      // TODO this a little gross
       let msg: string | undefined = JSON.stringify(e);
 
       if (e instanceof Error) {
         if (vite) {
           vite.ssrFixStacktrace(e);
         }
-        msg = e.stack;
+        const { stack } = e;
+        msg = stack;
       }
 
       console.log(msg);

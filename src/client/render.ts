@@ -3,14 +3,17 @@ import { renderToString } from 'vue/server-renderer';
 import { createVueApp } from './create-vue-app';
 
 // TODO split out to individual files
-const renderPreloadLinks = (modules: any, manifest: any) => {
+const renderPreloadLinks = (
+  modules: string[] | undefined,
+  manifest: Record<string, string[]>
+) => {
   if (!modules) return '';
   let links = '';
   const seen = new Set();
-  modules.forEach((id: any) => {
-    const files = manifest[id];
+  modules.forEach((id) => {
+    const { [id]: files } = manifest;
     if (files) {
-      files.forEach((file: any) => {
+      files.forEach((file) => {
         if (!seen.has(file)) {
           seen.add(file);
           const filename = basename(file);
@@ -52,7 +55,7 @@ const renderPreloadLink = (file: string): string => {
 export const renderHtml = async (opts: {
   template: string;
   url: string;
-  manifest: any;
+  manifest: Record<string, string[]>;
 }) => {
   const { template, url, manifest } = opts;
 
@@ -66,13 +69,13 @@ export const renderHtml = async (opts: {
   // @vitejs/plugin-vue injects code into a component's setup() that registers
   // itself on context.modules. After the render, context.modules would contain all the
   // components that have been instantiated during this render call.
-  const context: { modules?: unknown } = {};
+  const context: { modules?: string[] } = {};
 
   const preloadLinks = renderPreloadLinks(context.modules, manifest);
 
   const appHtml = await renderToString(app, context);
 
-  console.log('appHtml', appHtml)
+  console.log('appHtml', appHtml);
 
   const appStore = `window.__app_store = '${JSON.stringify(store.state.value)}'`;
 

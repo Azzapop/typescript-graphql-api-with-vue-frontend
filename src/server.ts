@@ -33,7 +33,7 @@ const configureExpressServer = async (
     injectDevClientEntry(expressServer);
   }
 
-  // @ts-expect-error
+  // @ts-expect-error implicit any types
   // TODO move this out to a util function again
   // Error handler in case something goes wrong somewhere in our process
   expressServer.use((err, _req, res, _next) => {

@@ -5,9 +5,7 @@ import { json } from 'express';
 import type { Server as HttpServer } from 'http';
 import { createApolloServer } from './server';
 
-export const graphql = async (opts: {
-  httpServer?: HttpServer;
-}): Promise<any> => {
+export const graphql = async (opts: { httpServer?: HttpServer }) => {
   const apolloServer = createApolloServer(opts);
 
   await apolloServer.start();

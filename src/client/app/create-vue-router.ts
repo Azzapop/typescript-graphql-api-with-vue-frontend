@@ -4,16 +4,16 @@ import {
   createWebHistory,
   createMemoryHistory,
 } from 'vue-router';
-import About from './pages/About.vue';
-import Everything from './pages/Everything.vue';
-import Home from './pages/Home.vue';
-import Painters from './pages/Painters.vue';
+import AboutPage from './pages/AboutPage.vue';
+import EverythingPage from './pages/EverythingPage.vue';
+import HomePage from './pages/HomePage.vue';
+import PaintersPage from './pages/PaintersPage.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/about', component: About },
-  { path: '/painters', component: Painters },
-  { path: '/everything', component: Everything },
+  { path: '/', component: HomePage },
+  { path: '/about', component: AboutPage },
+  { path: '/painters', component: PaintersPage },
+  { path: '/everything', component: EverythingPage },
 ];
 
 export const createVueRouter = (opts: { isServer: boolean }): Router => {

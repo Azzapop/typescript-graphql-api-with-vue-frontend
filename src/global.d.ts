@@ -1,6 +1,6 @@
 export {};
 declare global {
   interface Window {
-    __app_store: string;
+    __app_store?: string;
   }
 }
