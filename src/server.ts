@@ -2,8 +2,8 @@ import type { Express } from 'express';
 import express from 'express';
 import type { Server as HttpServer } from 'http';
 import http from 'http';
-import { devEntry } from './client/server-entry-dev';
-import { productionEntry } from './client/server-entry-production';
+import { devEntry } from './client/server-entry';
+import { productionEntry } from './client/server-entry';
 import { graphql } from './graphql';
 
 const configureExpressServer = async (

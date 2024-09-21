@@ -3,10 +3,10 @@ import type { RequestHandler } from 'express';
 import type { ViteDevServer } from 'vite';
 import { renderHtml } from './render';
 
-export const serverHandler = (opts: {
+export const createServerHandler = (opts: {
   vite?: ViteDevServer;
   template: string;
-  manifest?: Record<string, unknown>;
+  manifest?: Record<string, string[]>;
 }): RequestHandler => {
   const { vite, template: baseTemplate, manifest } = opts;
 

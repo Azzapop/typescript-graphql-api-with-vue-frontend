@@ -1,13 +1,14 @@
 import { basename } from 'node:path';
 import { renderToString } from 'vue/server-renderer';
-import { createVueApp } from './create-vue-app';
+import { createVueApp } from '../app';
 
 // TODO split out to individual files
 const renderPreloadLinks = (
   modules: string[] | undefined,
-  manifest: Record<string, string[]>
+  manifest: Record<string, string[]> | undefined
 ) => {
   if (!modules) return '';
+  if (!manifest) return '';
   let links = '';
   const seen = new Set();
   modules.forEach((id) => {
@@ -61,7 +62,7 @@ const renderStore = (storeData: unknown): string => {
 export const renderHtml = async (opts: {
   template: string;
   url: string;
-  manifest: Record<string, string[]>;
+  manifest?: Record<string, string[]>;
 }) => {
   const { template, url, manifest } = opts;
 
