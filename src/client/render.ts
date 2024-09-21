@@ -52,6 +52,12 @@ const renderPreloadLink = (file: string): string => {
   }
 };
 
+const renderStore = (storeData: unknown): string => {
+  const dataString = JSON.stringify(storeData);
+
+  return `<script>window.__app_store = '${dataString}';</script>`;
+};
+
 export const renderHtml = async (opts: {
   template: string;
   url: string;
@@ -75,9 +81,8 @@ export const renderHtml = async (opts: {
 
   const appHtml = await renderToString(app, context);
 
-  console.log('appHtml', appHtml);
-
-  const appStore = `window.__app_store = '${JSON.stringify(store.state.value)}'`;
+  // This must come after we render the app html so that our store is primed
+  const appStore = renderStore(store.state.value);
 
   const html = template
     .replace(`<!--preload-links-->`, preloadLinks)

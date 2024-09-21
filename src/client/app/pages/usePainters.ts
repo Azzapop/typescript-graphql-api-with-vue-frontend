@@ -1,4 +1,4 @@
-import { gql } from '@libs/@apollo/client/core';
+import { gql } from '@apollo/client/core';
 import type { GetPaintersQuery } from '@services/graphql/types';
 import { useQuery } from '@vue/apollo-composable';
 

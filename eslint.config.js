@@ -1,6 +1,5 @@
 import pluginJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
-import jest from 'eslint-plugin-jest';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import vuePlugin from 'eslint-plugin-vue';
@@ -51,6 +50,5 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   eslintConfigPrettier,
-  jest.configs['flat/recommended'],
   ...vuePlugin.configs['flat/essential'],
 ];
