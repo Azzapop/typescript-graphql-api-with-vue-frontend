@@ -2,8 +2,8 @@ import type { Express } from 'express';
 import express from 'express';
 import type { Server as HttpServer } from 'http';
 import http from 'http';
-import { devEntry } from './client/server-entry';
-import { productionEntry } from './client/server-entry';
+import { devEntry as clientServerEntryDev } from './client/server-entry';
+import { productionEntry as clientServerEntryProduction } from './client/server-entry';
 import { graphql } from './graphql';
 
 const configureExpressServer = async (
@@ -26,11 +26,12 @@ const configureExpressServer = async (
    *  to use vite.ssrLoadModule for dev and inject it into the entry point
    */
   if (process.env.NODE_ENV === 'production') {
-    const { inject: injectProductionClientEntry } = productionEntry();
-    injectProductionClientEntry(expressServer);
+    const { inject: injectClientEntryProduction } =
+      clientServerEntryProduction();
+    injectClientEntryProduction(expressServer);
   } else {
-    const { inject: injectDevClientEntry } = await devEntry();
-    injectDevClientEntry(expressServer);
+    const { inject: injectClientEntryDev } = await clientServerEntryDev();
+    injectClientEntryDev(expressServer);
   }
 
   // @ts-expect-error implicit any types

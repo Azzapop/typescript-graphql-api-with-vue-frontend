@@ -1,4 +1,4 @@
-import { StateTree } from 'pinia';
+import type { StateTree } from 'pinia';
 
 export const renderStoreData = (
   storeData: Record<string, StateTree>

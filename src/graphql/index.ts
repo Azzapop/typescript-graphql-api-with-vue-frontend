@@ -10,13 +10,13 @@ export const graphql = async (opts: { httpServer?: HttpServer }) => {
 
   await apolloServer.start();
 
-  const graphqlServerMiddleware = expressMiddleware(apolloServer, {
+  const apolloServerMiddleware = expressMiddleware(apolloServer, {
     // TODO setup the context in a better way
     context: async ({ req }) => ({ token: req.headers.token }),
   });
 
   const inject = (expressServer: Express): void => {
-    expressServer.use('/graphql', cors(), json(), graphqlServerMiddleware);
+    expressServer.use('/graphql', cors(), json(), apolloServerMiddleware);
   };
 
   return { inject };

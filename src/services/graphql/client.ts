@@ -3,37 +3,48 @@ import {
   InMemoryCache,
   ApolloClientOptions,
   NormalizedCacheObject,
+  ApolloLink,
 } from '@apollo/client/core';
+import { HttpLink } from '@apollo/client/core';
 import { SchemaLink } from '@apollo/client/link/schema';
-import { createSchema } from '../../graphql/createSchema';
+import { GraphQLSchema } from 'graphql';
 
-type Config = ApolloClientOptions<NormalizedCacheObject>;
+const createLink = (opts: {
+  isServer: boolean;
+  schema?: GraphQLSchema;
+}): ApolloLink => {
+  const { isServer, schema } = opts;
 
-const clientConfig = (): Config => {
-  return {
-    cache: new InMemoryCache(),
-    uri: '/graphql',
-  };
+  if (isServer) {
+    if (!schema)
+      throw new Error(
+        'Missing grqphql schema on server apollo client creation.'
+      );
+    return new SchemaLink({ schema });
+  }
+
+  return new HttpLink({ uri: '/graphql' });
 };
 
-// TODO dynamic import schema function so that we're not importing the entire server for the client
-const serverConfig = (): Config => {
-  return {
-    ssrMode: true,
-    cache: new InMemoryCache(),
-    link: new SchemaLink({ schema: createSchema() }),
-  };
-};
-
-const apolloClientConfig = (opts: { isServer: boolean }): Config => {
+const createConfig = (opts: {
+  isServer: boolean;
+  schema?: GraphQLSchema;
+}): ApolloClientOptions<NormalizedCacheObject> => {
   const { isServer } = opts;
 
-  return isServer ? serverConfig() : clientConfig();
+  return {
+    ssrMode: isServer,
+    cache: new InMemoryCache(),
+    link: createLink(opts),
+  };
 };
 
 // TODO don't want to recreate this on the server every time
+// If considering refactoring please note that 'schema' is passed in here to ensure that we do
+// not include the entire schema (including resolvers) in the client build
 export const createApolloClient = (opts: {
   isServer: boolean;
+  schema?: GraphQLSchema;
 }): ApolloClient<NormalizedCacheObject> => {
-  return new ApolloClient(apolloClientConfig(opts));
+  return new ApolloClient(createConfig(opts));
 };

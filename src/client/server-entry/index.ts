@@ -1,2 +1,2 @@
-export { devEntry } from './server-entry-dev'
-export { productionEntry } from './server-entry-production'
+export { devEntry } from './server-entry-dev';
+export { productionEntry } from './server-entry-production';

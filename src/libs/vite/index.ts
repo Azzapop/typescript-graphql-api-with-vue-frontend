@@ -1,8 +1,6 @@
 import type { ViteDevServer } from 'vite';
 import { createServer } from 'vite';
 
-// Anything commented out is needed for the prod build
-
 export const createViteServer = async (
   opts: {
     root?: string;

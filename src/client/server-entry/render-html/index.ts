@@ -1,7 +1,25 @@
+import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
+import { createApolloClient } from '@services/graphql/client';
 import { renderToString } from 'vue/server-renderer';
+import { createSchema } from '../../../graphql/createSchema';
 import { createVueApp } from '../../app';
 import { renderPreloadLinks } from './render-preload-links';
 import { renderStoreData } from './render-store-data';
+
+const useApolloClient = (() => {
+  let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
+  const schema = createSchema();
+
+  return (): ApolloClient<NormalizedCacheObject> => {
+    if (!apolloClient) {
+      apolloClient = createApolloClient({
+        isServer: true,
+        schema,
+      });
+    }
+    return apolloClient;
+  };
+})();
 
 export const renderHtml = async (opts: {
   template: string;
@@ -10,10 +28,12 @@ export const renderHtml = async (opts: {
 }) => {
   const { template, url, manifest } = opts;
 
-  const { app, router, store } = createVueApp({ isServer: true });
+  const { app, router, store } = createVueApp(
+    { isServer: true },
+    { apolloClient: useApolloClient() }
+  );
 
   await router.push(url);
-
   await router.isReady();
 
   // Create and pass a SSR context object which will be available via useSSRContext()

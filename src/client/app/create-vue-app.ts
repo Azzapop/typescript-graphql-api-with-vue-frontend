@@ -1,3 +1,4 @@
+import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { createApolloClient } from '@services/graphql/client';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createPinia } from 'pinia';
@@ -5,8 +6,11 @@ import { createSSRApp, h, provide } from 'vue';
 import App from './App.vue';
 import { createVueRouter } from './create-vue-router';
 
-export function createVueApp(opts: { isServer: boolean }) {
-  const apolloClient = createApolloClient(opts);
+export function createVueApp(
+  opts: { isServer: boolean },
+  deps: { apolloClient?: ApolloClient<NormalizedCacheObject> } = {}
+) {
+  const { apolloClient = createApolloClient(opts) } = deps;
 
   const app = createSSRApp({
     setup: () => {
