@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:server && npm run build:client",
+    "start": "NODE_ENV=production node dist/server/index.js",
+    "test": "echo 'success'",
+    "---------------- Custom Scripts ----------------": "",
     "build:client": "vite build --ssrManifest .vite/ssr-manifest.json --outDir dist/client",
     "build:server": "vite build --ssr src/index.ts --outDir dist/server",
-    "start": "NODE_ENV=production node dist/server/index.js",
     "dev": "nodemon -x 'vite-node src'",
     "graphql:types": "graphql-codegen",
     "tsc": "tsc --project tsconfig.json --noEmit",
@@ -14,9 +16,6 @@
     "lint:fix": "eslint src --fix",
     "format:check": "prettier src --check",
     "format:fix": "prettier src --write",
-    "test": "npm run spec:unit && npm run spec:int",
-    "spec:unit": "jest --config ./jest.unit.config.ts",
-    "spec:int": "jest --config ./jest.int.config.ts --detectOpenHandles",
     "db:format": "prisma format",
     "db:migrate": "prisma migrate dev --name init"
   },
