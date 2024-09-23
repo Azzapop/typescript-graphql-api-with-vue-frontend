@@ -5,11 +5,11 @@
   "scripts": {
     "build": "npm run build:server && npm run build:client",
     "start": "NODE_ENV=production node dist/server/index.js",
+    "dev": "nodemon -x 'vite-node src'",
     "test": "echo 'success'",
-    "---------------- Custom Scripts ----------------": "",
+    "---------------- Helper Scripts ----------------": "",
     "build:client": "vite build --ssrManifest .vite/ssr-manifest.json --outDir dist/client",
     "build:server": "vite build --ssr src/index.ts --outDir dist/server",
-    "dev": "nodemon -x 'vite-node src'",
     "graphql:types": "graphql-codegen",
     "tsc": "tsc --project tsconfig.json --noEmit",
     "lint": "eslint src",
