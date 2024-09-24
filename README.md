@@ -16,3 +16,4 @@ only one export
 ### TODO
 
 Maybe type-ify the express injectors?
+REplace multi-line comments with /**/

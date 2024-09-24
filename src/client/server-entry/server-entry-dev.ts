@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'path';
 import { createServerHandler } from './create-server-handler';
 
-export const devEntry = async () => {
+export const serverEntryDev = async () => {
   const vite = await createViteServer();
 
   const resolvedPath = resolve(import.meta.dirname, '../../../index.html');

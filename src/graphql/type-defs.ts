@@ -31,8 +31,8 @@ export const typeDefs = `
   }
 
   type Query {
-    painters: [Painter]! # get all painters
-    paintings: [Painting]! # get all paintings
+    painters: [Painter!]! # get all painters
+    paintings: [Painting!]! # get all paintings
     painter(name: String): Painter # get a painter by name
     painting(title: String): Painting # get a painting by title
   }

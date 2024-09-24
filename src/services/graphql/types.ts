@@ -72,9 +72,9 @@ export type PaintingInput = {
 export type Query = {
   __typename?: 'Query';
   painter: Maybe<Painter>;
-  painters: Array<Maybe<Painter>>;
+  painters: Array<Painter>;
   painting: Maybe<Painting>;
-  paintings: Array<Maybe<Painting>>;
+  paintings: Array<Painting>;
 };
 
 export type QueryPainterArgs = {
@@ -89,9 +89,5 @@ export type GetPaintersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetPaintersQuery = {
   __typename?: 'Query';
-  painters: Array<{
-    __typename?: 'Painter';
-    name: string;
-    country: string;
-  } | null>;
+  painters: Array<{ __typename?: 'Painter'; name: string; country: string }>;
 };

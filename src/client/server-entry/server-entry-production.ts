@@ -8,7 +8,7 @@ import { createServerHandler } from './create-server-handler';
 
 const resolve = (p: string) => pathResolve(import.meta.dirname, p);
 
-export const productionEntry = () => {
+export const serverEntryProduction = () => {
   const manifest = JSON.parse(
     readFileSync(resolve('../client/.vite/ssr-manifest.json'), 'utf-8')
   );
