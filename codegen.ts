@@ -12,7 +12,7 @@ const config: CodegenConfig = {
   },
   generates: {
     'src/services/graphql/types.ts': {
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: ['typescript', 'typescript-operations', 'typescript-resolvers'],
     },
   },
 };
