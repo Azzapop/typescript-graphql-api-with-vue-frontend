@@ -32,67 +32,72 @@ export type Scalars = {
   Float: { input: number; output: number };
 };
 
-export type Mutation = {
+export type GqlMutation = {
   __typename?: 'Mutation';
-  createPainter: Painter;
-  createPainting: Painting;
+  createPainter: GqlPainter;
+  createPainting: GqlPainting;
 };
 
-export type MutationCreatePainterArgs = {
-  input: PainterInput;
+export type GqlMutationCreatePainterArgs = {
+  input: GqlPainterInput;
 };
 
-export type MutationCreatePaintingArgs = {
-  input: PaintingInput;
+export type GqlMutationCreatePaintingArgs = {
+  input: GqlPaintingInput;
 };
 
-export type Painter = {
+export type GqlPainter = {
   __typename?: 'Painter';
   country: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  techniques: Array<Maybe<Scalars['String']['output']>>;
+  techniques: Array<GqlTechnique>;
 };
 
-export type PainterInput = {
+export type GqlPainterInput = {
   country: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  techniques: Array<InputMaybe<Scalars['String']['input']>>;
+  techniques: Array<Scalars['String']['input']>;
 };
 
-export type Painting = {
+export type GqlPainting = {
   __typename?: 'Painting';
   author: Scalars['String']['output'];
   date: Scalars['String']['output'];
-  technique: Scalars['String']['output'];
+  technique: GqlTechnique;
   title: Scalars['String']['output'];
 };
 
-export type PaintingInput = {
+export type GqlPaintingInput = {
   author: Scalars['String']['input'];
   date: Scalars['String']['input'];
   technique: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
-export type Query = {
+export type GqlQuery = {
   __typename?: 'Query';
-  painter: Maybe<Painter>;
-  painters: Array<Painter>;
-  painting: Maybe<Painting>;
-  paintings: Array<Painting>;
+  painter: Maybe<GqlPainter>;
+  painters: Array<GqlPainter>;
+  painting: Maybe<GqlPainting>;
+  paintings: Array<GqlPainting>;
 };
 
-export type QueryPainterArgs = {
-  name: InputMaybe<Scalars['String']['input']>;
+export type GqlQueryPainterArgs = {
+  id: Scalars['String']['input'];
 };
 
-export type QueryPaintingArgs = {
-  title: InputMaybe<Scalars['String']['input']>;
+export type GqlQueryPaintingArgs = {
+  id: Scalars['String']['input'];
 };
 
-export type GetPaintersQueryVariables = Exact<{ [key: string]: never }>;
+export type GqlTechnique = {
+  __typename?: 'Technique';
+  name: Scalars['String']['output'];
+};
 
-export type GetPaintersQuery = {
+export type GqlGetPaintersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GqlGetPaintersQuery = {
   __typename?: 'Query';
   painters: Array<{ __typename?: 'Painter'; name: string; country: string }>;
 };
@@ -203,103 +208,119 @@ export type DirectiveResolverFn<
 ) => TResult | Promise<TResult>;
 
 /** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
+export type GqlResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Painter: ResolverTypeWrapper<Painter>;
-  PainterInput: PainterInput;
-  Painting: ResolverTypeWrapper<Painting>;
-  PaintingInput: PaintingInput;
+  Painter: ResolverTypeWrapper<Pick<GqlPainter, 'name' | 'country'>>;
+  PainterInput: GqlPainterInput;
+  Painting: ResolverTypeWrapper<GqlPainting>;
+  PaintingInput: GqlPaintingInput;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Technique: ResolverTypeWrapper<GqlTechnique>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
+export type GqlResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Mutation: {};
-  Painter: Painter;
-  PainterInput: PainterInput;
-  Painting: Painting;
-  PaintingInput: PaintingInput;
+  Painter: Pick<GqlPainter, 'name' | 'country'>;
+  PainterInput: GqlPainterInput;
+  Painting: GqlPainting;
+  PaintingInput: GqlPaintingInput;
   Query: {};
   String: Scalars['String']['output'];
+  Technique: GqlTechnique;
 };
 
-export type MutationResolvers<
+export type GqlMutationResolvers<
   ContextType = any,
   ParentType extends
-    ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
+    GqlResolversParentTypes['Mutation'] = GqlResolversParentTypes['Mutation'],
 > = {
   createPainter: Resolver<
-    ResolversTypes['Painter'],
+    GqlResolversTypes['Painter'],
     ParentType,
     ContextType,
-    RequireFields<MutationCreatePainterArgs, 'input'>
+    RequireFields<GqlMutationCreatePainterArgs, 'input'>
   >;
   createPainting: Resolver<
-    ResolversTypes['Painting'],
+    GqlResolversTypes['Painting'],
     ParentType,
     ContextType,
-    RequireFields<MutationCreatePaintingArgs, 'input'>
+    RequireFields<GqlMutationCreatePaintingArgs, 'input'>
   >;
 };
 
-export type PainterResolvers<
+export type GqlPainterResolvers<
   ContextType = any,
   ParentType extends
-    ResolversParentTypes['Painter'] = ResolversParentTypes['Painter'],
+    GqlResolversParentTypes['Painter'] = GqlResolversParentTypes['Painter'],
 > = {
-  country: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  country: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  name: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   techniques: Resolver<
-    Array<Maybe<ResolversTypes['String']>>,
+    Array<GqlResolversTypes['Technique']>,
     ParentType,
     ContextType
   >;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type PaintingResolvers<
+export type GqlPaintingResolvers<
   ContextType = any,
   ParentType extends
-    ResolversParentTypes['Painting'] = ResolversParentTypes['Painting'],
+    GqlResolversParentTypes['Painting'] = GqlResolversParentTypes['Painting'],
 > = {
-  author: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  date: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  technique: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  title: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  author: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  date: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  technique: Resolver<GqlResolversTypes['Technique'], ParentType, ContextType>;
+  title: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type QueryResolvers<
+export type GqlQueryResolvers<
   ContextType = any,
   ParentType extends
-    ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
+    GqlResolversParentTypes['Query'] = GqlResolversParentTypes['Query'],
 > = {
   painter: Resolver<
-    Maybe<ResolversTypes['Painter']>,
+    Maybe<GqlResolversTypes['Painter']>,
     ParentType,
     ContextType,
-    QueryPainterArgs
+    RequireFields<GqlQueryPainterArgs, 'id'>
   >;
-  painters: Resolver<Array<ResolversTypes['Painter']>, ParentType, ContextType>;
+  painters: Resolver<
+    Array<GqlResolversTypes['Painter']>,
+    ParentType,
+    ContextType
+  >;
   painting: Resolver<
-    Maybe<ResolversTypes['Painting']>,
+    Maybe<GqlResolversTypes['Painting']>,
     ParentType,
     ContextType,
-    QueryPaintingArgs
+    RequireFields<GqlQueryPaintingArgs, 'id'>
   >;
   paintings: Resolver<
-    Array<ResolversTypes['Painting']>,
+    Array<GqlResolversTypes['Painting']>,
     ParentType,
     ContextType
   >;
 };
 
-export type Resolvers<ContextType = any> = {
-  Mutation: MutationResolvers<ContextType>;
-  Painter: PainterResolvers<ContextType>;
-  Painting: PaintingResolvers<ContextType>;
-  Query: QueryResolvers<ContextType>;
+export type GqlTechniqueResolvers<
+  ContextType = any,
+  ParentType extends
+    GqlResolversParentTypes['Technique'] = GqlResolversParentTypes['Technique'],
+> = {
+  name: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GqlResolvers<ContextType = any> = {
+  Mutation: GqlMutationResolvers<ContextType>;
+  Painter: GqlPainterResolvers<ContextType>;
+  Painting: GqlPaintingResolvers<ContextType>;
+  Query: GqlQueryResolvers<ContextType>;
+  Technique: GqlTechniqueResolvers<ContextType>;
 };

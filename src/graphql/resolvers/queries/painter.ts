@@ -1,11 +1,27 @@
-import { QueryResolvers } from '@services/graphql/types';
-import { painters as dbPainters } from '../../database';
+import { logger } from '@libs/logger';
+import { prisma } from '@services/domain-model/prisma';
+import { GqlQueryResolvers, GqlResolversTypes } from '@services/graphql/types';
+import { PainterSchema } from '../../../prisma/generated/zod';
 
-export const painter: QueryResolvers['painter'] = (
+const PrismaToGql = PainterSchema.transform(
+  ({ name, country }): GqlResolversTypes['Painter'] => {
+    return { name, country };
+  }
+);
+
+export const painter: GqlQueryResolvers['painter'] = async (
   _parent,
-  { name },
+  { id },
   _context
 ) => {
-  const dbPainter = dbPainters.find((_dbPainter) => _dbPainter.name === name);
-  return dbPainter || null;
+  const dbPainter = await prisma.painter.findUnique({ where: { id } });
+  const result = PrismaToGql.safeParse(dbPainter);
+
+  if (result.success) {
+    return result.data;
+  } else {
+    logger.info('Failed to parse painter with id: ${id}');
+    logger.error({ error: result.error });
+    return null;
+  }
 };

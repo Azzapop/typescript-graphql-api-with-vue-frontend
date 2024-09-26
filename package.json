@@ -16,8 +16,8 @@
     "lint:fix": "eslint src --fix",
     "format:check": "prettier src --check",
     "format:fix": "prettier src --write",
-    "db:format": "prisma format",
-    "db:migrate": "prisma migrate dev --name init"
+    "db:format": "prisma format --schema=./src/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./src/prisma/schema.prisma"
   },
   "private": true,
   "keywords": [],
@@ -38,7 +38,9 @@
     "pinia": "^2.2.2",
     "serve-static": "^1.15.0",
     "vue": "^3.4.35",
-    "vue-router": "^4.4.0"
+    "vue-router": "^4.4.0",
+    "zod": "^3.23.8",
+    "zod-prisma-types": "^3.1.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.5.0",

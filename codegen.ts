@@ -13,6 +13,12 @@ const config: CodegenConfig = {
   generates: {
     'src/services/graphql/types.ts': {
       plugins: ['typescript', 'typescript-operations', 'typescript-resolvers'],
+      config: {
+        typesPrefix: 'Gql',
+        mappers: {
+          Painter: 'Pick<GqlPainter, "name" | "country">',
+        },
+      },
     },
   },
 };

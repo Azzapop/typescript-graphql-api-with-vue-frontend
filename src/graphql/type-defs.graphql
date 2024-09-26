@@ -1,20 +1,24 @@
 type Painter {
   name: String!
   country: String!
-  techniques: [String]!
+  techniques: [Technique!]!
 }
 
 type Painting {
   author: String!
   title: String!
-  technique: String!
+  technique: Technique!
   date: String!
+}
+
+type Technique {
+  name: String!
 }
 
 input PainterInput {
   name: String!
   country: String!
-  techniques: [String]!
+  techniques: [String!]!
 }
 
 input PaintingInput {
@@ -32,6 +36,6 @@ type Mutation {
 type Query {
   painters: [Painter!]! # get all painters
   paintings: [Painting!]! # get all paintings
-  painter(name: String): Painter # get a painter by name
-  painting(title: String): Painting # get a painting by title
+  painter(id: String!): Painter # get a painter by id
+  painting(id: String!): Painting # get a painting by id
 }
