@@ -34,8 +34,8 @@ export type Scalars = {
 
 export type GqlMutation = {
   __typename?: 'Mutation';
-  createPainter: GqlPainter;
-  createPainting: GqlPainting;
+  createPainter: Maybe<GqlPainter>;
+  createPainting: Maybe<GqlPainting>;
 };
 
 export type GqlMutationCreatePainterArgs = {
@@ -49,6 +49,7 @@ export type GqlMutationCreatePaintingArgs = {
 export type GqlPainter = {
   __typename?: 'Painter';
   country: Scalars['String']['output'];
+  id: Scalars['String']['output'];
   name: Scalars['String']['output'];
   techniques: Array<GqlTechnique>;
 };
@@ -61,16 +62,19 @@ export type GqlPainterInput = {
 
 export type GqlPainting = {
   __typename?: 'Painting';
-  author: Scalars['String']['output'];
   date: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  painter: GqlPainter;
+  painterId: Scalars['String']['output'];
   technique: GqlTechnique;
+  techniqueId: Scalars['String']['output'];
   title: Scalars['String']['output'];
 };
 
 export type GqlPaintingInput = {
-  author: Scalars['String']['input'];
   date: Scalars['String']['input'];
-  technique: Scalars['String']['input'];
+  painterId: Scalars['String']['input'];
+  techniqueId: Scalars['String']['input'];
   title: Scalars['String']['input'];
 };
 
@@ -92,6 +96,7 @@ export type GqlQueryPaintingArgs = {
 
 export type GqlTechnique = {
   __typename?: 'Technique';
+  id: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };
 
@@ -211,9 +216,9 @@ export type DirectiveResolverFn<
 export type GqlResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Painter: ResolverTypeWrapper<Pick<GqlPainter, 'name' | 'country'>>;
+  Painter: ResolverTypeWrapper<Omit<GqlPainter, 'techniques'>>;
   PainterInput: GqlPainterInput;
-  Painting: ResolverTypeWrapper<GqlPainting>;
+  Painting: ResolverTypeWrapper<Omit<GqlPainting, 'painter' | 'technique'>>;
   PaintingInput: GqlPaintingInput;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -224,9 +229,9 @@ export type GqlResolversTypes = {
 export type GqlResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Mutation: {};
-  Painter: Pick<GqlPainter, 'name' | 'country'>;
+  Painter: Omit<GqlPainter, 'techniques'>;
   PainterInput: GqlPainterInput;
-  Painting: GqlPainting;
+  Painting: Omit<GqlPainting, 'painter' | 'technique'>;
   PaintingInput: GqlPaintingInput;
   Query: {};
   String: Scalars['String']['output'];
@@ -239,13 +244,13 @@ export type GqlMutationResolvers<
     GqlResolversParentTypes['Mutation'] = GqlResolversParentTypes['Mutation'],
 > = {
   createPainter: Resolver<
-    GqlResolversTypes['Painter'],
+    Maybe<GqlResolversTypes['Painter']>,
     ParentType,
     ContextType,
     RequireFields<GqlMutationCreatePainterArgs, 'input'>
   >;
   createPainting: Resolver<
-    GqlResolversTypes['Painting'],
+    Maybe<GqlResolversTypes['Painting']>,
     ParentType,
     ContextType,
     RequireFields<GqlMutationCreatePaintingArgs, 'input'>
@@ -258,6 +263,7 @@ export type GqlPainterResolvers<
     GqlResolversParentTypes['Painter'] = GqlResolversParentTypes['Painter'],
 > = {
   country: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   name: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   techniques: Resolver<
     Array<GqlResolversTypes['Technique']>,
@@ -272,9 +278,12 @@ export type GqlPaintingResolvers<
   ParentType extends
     GqlResolversParentTypes['Painting'] = GqlResolversParentTypes['Painting'],
 > = {
-  author: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   date: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  id: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
+  painter: Resolver<GqlResolversTypes['Painter'], ParentType, ContextType>;
+  painterId: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   technique: Resolver<GqlResolversTypes['Technique'], ParentType, ContextType>;
+  techniqueId: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   title: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -313,6 +322,7 @@ export type GqlTechniqueResolvers<
   ParentType extends
     GqlResolversParentTypes['Technique'] = GqlResolversParentTypes['Technique'],
 > = {
+  id: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   name: Resolver<GqlResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

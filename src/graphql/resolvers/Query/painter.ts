@@ -1,11 +1,14 @@
 import { logger } from '@libs/logger';
 import { prisma } from '@services/domain-model/prisma';
-import { GqlQueryResolvers, GqlResolversTypes } from '@services/graphql/types';
+import type {
+  GqlQueryResolvers,
+  GqlResolversTypes,
+} from '@services/graphql/types';
 import { PainterSchema } from '../../../prisma/generated/zod';
 
 const PrismaToGql = PainterSchema.transform(
-  ({ name, country }): GqlResolversTypes['Painter'] => {
-    return { name, country };
+  ({ id, name, country }): GqlResolversTypes['Painter'] => {
+    return { id, name, country };
   }
 );
 
@@ -20,6 +23,7 @@ export const painter: GqlQueryResolvers['painter'] = async (
   if (result.success) {
     return result.data;
   } else {
+    // TODO throw an error here instead?
     logger.info('Failed to parse painter with id: ${id}');
     logger.error({ error: result.error });
     return null;

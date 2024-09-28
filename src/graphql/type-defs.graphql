@@ -1,17 +1,22 @@
 type Painter {
+  id: String!
   name: String!
   country: String!
   techniques: [Technique!]!
 }
 
 type Painting {
-  author: String!
+  id: String!
+  painterId: String!
+  painter: Painter!
   title: String!
+  techniqueId: String!
   technique: Technique!
   date: String!
 }
 
 type Technique {
+  id: String!
   name: String!
 }
 
@@ -22,15 +27,15 @@ input PainterInput {
 }
 
 input PaintingInput {
-  author: String!
+  painterId: String!
   title: String!
-  technique: String!
+  techniqueId: String!
   date: String!
 }
 
 type Mutation {
-  createPainter(input: PainterInput!): Painter!
-  createPainting(input: PaintingInput!): Painting!
+  createPainter(input: PainterInput!): Painter
+  createPainting(input: PaintingInput!): Painting
 }
 
 type Query {

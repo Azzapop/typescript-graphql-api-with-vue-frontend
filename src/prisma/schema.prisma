@@ -11,7 +11,7 @@ generator client {
 }
 
 generator zod {
-  provider       = "zod-prisma-types"
+  provider = "zod-prisma-types"
 }
 
 datasource db {
@@ -31,8 +31,8 @@ model Painter {
 
 model Painting {
   id          String    @id @default(cuid())
-  authorId    String
-  author      Painter   @relation(fields: [authorId], references: [id])
+  painterId   String
+  painter     Painter   @relation(fields: [painterId], references: [id])
   title       String
   techniqueId String
   technique   Technique @relation(fields: [techniqueId], references: [id])

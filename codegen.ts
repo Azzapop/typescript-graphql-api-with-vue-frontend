@@ -16,7 +16,8 @@ const config: CodegenConfig = {
       config: {
         typesPrefix: 'Gql',
         mappers: {
-          Painter: 'Pick<GqlPainter, "name" | "country">',
+          Painter: 'Omit<GqlPainter, "techniques">',
+          Painting: 'Omit<GqlPainting, "painter" | "technique">',
         },
       },
     },
