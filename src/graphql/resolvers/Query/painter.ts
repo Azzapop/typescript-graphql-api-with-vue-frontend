@@ -6,12 +6,6 @@ import type {
 } from '@services/graphql/types';
 import { PainterSchema } from '../../../prisma/generated/zod';
 
-const PrismaToGql = PainterSchema.transform(
-  ({ id, name, country }): GqlResolversTypes['Painter'] => {
-    return { id, name, country };
-  }
-);
-
 export const painter: GqlQueryResolvers['painter'] = async (
   _parent,
   { id },
