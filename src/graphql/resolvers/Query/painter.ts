@@ -1,10 +1,6 @@
-import { logger } from '@libs/logger';
 import { prisma } from '@services/domain-model/prisma';
-import type {
-  GqlQueryResolvers,
-  GqlResolversTypes,
-} from '@services/graphql/types';
-import { PainterSchema } from '../../../prisma/generated/zod';
+import type { GqlQueryResolvers } from '@services/graphql/types';
+import { transformPainter } from '../../transformers/models/transformPainter';
 
 export const painter: GqlQueryResolvers['painter'] = async (
   _parent,
@@ -12,14 +8,5 @@ export const painter: GqlQueryResolvers['painter'] = async (
   _context
 ) => {
   const dbPainter = await prisma.painter.findUnique({ where: { id } });
-  const result = PrismaToGql.safeParse(dbPainter);
-
-  if (result.success) {
-    return result.data;
-  } else {
-    // TODO throw an error here instead?
-    logger.info('Failed to parse painter with id: ${id}');
-    logger.error({ error: result.error });
-    return null;
-  }
+  return transformPainter(dbPainter);
 };

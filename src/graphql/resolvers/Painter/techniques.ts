@@ -1,14 +1,6 @@
-import { logger } from '@libs/logger';
 import { prisma } from '@services/domain-model/prisma';
-import type {
-  GqlPainterResolvers,
-  GqlTechnique,
-} from '@services/graphql/types';
-import { TechniqueSchema } from '../../../prisma/generated/zod';
-
-const PrismaToGql = TechniqueSchema.transform(
-  ({ id, name }): GqlTechnique => ({ id, name })
-);
+import type { GqlPainterResolvers } from '@services/graphql/types';
+import { transformTechnique } from '../../transformers/models/transformTechnique';
 
 export const techniques: GqlPainterResolvers['techniques'] = async (
   { id },
@@ -20,16 +12,7 @@ export const techniques: GqlPainterResolvers['techniques'] = async (
     include: { technique: true },
   });
   const parsedTechniques = dbPainterTechniques.map(
-    ({ technique: dbTechnique }) => PrismaToGql.safeParse(dbTechnique)
+    ({ technique: dbTechnique }) => transformTechnique(dbTechnique)
   );
-  const parsedTechniqueResults = parsedTechniques.map((result) => {
-    if (result.success) {
-      return result.data;
-    } else {
-      logger.info('Failed to parse technique.');
-      logger.error({ error: result.error });
-      return null;
-    }
-  });
-  return parsedTechniqueResults.filter((result) => result !== null);
+  return parsedTechniques.filter((result) => result !== null);
 };

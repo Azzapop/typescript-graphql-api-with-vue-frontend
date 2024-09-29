@@ -1,6 +1,7 @@
 import { logger } from '@libs/logger';
-import { GqlResolversTypes } from '@services/graphql/types';
-import { Painter, PainterSchema } from '../../../prisma/generated/zod';
+import type { GqlResolversTypes } from '@services/graphql/types';
+import type { Painter } from '../../../prisma/generated/zod';
+import { PainterSchema } from '../../../prisma/generated/zod';
 
 const PrismaToGql = PainterSchema.transform(
   ({ id, name, country }): GqlResolversTypes['Painter'] => ({
@@ -11,7 +12,7 @@ const PrismaToGql = PainterSchema.transform(
 );
 
 export const transformPainter = (
-  painter: Painter
+  painter: Painter | null
 ): GqlResolversTypes['Painter'] | null => {
   const result = PrismaToGql.safeParse(painter);
 

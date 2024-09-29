@@ -1,19 +1,9 @@
 import { logger } from '@libs/logger';
 import { prisma } from '@services/domain-model/prisma';
-import type {
-  GqlPaintingResolvers,
-  GqlResolversTypes,
-} from '@services/graphql/types';
-import { TechniqueSchema } from '../../../prisma/generated/zod';
+import type { GqlPaintingResolvers } from '@services/graphql/types';
+import { transformTechnique } from '../../transformers/models/transformTechnique';
 
-const PrismaToGql = TechniqueSchema.transform(
-  ({ id, name }): GqlResolversTypes['Technique'] => ({
-    id,
-    name,
-  })
-);
-
-// TODO hide authorId in the schema?
+// TODO hide techniqueId in the schema?
 export const technique: GqlPaintingResolvers['technique'] = async (
   { techniqueId },
   _args,
@@ -22,11 +12,12 @@ export const technique: GqlPaintingResolvers['technique'] = async (
   const dbTechnique = await prisma.technique.findFirst({
     where: { id: techniqueId },
   });
-  const result = PrismaToGql.safeParse(dbTechnique);
-  if (result.success) {
-    return result.data;
-  } else {
+
+  const result = transformTechnique(dbTechnique);
+  if (result === null) {
     logger.error('Failed to find technique for painting.');
     throw new Error('MISSING_technique_ERROR');
   }
+
+  return result;
 };

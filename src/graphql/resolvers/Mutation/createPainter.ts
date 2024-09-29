@@ -1,16 +1,6 @@
-import { logger } from '@libs/logger';
 import { prisma } from '@services/domain-model/prisma';
-import type {
-  GqlMutationResolvers,
-  GqlResolversTypes,
-} from '@services/graphql/types';
-import { PainterSchema } from '../../../prisma/generated/zod';
-
-const PrismaToGql = PainterSchema.transform(
-  ({ id, name, country }): GqlResolversTypes['Painter'] => {
-    return { id, name, country };
-  }
-);
+import type { GqlMutationResolvers } from '@services/graphql/types';
+import { transformPainter } from '../../transformers/models/transformPainter';
 
 export const createPainter: GqlMutationResolvers['createPainter'] = async (
   _parent,
@@ -22,12 +12,5 @@ export const createPainter: GqlMutationResolvers['createPainter'] = async (
       ...painter,
     },
   });
-  const result = PrismaToGql.safeParse(dbPainter);
-  if (result.success) {
-    return result.data;
-  } else {
-    // TODO throw an error here instead?
-    logger.error('Failed to parse painter.');
-    return null;
-  }
+  return transformPainter(dbPainter);
 };
