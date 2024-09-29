@@ -21,6 +21,12 @@ const config: CodegenConfig = {
         },
       },
     },
+    'src/services/graphql/validations.ts': {
+      plugins: ['typescript', 'typescript-validation-schema'],
+      config: {
+        schema: 'zod',
+      },
+    },
   },
 };
 
