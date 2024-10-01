@@ -1,13 +1,14 @@
-import {
-  ApolloClient,
-  InMemoryCache,
+import type {
   ApolloClientOptions,
   NormalizedCacheObject,
-  ApolloLink,
+  ApolloLink} from '@apollo/client/core';
+import {
+  ApolloClient,
+  InMemoryCache
 } from '@apollo/client/core';
 import { HttpLink } from '@apollo/client/core';
 import { SchemaLink } from '@apollo/client/link/schema';
-import { GraphQLSchema } from 'graphql';
+import type { GraphQLSchema } from 'graphql';
 
 const createLink = (opts: {
   isServer: boolean;

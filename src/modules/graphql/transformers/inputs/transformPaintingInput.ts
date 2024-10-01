@@ -1,7 +1,7 @@
 import { logger } from '@libs/logger';
-import { GqlPaintingInput } from '@modules/graphql/types.generated';
+import type { GqlPaintingInput } from '@modules/graphql/types.generated';
 import { PaintingInputSchema } from '@modules/graphql/validations.generated';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 const GqlToPrisma = PaintingInputSchema().transform(
   ({ title, painterId, techniqueId, date }): Prisma.PaintingCreateInput => {

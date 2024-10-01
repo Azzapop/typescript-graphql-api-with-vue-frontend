@@ -4,9 +4,9 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   schema: './src/modules/graphql/type-defs.graphql',
-  documents: './src/modules/client/**/*.ts',
+  documents: './src/modules/client/**/!(*.generated).ts',
   hooks: {
-    // afterAllFileWrite: ['prettier --write', 'eslint --fix'],
+    afterAllFileWrite: ['prettier --write', 'eslint --fix'],
   },
   config: {
     avoidOptionals: true,
@@ -14,7 +14,15 @@ const config: CodegenConfig = {
   },
   generates: {
     'src/modules/graphql/types.generated.ts': {
-      plugins: ['typescript', 'typescript-resolvers'],
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+        'typescript',
+        'typescript-resolvers',
+      ],
       config: {
         typesPrefix: 'Gql',
         mappers: {
@@ -24,16 +32,27 @@ const config: CodegenConfig = {
       },
     },
     'src/modules/graphql/validations.generated.ts': {
-      plugins: ['typescript', 'typescript-validation-schema'],
+      plugins: [
+        {
+          add: {
+            content: '/* eslint-disable */',
+          },
+        },
+        'typescript',
+        'typescript-validation-schema',
+      ],
       config: {
         schema: 'zod',
       },
     },
     'src/': {
       preset: 'near-operation-file',
-      presetConfig: { extension: '.generated.tsx', baseTypesPath: 'modules/graphql/types.generated.ts' },
-      plugins: ['typescript-operations', 'typescript-urql'],
-      config: { withHooks: true },
+      presetConfig: {
+        extension: '.generated.ts',
+        baseTypesPath: '~@modules/graphql/types.generated',
+      },
+      plugins: ['typescript-operations'],
+      config: { withHooks: true, typesPrefix: 'Gql' },
     },
   },
 };

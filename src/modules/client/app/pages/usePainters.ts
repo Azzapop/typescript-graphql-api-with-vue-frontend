@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client/core';
-import type { GqlGetPaintersQuery } from '@modules/graphql/types.generated';
+import type { GqlGetPaintersQuery } from './usePainters.generated';
 import { useQuery } from '@vue/apollo-composable';
 
 const getPaintersQuery = gql`
