@@ -16,8 +16,8 @@
     "lint:fix": "eslint src --fix",
     "format:check": "prettier src --check",
     "format:fix": "prettier src --write",
-    "db:format": "prisma format --schema=./src/prisma/schema.prisma",
-    "db:migrate": "prisma migrate dev --schema=./src/prisma/schema.prisma"
+    "db:format": "prisma format --schema=./src/modules/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema=./src/modules/prisma/schema.prisma"
   },
   "private": true,
   "keywords": [],
@@ -45,6 +45,7 @@
   "devDependencies": {
     "@eslint/js": "^9.5.0",
     "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/near-operation-file-preset": "^3.0.0",
     "@graphql-codegen/typescript": "^4.0.9",
     "@graphql-codegen/typescript-resolvers": "^4.2.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

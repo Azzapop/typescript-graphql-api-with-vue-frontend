@@ -1,19 +1,12 @@
-### Module mapper
-
-Need to make sure you add it to all of
-
-- tsconfig.json
-  webpackconfig
-  jest config
-
 ### Filenaming/Foldernaming
 
 Folders -> kebab-case
 Files -> kebab-case
 Exports camelCase, mathing file or folder name if index file
-only one export
+only one export unless index file
+Anything generated must have .generated appended
 
 ### TODO
 
 Maybe type-ify the express injectors?
-REplace multi-line comments with /**/
+REplace multi-line comments with /\*\*/

@@ -1,18 +1,20 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
+// TODO operations with the query fragments
+
 const config: CodegenConfig = {
-  schema: './src/graphql/type-defs.graphql',
-  documents: './src/client/**/*.ts',
+  schema: './src/modules/graphql/type-defs.graphql',
+  documents: './src/modules/client/**/*.ts',
   hooks: {
-    afterAllFileWrite: ['prettier --write', 'eslint --fix'],
+    // afterAllFileWrite: ['prettier --write', 'eslint --fix'],
   },
   config: {
     avoidOptionals: true,
     enumsAsTypes: true,
   },
   generates: {
-    'src/services/graphql/types.ts': {
-      plugins: ['typescript', 'typescript-operations', 'typescript-resolvers'],
+    'src/modules/graphql/types.generated.ts': {
+      plugins: ['typescript', 'typescript-resolvers'],
       config: {
         typesPrefix: 'Gql',
         mappers: {
@@ -21,11 +23,17 @@ const config: CodegenConfig = {
         },
       },
     },
-    'src/services/graphql/validations.ts': {
+    'src/modules/graphql/validations.generated.ts': {
       plugins: ['typescript', 'typescript-validation-schema'],
       config: {
         schema: 'zod',
       },
+    },
+    'src/': {
+      preset: 'near-operation-file',
+      presetConfig: { extension: '.generated.tsx', baseTypesPath: 'modules/graphql/types.generated.ts' },
+      plugins: ['typescript-operations', 'typescript-urql'],
+      config: { withHooks: true },
     },
   },
 };
