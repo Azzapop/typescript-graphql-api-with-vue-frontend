@@ -1,8 +1,10 @@
+import {
+  transformPainterInput,
+  transformPainter,
+} from '@libs/graphql-transformers';
+import type { GqlMutationResolvers } from '@libs/graphql-types';
 import { logger } from '@libs/logger';
-import type { GqlMutationResolvers } from '@modules/graphql/types.generated';
 import { client as prisma } from '@modules/prisma/client';
-import { transformPainterInput } from '../../transformers/inputs/transformPainterInput';
-import { transformPainter } from '../../transformers/models/transformPainter';
 
 export const createPainter: GqlMutationResolvers['createPainter'] = async (
   _parent,

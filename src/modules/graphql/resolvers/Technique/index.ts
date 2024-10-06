@@ -1,6 +1,6 @@
-import type { GqlTechniqueResolvers } from '@modules/graphql/types.generated';
+import type { GqlTechniqueResolvers } from '@libs/graphql-types';
 
 export const Technique: GqlTechniqueResolvers = {
   id: (parent) => parent.id,
-  name: (parent) => parent.id,
+  name: (parent) => parent.name,
 };

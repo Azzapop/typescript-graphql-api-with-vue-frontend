@@ -1,7 +1,7 @@
+import { transformTechnique } from '@libs/graphql-transformers';
+import type { GqlPaintingResolvers } from '@libs/graphql-types';
 import { logger } from '@libs/logger';
-import type { GqlPaintingResolvers } from '@modules/graphql/types.generated';
 import { client as prisma } from '@modules/prisma/client';
-import { transformTechnique } from '../../transformers/models/transformTechnique';
 
 // TODO hide techniqueId in the schema?
 export const technique: GqlPaintingResolvers['technique'] = async (

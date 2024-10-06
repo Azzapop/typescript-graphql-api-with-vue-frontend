@@ -1,14 +1,11 @@
+import type { GqlPainterInput } from '@libs/graphql-types';
+import { GqlPainterInputSchema } from '@libs/graphql-validators';
 import { logger } from '@libs/logger';
-import type { GqlPainterInput } from '@modules/graphql/types.generated';
-import { PainterInputSchema } from '@modules/graphql/validations.generated';
 import type { Prisma } from '@prisma/client';
 
-const GqlToPrisma = PainterInputSchema().transform(
-  ({
-    name,
-    country,
-    techniques,
-  }: GqlPainterInput): Prisma.PainterCreateInput => {
+// TODO to typed object and then parse for safety?
+const GqlToPrisma = GqlPainterInputSchema().transform(
+  ({ name, country, techniques }): Prisma.PainterCreateInput => {
     return {
       name,
       country,

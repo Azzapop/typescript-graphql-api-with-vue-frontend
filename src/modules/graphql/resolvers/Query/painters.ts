@@ -1,4 +1,4 @@
-import type { GqlQueryResolvers } from '@modules/graphql/types.generated';
+import type { GqlQueryResolvers } from '@libs/graphql-types';
 import { client as prisma } from '@modules/prisma/client';
 
 export const painters: GqlQueryResolvers['painters'] = async (

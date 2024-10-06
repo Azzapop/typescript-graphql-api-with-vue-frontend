@@ -1,6 +1,6 @@
-import type { GqlPaintingResolvers } from '@modules/graphql/types.generated';
+import { transformPainter } from '@libs/graphql-transformers';
+import type { GqlPaintingResolvers } from '@libs/graphql-types';
 import { client as prisma } from '@modules/prisma/client';
-import { transformPainter } from '../../transformers/models/transformPainter';
 
 // TODO hide authorId in the schema?
 export const painter: GqlPaintingResolvers['painter'] = async (

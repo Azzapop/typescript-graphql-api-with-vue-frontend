@@ -1,58 +1,52 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-// TODO operations with the query fragments
+const addEslintDisable = { add: { content: '/* eslint-disable */' } };
+const typesPrefix = { typesPrefix: 'Gql' };
 
 const config: CodegenConfig = {
   schema: './src/modules/graphql/type-defs.graphql',
-  documents: './src/modules/client/**/!(*.generated).ts',
+  documents: './src/modules/client/**/!(*.gql).ts',
   hooks: {
     afterAllFileWrite: ['prettier --write', 'eslint --fix'],
   },
   config: {
     avoidOptionals: true,
     enumsAsTypes: true,
+    ...typesPrefix,
   },
   generates: {
-    'src/modules/graphql/types.generated.ts': {
-      plugins: [
-        {
-          add: {
-            content: '/* eslint-disable */',
-          },
-        },
-        'typescript',
-        'typescript-resolvers',
-      ],
+    'src/libs/graphql-types/index.ts': {
+      plugins: [addEslintDisable, 'typescript', 'typescript-resolvers'],
       config: {
-        typesPrefix: 'Gql',
         mappers: {
           Painter: 'Omit<GqlPainter, "techniques">',
           Painting: 'Omit<GqlPainting, "painter" | "technique">',
         },
       },
     },
-    'src/modules/graphql/validations.generated.ts': {
-      plugins: [
-        {
-          add: {
-            content: '/* eslint-disable */',
-          },
-        },
-        'typescript',
-        'typescript-validation-schema',
-      ],
+    'src/libs/graphql-validators/index.ts': {
+      plugins: [addEslintDisable, 'typescript-validation-schema'],
       config: {
         schema: 'zod',
+        importFrom: '@libs/graphql-types',
+        withObjectType: true,
+        // TODO switch back to `const` when issue resolved
+        // https://github.com/Code-Hex/graphql-codegen-typescript-validation-schema/issues/528
+        validationSchemaExportType: 'function',
+        mappers: {
+          Painter: 'Omit<GqlPainter, "techniques">',
+          Painting: 'Omit<GqlPainting, "painter" | "technique">',
+        },
       },
     },
-    'src/': {
+    'src/modules/client/': {
       preset: 'near-operation-file',
       presetConfig: {
-        extension: '.generated.ts',
-        baseTypesPath: '~@modules/graphql/types.generated',
+        extension: '.gql.ts',
+        baseTypesPath: '~@libs/graphql-types',
       },
-      plugins: ['typescript-operations'],
-      config: { withHooks: true, typesPrefix: 'Gql' },
+      plugins: [addEslintDisable, 'typescript-operations'],
+      config: { onlyOperationTypes: true, withHooks: true, useTypeImports: true },
     },
   },
 };

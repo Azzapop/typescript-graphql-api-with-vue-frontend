@@ -1,4 +1,4 @@
-import type { GqlQueryResolvers } from '@modules/graphql/types.generated';
+import type { GqlQueryResolvers } from '@libs/graphql-types';
 import { painter } from './painter';
 import { painters } from './painters';
 import { painting } from './painting';

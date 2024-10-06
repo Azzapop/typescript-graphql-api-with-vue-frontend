@@ -10,3 +10,5 @@ Anything generated must have .generated appended
 
 Maybe type-ify the express injectors?
 REplace multi-line comments with /\*\*/
+Prefix resolver types with Gql on generate
+Only one / allowed per import

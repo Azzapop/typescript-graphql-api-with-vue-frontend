@@ -1,7 +1,7 @@
 import { logger } from '@libs/logger';
-import type { GqlResolversTypes } from '@modules/graphql/types.generated';
-import type { Technique } from '@modules/prisma/validators.generated';
-import { TechniqueSchema } from '@modules/prisma/validators.generated';
+import type { GqlResolversTypes } from '@libs/graphql-types';
+import type { Technique } from '@libs/prisma-validators';
+import { TechniqueSchema } from '@libs/prisma-validators';
 
 const PrismaToGql = TechniqueSchema.transform(
   ({ id, name }): GqlResolversTypes['Technique'] => ({

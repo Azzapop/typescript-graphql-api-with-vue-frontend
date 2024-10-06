@@ -12,7 +12,7 @@ generator client {
 
 generator zod {
   provider = "zod-prisma-types"
-  output = "./validators.generated"
+  output = "../../libs/prisma-validators/zod"
 }
 
 datasource db {
