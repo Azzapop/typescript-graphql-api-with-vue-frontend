@@ -4,7 +4,7 @@ Folders -> kebab-case
 Files -> kebab-case
 Exports camelCase, mathing file or folder name if index file
 only one export unless index file
-Anything generated must have .generated appended
+Anything generated must be in the .gitignore 
 
 ### TODO
 
