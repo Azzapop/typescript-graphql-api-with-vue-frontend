@@ -1,6 +1,7 @@
 import { transformPainting } from '@libs/graphql-transformers';
 import type { GqlQueryResolvers } from '@libs/graphql-types';
-import { client as prisma } from '@modules/prisma/client';
+import { logger } from '@libs/logger';
+import { prisma } from '@modules/prisma';
 
 export const painting: GqlQueryResolvers['painting'] = async (
   _parent,
@@ -8,5 +9,11 @@ export const painting: GqlQueryResolvers['painting'] = async (
   _context
 ) => {
   const dbPainting = await prisma.painting.findFirst({ where: { id } });
-  return transformPainting(dbPainting);
+  const result = transformPainting(dbPainting);
+  if (result === null) {
+    logger.error('Invalid painting found.');
+    throw new Error('INVALID_PAINTING_FOUND');
+  }
+
+  return result;
 };

@@ -4,7 +4,7 @@ import {
 } from '@libs/graphql-transformers';
 import type { GqlMutationResolvers } from '@libs/graphql-types';
 import { logger } from '@libs/logger';
-import { client as prisma } from '@modules/prisma/client';
+import { prisma } from '@modules/prisma';
 
 export const createPainter: GqlMutationResolvers['createPainter'] = async (
   _parent,
@@ -12,13 +12,17 @@ export const createPainter: GqlMutationResolvers['createPainter'] = async (
   _context
 ) => {
   const data = transformPainterInput(input);
-  if (!data) {
+  if (data === null) {
     logger.error('Invalid painter data.');
-    throw new Error('INVALID_PAINTER');
+    throw new Error('INVALID_PAINTER_DATA');
   }
 
-  const dbPainter = await prisma.painter.create({
-    data,
-  });
-  return transformPainter(dbPainter);
+  const dbPainter = await prisma.painter.create({ data });
+  const result = transformPainter(dbPainter);
+  if (result === null) {
+    logger.error('Invalid painter created.');
+    throw new Error('INVALID_PAINTER_CREATE');
+  }
+
+  return result;
 };

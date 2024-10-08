@@ -1,7 +1,7 @@
 import { transformTechnique } from '@libs/graphql-transformers';
 import type { GqlPaintingResolvers } from '@libs/graphql-types';
 import { logger } from '@libs/logger';
-import { client as prisma } from '@modules/prisma/client';
+import { prisma } from '@modules/prisma';
 
 // TODO hide techniqueId in the schema?
 export const technique: GqlPaintingResolvers['technique'] = async (
@@ -16,7 +16,7 @@ export const technique: GqlPaintingResolvers['technique'] = async (
   const result = transformTechnique(dbTechnique);
   if (result === null) {
     logger.error('Failed to find technique for painting.');
-    throw new Error('MISSING_technique_ERROR');
+    throw new Error('MISSING_TECHNIQUE_ERROR');
   }
 
   return result;

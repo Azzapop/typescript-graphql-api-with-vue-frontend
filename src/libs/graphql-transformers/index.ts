@@ -1,5 +1,5 @@
-export { transformPainter } from './transformPainter';
-export { transformPainting } from './transformPainting';
-export { transformTechnique } from './transformTechnique';
-export { transformPainterInput } from './transformPainterInput';
-export { transformPaintingInput } from './transformPaintingInput';
+export { transformPainter } from './transform-painter';
+export { transformPainting } from './transform-painting';
+export { transformTechnique } from './transform-technique';
+export { transformPainterInput } from './transform-painter-input';
+export { transformPaintingInput } from './transform-painting-input';

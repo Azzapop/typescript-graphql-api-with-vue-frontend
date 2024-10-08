@@ -1,6 +1,8 @@
-import { serverEntryDev as clientServerEntryDev } from '@modules/client';
-import { serverEntryProduction as clientServerEntryProduction } from '@modules/client';
-import { graphql } from '@modules/graphql';
+import {
+  serverEntryDev as clientServerEntryDev,
+  serverEntryProduction as clientServerEntryProduction,
+} from '@modules/client';
+import { entry as graphqlEntry } from '@modules/graphql';
 import type { Express } from 'express';
 import express from 'express';
 import type { Server as HttpServer } from 'http';
@@ -13,7 +15,7 @@ const configureExpressServer = async (
   const { httpServer } = opts;
 
   // Configure graphql server for data
-  const { inject: injectGraphqlServer } = await graphql({ httpServer });
+  const { inject: injectGraphqlServer } = await graphqlEntry({ httpServer });
   injectGraphqlServer(expressServer);
 
   /*

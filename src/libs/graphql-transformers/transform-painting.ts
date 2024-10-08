@@ -1,7 +1,8 @@
 import type { GqlResolversTypes } from '@libs/graphql-types';
+import { GqlPaintingSchema } from '@libs/graphql-validators';
 import { logger } from '@libs/logger';
-import type { Painting } from '@libs/prisma-validators';
 import { PaintingSchema } from '@libs/prisma-validators';
+import { Painting } from '@prisma/client';
 
 const PrismaToGql = PaintingSchema.transform(
   ({
@@ -17,7 +18,7 @@ const PrismaToGql = PaintingSchema.transform(
     techniqueId,
     date: date.toString(),
   })
-);
+).pipe(GqlPaintingSchema());
 
 export const transformPainting = (
   painting: Painting | null
@@ -27,7 +28,8 @@ export const transformPainting = (
   if (result.success) {
     return result.data;
   } else {
-    logger.error('Failed to find painting.');
+    logger.error('Failed to transform painting.');
+    logger.error(result.error.message);
     return null;
   }
 };

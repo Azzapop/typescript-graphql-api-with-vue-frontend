@@ -34,13 +34,13 @@ input PaintingInput {
 }
 
 type Mutation {
-  createPainter(input: PainterInput!): Painter
-  createPainting(input: PaintingInput!): Painting
+  createPainter(input: PainterInput!): Painter!
+  createPainting(input: PaintingInput!): Painting!
 }
 
 type Query {
   painters: [Painter!]! # get all painters
   paintings: [Painting!]! # get all paintings
-  painter(id: String!): Painter # get a painter by id
-  painting(id: String!): Painting # get a painting by id
+  painter(id: String!): Painter! # get a painter by id
+  painting(id: String!): Painting! # get a painting by id
 }

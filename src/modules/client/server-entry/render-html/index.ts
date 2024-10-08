@@ -1,7 +1,6 @@
 import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { createApolloClient } from '@modules/graphql/createApolloClient';
+import { createSchema, createApolloClient } from '@modules/graphql';
 import { renderToString } from 'vue/server-renderer';
-import { createSchema } from '@modules/graphql/createSchema';
 import { createVueApp } from '../../app';
 import { renderPreloadLinks } from './render-preload-links';
 import { renderStoreData } from './render-store-data';

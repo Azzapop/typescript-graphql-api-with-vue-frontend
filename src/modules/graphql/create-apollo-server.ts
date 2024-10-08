@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import type { Server as HttpServer } from 'http';
-import { createSchema } from './createSchema';
+import { createSchema } from './create-schema';
 
 interface MyContext {
   token?: string;

@@ -1,5 +1,6 @@
 import { transformPainter } from '@libs/graphql-transformers';
 import type { GqlQueryResolvers } from '@libs/graphql-types';
+import { logger } from '@libs/logger';
 import { client as prisma } from '@modules/prisma/client';
 
 export const painter: GqlQueryResolvers['painter'] = async (
@@ -8,5 +9,11 @@ export const painter: GqlQueryResolvers['painter'] = async (
   _context
 ) => {
   const dbPainter = await prisma.painter.findUnique({ where: { id } });
-  return transformPainter(dbPainter);
+  const result = transformPainter(dbPainter);
+  if (result === null) {
+    logger.error('Invalid painter created.');
+    throw new Error('INVALID_PAINTER_FOUND');
+  }
+
+  return result;
 };

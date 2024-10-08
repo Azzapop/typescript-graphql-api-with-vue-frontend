@@ -1,7 +1,8 @@
-import { logger } from '@libs/logger';
 import type { GqlResolversTypes } from '@libs/graphql-types';
-import type { Painter } from '@libs/prisma-validators'; // TODO use prisma directly?
+import { GqlPainterSchema } from '@libs/graphql-validators';
+import { logger } from '@libs/logger';
 import { PainterSchema } from '@libs/prisma-validators';
+import { Painter } from '@prisma/client';
 
 const PrismaToGql = PainterSchema.transform(
   ({ id, name, country }): GqlResolversTypes['Painter'] => ({
@@ -9,7 +10,7 @@ const PrismaToGql = PainterSchema.transform(
     name,
     country,
   })
-);
+).pipe(GqlPainterSchema());
 
 export const transformPainter = (
   painter: Painter | null
@@ -20,6 +21,7 @@ export const transformPainter = (
     return result.data;
   } else {
     logger.error('Failed to transform painter.');
+    logger.error(result.error.message);
     return null;
   }
 };

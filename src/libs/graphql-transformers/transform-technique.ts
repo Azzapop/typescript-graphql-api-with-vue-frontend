@@ -1,14 +1,15 @@
-import { logger } from '@libs/logger';
 import type { GqlResolversTypes } from '@libs/graphql-types';
-import type { Technique } from '@libs/prisma-validators';
+import { GqlTechniqueSchema } from '@libs/graphql-validators';
+import { logger } from '@libs/logger';
 import { TechniqueSchema } from '@libs/prisma-validators';
+import { Technique } from '@prisma/client';
 
 const PrismaToGql = TechniqueSchema.transform(
   ({ id, name }): GqlResolversTypes['Technique'] => ({
     id,
     name,
   })
-);
+).pipe(GqlTechniqueSchema());
 
 export const transformTechnique = (
   technique: Technique | null
@@ -17,7 +18,8 @@ export const transformTechnique = (
   if (result.success) {
     return result.data;
   } else {
-    logger.error('Failed to parse technique.');
+    logger.error('Failed to transform technique.');
+    logger.error(result.error.message);
     return null;
   }
 };

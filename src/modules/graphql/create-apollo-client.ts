@@ -1,11 +1,9 @@
 import type {
   ApolloClientOptions,
   NormalizedCacheObject,
-  ApolloLink} from '@apollo/client/core';
-import {
-  ApolloClient,
-  InMemoryCache
+  ApolloLink,
 } from '@apollo/client/core';
+import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from '@apollo/client/core';
 import { SchemaLink } from '@apollo/client/link/schema';
 import type { GraphQLSchema } from 'graphql';
