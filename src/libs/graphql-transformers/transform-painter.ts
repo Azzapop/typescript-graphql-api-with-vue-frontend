@@ -13,7 +13,7 @@ const PrismaToGql = PainterSchema.transform(
 ).pipe(GqlPainterSchema());
 
 export const transformPainter = (
-  painter: Painter | null
+  painter: Painter
 ): GqlResolversTypes['Painter'] | null => {
   const result = PrismaToGql.safeParse(painter);
 

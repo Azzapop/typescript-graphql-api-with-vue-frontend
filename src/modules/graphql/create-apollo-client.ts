@@ -38,7 +38,6 @@ const createConfig = (opts: {
   };
 };
 
-// TODO don't want to recreate this on the server every time
 // TODO consider using a dynamic import now that this is co-located with the schema
 // If considering refactoring please note that 'schema' is passed in here to ensure that we do
 // not include the entire schema (including resolvers) in the client build

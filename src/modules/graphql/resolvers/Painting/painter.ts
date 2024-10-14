@@ -1,3 +1,4 @@
+import { GqlBadParseError } from '@libs/graphql-errors';
 import { transformPainter } from '@libs/graphql-transformers';
 import type { GqlPaintingResolvers } from '@libs/graphql-types';
 import { prisma } from '@modules/prisma';
@@ -14,8 +15,7 @@ export const painter: GqlPaintingResolvers['painter'] = async (
   const result = transformPainter(dbPainter);
 
   if (!result) {
-    // TODO use proper gql error
-    throw new Error('MISSING_PAINTER');
+    throw new GqlBadParseError();
   }
 
   return result;

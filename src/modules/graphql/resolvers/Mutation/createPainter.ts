@@ -1,3 +1,4 @@
+import { GqlBadInputError, GqlBadParseError } from '@libs/graphql-errors';
 import {
   transformPainterInput,
   transformPainter,
@@ -14,14 +15,15 @@ export const createPainter: GqlMutationResolvers['createPainter'] = async (
   const data = transformPainterInput(input);
   if (data === null) {
     logger.error('Invalid painter data.');
-    throw new Error('INVALID_PAINTER_DATA');
+    throw new GqlBadInputError();
   }
 
   const dbPainter = await prisma.painter.create({ data });
+
   const result = transformPainter(dbPainter);
   if (result === null) {
     logger.error('Invalid painter created.');
-    throw new Error('INVALID_PAINTER_CREATE');
+    throw new GqlBadParseError();
   }
 
   return result;
