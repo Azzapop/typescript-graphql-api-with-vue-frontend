@@ -1,0 +1,46 @@
+type Painter {
+  id: String!
+  name: String!
+  country: String!
+  techniques: [Technique!]!
+}
+
+type Painting {
+  id: String!
+  painterId: String!
+  painter: Painter!
+  title: String!
+  techniqueId: String!
+  technique: Technique!
+  date: String!
+}
+
+type Technique {
+  id: String!
+  name: String!
+}
+
+input PainterInput {
+  name: String!
+  country: String!
+  techniques: [String!]!
+}
+
+input PaintingInput {
+  painterId: String!
+  title: String!
+  techniqueId: String!
+  date: String!
+}
+
+type Mutation {
+  createPainter(input: PainterInput!): Painter!
+  createPainting(input: PaintingInput!): Painting!
+}
+
+type Query {
+  painters: [Painter!]! # get all painters
+  paintings: [Painting!]! # get all paintings
+  painter(id: String!): Painter! # get a painter by id
+  painting(id: String!): Painting! # get a painting by id
+}
