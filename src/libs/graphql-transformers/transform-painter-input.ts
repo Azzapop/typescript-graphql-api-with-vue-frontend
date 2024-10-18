@@ -1,7 +1,7 @@
 import type { GqlPainterInput } from '@libs/graphql-types';
 import { GqlPainterInputSchema } from '@libs/graphql-validators';
 import { logger } from '@libs/logger';
-import { PainterCreateInputSchema } from '@libs/prisma-validators/zod';
+import { PainterCreateInputSchema } from '@libs/prisma-validators';
 import type { Prisma } from '@prisma/client';
 
 const GqlToPrisma = GqlPainterInputSchema()
@@ -24,7 +24,7 @@ export const transformPainterInput = (
   if (result.success) {
     return result.data;
   } else {
-    logger.error('Failed to transform painter input params.');
+    logger.error('Failed to transform graphql painter input params.');
     logger.error(result.error.message);
     return null;
   }

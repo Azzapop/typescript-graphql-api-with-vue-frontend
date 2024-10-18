@@ -6,7 +6,7 @@
     "build": "npm run build:server && npm run build:client",
     "start": "NODE_ENV=production node dist/server/index.js",
     "dev": "nodemon -x 'vite-node src'",
-    "test": "echo 'success'",
+    "test": "vitest",
     "---------------- Helper Scripts ----------------": "",
     "build:client": "vite build --ssrManifest .vite/ssr-manifest.json --outDir dist/client",
     "build:server": "vite build --ssr src/index.ts --outDir dist/server",
@@ -44,7 +44,9 @@
     "zod-prisma-types": "^3.1.8"
   },
   "devDependencies": {
+    "@anatine/zod-mock": "^3.13.4",
     "@eslint/js": "^9.5.0",
+    "@faker-js/faker": "^8.4.1",
     "@graphql-codegen/add": "^5.0.3",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/near-operation-file-preset": "^3.0.0",
@@ -70,6 +72,7 @@
     "vite": "^5.4.3",
     "vite-node": "^2.0.5",
     "vite-plugin-graphql-loader": "^4.0.4",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "vitest": "^2.1.3"
   }
 }

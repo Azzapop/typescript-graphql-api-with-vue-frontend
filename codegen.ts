@@ -46,7 +46,11 @@ const config: CodegenConfig = {
         baseTypesPath: '~@libs/graphql-types',
       },
       plugins: [addEslintDisable, 'typescript-operations'],
-      config: { onlyOperationTypes: true, withHooks: true, useTypeImports: true },
+      config: {
+        onlyOperationTypes: true,
+        withHooks: true,
+        useTypeImports: true,
+      },
     },
   },
 };
