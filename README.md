@@ -12,6 +12,7 @@
 - Replace multi-line comments with /\*\*/
 - Prefix resolver types with Gql on generate
 - Only one / allowed per import
+- lint rule so that test imports '#' can't be in prod files
 
 ### GraphQL Mappers
 
