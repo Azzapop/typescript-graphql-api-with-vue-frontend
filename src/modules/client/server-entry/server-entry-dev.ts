@@ -7,7 +7,7 @@ import { createServerHandler } from './create-server-handler';
 export const serverEntryDev = async () => {
   const vite = await createViteServer();
 
-  const resolvedPath = resolve(import.meta.dirname, '../../../index.html');
+  const resolvedPath = resolve(import.meta.dirname, '../../../../index.html');
   const template = readFileSync(resolvedPath, 'utf-8');
 
   const serverHandler = createServerHandler({ vite, template });
