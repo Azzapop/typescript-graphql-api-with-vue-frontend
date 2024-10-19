@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { defineStore } from 'pinia';
 import { ref, onServerPrefetch, onMounted } from 'vue';
-import { GetPaintersQuery } from '../../../services/graphql/types';
-import { usePainters } from './usePainters';
+import { usePainters } from './use-painters';
+import { GqlGetPaintersQuery } from './use-painters.gql';
 
 const usePaintersStore = defineStore('painters', () => {
-  const painters = ref<GetPaintersQuery['painters'] | null>(null);
+  const painters = ref<GqlGetPaintersQuery['painters'] | null>(null);
 
   const loadData = async () => {
     const query = await usePainters();
