@@ -2,7 +2,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
 import { json } from 'express';
 import type { Express } from 'express';
-import { Server as HttpServer } from 'http';
+import type { Server as HttpServer } from 'http';
 import { createApolloServer } from './create-apollo-server';
 
 export const entry = async (opts: { httpServer?: HttpServer }) => {
