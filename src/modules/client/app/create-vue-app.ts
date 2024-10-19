@@ -1,5 +1,5 @@
 import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { createApolloClient } from '@modules/graphql';
+import { createApolloClient } from '@modules/graphql/create-apollo-client';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createPinia } from 'pinia';
 import { createSSRApp, h, provide } from 'vue';
