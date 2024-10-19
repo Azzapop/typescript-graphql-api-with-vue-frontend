@@ -26,7 +26,7 @@ jobs:
         image: postgres:14.13
         env:
           POSTGRES_USER: build_user
-          POSTGRES_DATABASE: build_dev
+          POSTGRES_DATABASE: build_db
           POSTGRES_PASSWORD: ${{ secrets.db_password }}
         ports:
           - 3306:3306
