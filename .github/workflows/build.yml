@@ -11,7 +11,7 @@ on:
 
 env:
   PORT: 3000
-  DATABASE_URL: 'postgresql://root:${{secrets.db_password}}@localhost:3306/build_db'
+  DATABASE_URL: 'postgresql://build_user:${{secrets.db_password}}@localhost:3306/build_db'
 
 jobs:
   build:
