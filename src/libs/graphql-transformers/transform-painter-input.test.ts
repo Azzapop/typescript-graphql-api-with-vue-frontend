@@ -1,8 +1,10 @@
 import { createGqlPainterInput } from '#test/graphql';
+import { logger } from '@libs/logger';
 import { expect, it } from 'vitest';
 import { transformPainterInput } from './transform-painter-input';
 
 it('returns the correctly formatted data on success', () => {
+  logger.log('blah');
   const gqlPainterInput = createGqlPainterInput({
     country: 'Australia',
     name: 'Noodles',
