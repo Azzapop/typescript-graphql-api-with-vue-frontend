@@ -11,7 +11,7 @@ on:
 
 env:
   PORT: 3000
-  DATABASE_URL: 'mysql://root:${{secrets.db_password}}@localhost:3306/financial_planner_dev'
+  DATABASE_URL: 'postgresql://root:${{secrets.db_password}}@localhost:3306/build_db'
 
 jobs:
   build:
@@ -23,13 +23,14 @@ jobs:
 
     services:
       mydb:
-        image: mysql:5.7
+        image: postgres:14.13
         env:
-          MYSQL_DATABASE: financial_planner_dev
-          MYSQL_ROOT_PASSWORD: ${{ secrets.db_password }}
+          POSTGRES_USER: build_user
+          POSTGRES_DATABASE: build_dev
+          POSTGRES_PASSWORD: ${{ secrets.db_password }}
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - uses: actions/checkout@v4
