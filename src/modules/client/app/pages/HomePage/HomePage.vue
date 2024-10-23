@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import SidebarLayout from '../../components/layouts/SidebarLayout.vue';
+import Button from 'primevue/button';
 
 const t = '123';
 </script>
 <template>
-  <SidebarLayout>
-    <p>Home {{ t }}</p>
-  </SidebarLayout>
+  <p>Home {{ t }}</p>
+  <Button label="Submit" />
 </template>

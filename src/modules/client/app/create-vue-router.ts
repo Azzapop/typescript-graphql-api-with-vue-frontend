@@ -4,13 +4,28 @@ import {
   createWebHistory,
   createMemoryHistory,
 } from 'vue-router';
+import AppLayout from './layout/AppLayout.vue'
 import HomePage from './pages/HomePage/HomePage.vue';
 import PaintersPage from './pages/PaintersPage/PaintersPage.vue';
 
 const routes = [
-  { path: '/', component: HomePage },
-  { path: '/painters', component: PaintersPage },
-];
+  {
+    path: '/',
+    component: AppLayout,
+    children: [
+      {
+        path: '/',
+        name: '',
+        component: HomePage
+      },
+      {
+        path: '/painters',
+        name: '',
+        component: PaintersPage
+      },
+    ]
+  }]
+
 
 export const createVueRouter = (opts: { isServer: boolean }): Router => {
   const { isServer } = opts;
