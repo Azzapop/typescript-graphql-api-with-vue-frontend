@@ -8,7 +8,6 @@ import { createSSRApp, h, provide } from 'vue';
 import App from './App.vue';
 import './assets/styles.scss';
 import './assets/tailwind.css';
-import './assets/demo/flags/flags.css'
 import { createVueRouter } from './create-vue-router';
 
 export function createVueApp(
