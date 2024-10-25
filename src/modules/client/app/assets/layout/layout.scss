@@ -1,4 +1,4 @@
-@import './variables/_common';
+@use './variables/_common';
 @import './variables/_light';
 @import './variables/_dark';
 @import './_mixins';
@@ -6,8 +6,6 @@
 @import './_core';
 @import './_main';
 @import './_topbar';
-@import './_menu';
-@import './_footer';
 @import './_responsive';
 @import './_utils';
 @import './_typography';
