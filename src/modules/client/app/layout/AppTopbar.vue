@@ -101,7 +101,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
         <i class="pi pi-ellipsis-v layout-topbar__action-icon"></i>
       </button>
 
-      <div class="layout-topbar__menu layout-topbar__menu--hidden lg:block">
+      <div class="layout-topbar__menu layout-topbar__menu--hidden">
         <div class="layout-topbar__menu-content">
           <button
             type="button"
@@ -227,6 +227,11 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
     &--highlight {
       background-color: var(--primary-color);
       color: var(--primary-contrast-color);
+
+      &:hover {
+        background-color: var(--primary-contrast-color);
+        color: var(--primary-color);
+      }
     }
 
     &:hover {
@@ -268,6 +273,17 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
   &__menu-content {
     display: flex;
     gap: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .layout-topbar {
+    
+    // We get a little bit tricky here with the css. By being slightly more specific only on larger 
+    // screens we are able to hide the menu by default on smaller screen sizes
+    &__menu {
+      display: block;
+    }
   }
 }
 
