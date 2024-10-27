@@ -7,15 +7,20 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
 <template>
   <div class="layout-topbar">
-    <div class="layout-topbar-logo-container">
+    <div class="layout-topbar__logo-container">
       <button
-        class="layout-menu-button layout-topbar-action"
+        class="layout-topbar__sidebar-button layout-topbar__action"
         @click="onMenuToggle"
       >
-        <i class="pi pi-bars"></i>
+        <i class="pi pi-bars layout-topbar__action-icon"></i>
       </button>
-      <router-link to="/" class="layout-topbar-logo">
-        <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <router-link to="/" class="layout-topbar__logo">
+        <svg
+          class="layout-topbar__logo-svg"
+          viewBox="0 0 54 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             fill-rule="evenodd"
             clip-rule="evenodd"
@@ -48,66 +53,280 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
       </router-link>
     </div>
 
-    <div class="layout-topbar-actions">
-      <div class="layout-config-menu">
+    <div class="layout-topbar__actions">
+      <div class="layout-topbar__config-menu">
         <button
           type="button"
-          class="layout-topbar-action"
+          class="layout-topbar__action"
           @click="toggleDarkMode"
         >
           <i
-            :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"
+            :class="[
+              'pi',
+              { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme },
+              'layout-topbar__action-icon',
+            ]"
           ></i>
         </button>
-        <div class="relative">
+        <div class="layout-topbar__app-configurator-container">
           <button
             v-styleclass="{
               selector: '@next',
-              enterFromClass: 'hidden',
+              enterFromClass: 'layout-topbar__app-configurator--hidden',
               enterActiveClass: 'animate-scalein',
-              leaveToClass: 'hidden',
+              leaveToClass: 'layout-topbar__app-configurator--hidden',
               leaveActiveClass: 'animate-fadeout',
               hideOnOutsideClick: true,
             }"
             type="button"
-            class="layout-topbar-action layout-topbar-action-highlight"
+            class="layout-topbar__action layout-topbar__action--highlight"
           >
-            <i class="pi pi-palette"></i>
+            <i class="pi pi-palette layout-topbar__action-icon"></i>
           </button>
-          <AppConfigurator />
+          <AppConfigurator class="layout-topbar__app-configurator--hidden"/>
         </div>
       </div>
 
       <button
-        class="layout-topbar-menu-button layout-topbar-action"
+        class="layout-topbar__menu-button layout-topbar__action"
         v-styleclass="{
           selector: '@next',
-          enterFromClass: 'hidden',
+          enterFromClass: 'layout-topbar__menu--hidden',
           enterActiveClass: 'animate-scalein',
-          leaveToClass: 'hidden',
+          leaveToClass: 'layout-topbar__menu--hidden',
           leaveActiveClass: 'animate-fadeout',
           hideOnOutsideClick: true,
         }"
       >
-        <i class="pi pi-ellipsis-v"></i>
+        <i class="pi pi-ellipsis-v layout-topbar__action-icon"></i>
       </button>
 
-      <div class="layout-topbar-menu hidden lg:block">
-        <div class="layout-topbar-menu-content">
-          <button type="button" class="layout-topbar-action">
-            <i class="pi pi-calendar"></i>
-            <span>Calendar</span>
+      <div class="layout-topbar__menu layout-topbar__menu--hidden lg:block">
+        <div class="layout-topbar__menu-content">
+          <button
+            type="button"
+            class="layout-topbar__action layout-topbar__menu-item"
+          >
+            <i
+              class="pi pi-calendar layout-topbar__action-icon layout-topbar__menu-icon"
+            ></i>
+            <span class="layout-topbar__action-label layout-topbar__menu-label"
+              >Calendar</span
+            >
           </button>
-          <button type="button" class="layout-topbar-action">
-            <i class="pi pi-inbox"></i>
-            <span>Messages</span>
+          <button
+            type="button"
+            class="layout-topbar__action layout-topbar__menu-item"
+          >
+            <i
+              class="pi pi-inbox layout-topbar__action-icon layout-topbar__menu-icon"
+            ></i>
+            <span class="layout-topbar__action-label layout-topbar__menu-label"
+              >Messages</span
+            >
           </button>
-          <button type="button" class="layout-topbar-action">
-            <i class="pi pi-user"></i>
-            <span>Profile</span>
+          <button
+            type="button"
+            class="layout-topbar__action layout-topbar__menu-item"
+          >
+            <i
+              class="pi pi-user layout-topbar__action-icon layout-topbar__menu-icon"
+            ></i>
+            <span class="layout-topbar__action-label layout-topbar__menu-label"
+              >Profile</span
+            >
           </button>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.layout-topbar {
+  position: fixed;
+  height: 4rem;
+  z-index: 997;
+  left: 0;
+  top: 0;
+  width: 100%;
+  padding: 0 2rem;
+  background-color: var(--surface-card);
+  transition: left var(--layout-section-transition-duration);
+  display: flex;
+  align-items: center;
+
+  &__logo-container {
+    width: 20rem;
+    display: flex;
+    align-items: center;
+  }
+
+  &__sidebar-button {
+    margin-right: 0.5rem;
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.5rem;
+    border-radius: var(--content-border-radius);
+    color: var(--text-color);
+    font-weight: 500;
+    gap: 0.5rem;
+
+    &:focus-visible {
+      outline-width: var(--focus-ring-width);
+      outline-style: var(--focus-ring-style);
+      outline-color: var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+      box-shadow: var(--focus-ring-shadow);
+      transition:
+        box-shadow var(--transition-duration),
+        outline-color var(--transition-duration);
+    }
+  }
+
+  &__logo-svg {
+    width: 3rem;
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__config-menu {
+    display: flex;
+    gap: 1rem;
+  }
+
+  &__app-configurator-container {
+    position: relative;
+  }
+
+  &__app-configurator {
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+  &__action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--text-color);
+    transition: background-color var(--element-transition-duration);
+    cursor: pointer;
+
+    &--highlight {
+      background-color: var(--primary-color);
+      color: var(--primary-contrast-color);
+    }
+
+    &:hover {
+      background-color: var(--surface-hover);
+    }
+
+    &:focus-visible {
+      outline-width: var(--focus-ring-width);
+      outline-style: var(--focus-ring-style);
+      outline-color: var(--focus-ring-color);
+      outline-offset: var(--focus-ring-offset);
+      box-shadow: var(--focus-ring-shadow);
+      transition:
+        box-shadow var(--transition-duration),
+        outline-color var(--transition-duration);
+    }
+  }
+
+  &__action-icon {
+    font-size: 1.25rem !important; // To get around icon library styling
+  }
+
+  &__action-label {
+    font-size: 1rem;
+    display: none;
+  }
+
+  &__menu {
+
+    &--hidden {
+      display: none;
+    }
+  }
+
+  &__menu-button {
+    display: none;
+  }
+
+  &__menu-content {
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .layout-topbar {
+    &__menu-button {
+      display: inline-flex;
+    }
+
+    &__menu {
+      position: absolute;
+      background-color: var(--surface-overlay);
+      transform-origin: top;
+      box-shadow:
+        0px 3px 5px rgba(0, 0, 0, 0.02),
+        0px 0px 2px rgba(0, 0, 0, 0.05),
+        0px 1px 4px rgba(0, 0, 0, 0.08);
+      border-radius: var(--content-border-radius);
+      padding: 1rem;
+      right: 2rem;
+      top: 4rem;
+      min-width: 15rem;
+      border: 1px solid var(--surface-border);
+    }
+
+    &__menu-content {
+      gap: 0.5rem;
+      flex-direction: column;
+    }
+
+    //    padding: 0 2rem;
+    //
+    //    &__logo-container {
+    //      width: auto;
+    //    }
+    //
+    //    &__sidebar-button {
+    //      margin-left: 0;
+    //      margin-right: 0.5rem;
+    //    }
+    //
+    &__menu-item {
+      display: flex;
+      width: 100%;
+      height: auto;
+      justify-content: flex-start;
+      border-radius: var(--content-border-radius);
+      padding: 0.5rem 1rem;
+    }
+
+    &__menu-icon {
+      font-size: 1rem !important; // To get around icon library styling
+      margin-right: 0.5rem;
+    }
+
+    &__menu-label {
+      font-weight: medium;
+      display: block;
+    }
+  }
+}
+</style>
