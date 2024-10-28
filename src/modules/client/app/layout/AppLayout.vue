@@ -1,69 +1,216 @@
 <script setup>
-import { useLayout } from './composables/layout';
+// TODO lang=ts
 import { computed, ref, watch } from 'vue';
 import AppFooter from './AppFooter.vue';
 import AppSidebar from './AppSidebar.vue';
 import AppTopbar from './AppTopbar.vue';
+import { useLayout } from './composables/layout';
 
 const { layoutConfig, layoutState, isSidebarActive, resetMenu } = useLayout();
 
 const outsideClickListener = ref(null);
 
 watch(isSidebarActive, (newVal) => {
-    if (newVal) {
-        bindOutsideClickListener();
-    } else {
-        unbindOutsideClickListener();
-    }
+  if (newVal) {
+    bindOutsideClickListener();
+  } else {
+    unbindOutsideClickListener();
+  }
 });
 
-const containerClass = computed(() => {
-    return {
-        'layout-overlay': layoutConfig.menuMode === 'overlay',
-        'layout-static': layoutConfig.menuMode === 'static',
-        'layout-static-inactive': layoutState.staticMenuDesktopInactive && layoutConfig.menuMode === 'static',
-        'layout-overlay-active': layoutState.overlayMenuActive,
-        'layout-mobile-active': layoutState.staticMenuMobileActive
-    };
+const classes = (baseClassName) => {
+  return {
+    [`${baseClassName}--overlay`]: layoutConfig.menuMode === 'overlay',
+    [`${baseClassName}--overlay-active`]: layoutState.overlayMenuActive,
+    [`${baseClassName}--static`]: layoutConfig.menuMode === 'static',
+    [`${baseClassName}--static-inactive`]:
+      layoutState.staticMenuDesktopInactive &&
+      layoutConfig.menuMode === 'static',
+    [`${baseClassName}--mobile-active`]: layoutState.staticMenuMobileActive,
+  };
+};
+
+const sidebarClass = computed(() => {
+  return classes('layout-wrapper__sidebar');
+});
+
+const mainContainerClass = computed(() => {
+  return classes('layout-wrapper__main-container');
+});
+
+const maskClass = computed(() => {
+  return classes('layout-wrapper__mask');
 });
 
 function bindOutsideClickListener() {
-    if (!outsideClickListener.value) {
-        outsideClickListener.value = (event) => {
-            if (isOutsideClicked(event)) {
-                resetMenu();
-            }
-        };
-        document.addEventListener('click', outsideClickListener.value);
-    }
+  if (!outsideClickListener.value) {
+    outsideClickListener.value = (event) => {
+      if (isOutsideClicked(event)) {
+        resetMenu();
+      }
+    };
+    document.addEventListener('click', outsideClickListener.value);
+  }
 }
 
 function unbindOutsideClickListener() {
-    if (outsideClickListener.value) {
-        document.removeEventListener('click', outsideClickListener);
-        outsideClickListener.value = null;
-    }
+  if (outsideClickListener.value) {
+    document.removeEventListener('click', outsideClickListener);
+    outsideClickListener.value = null;
+  }
 }
 
 function isOutsideClicked(event) {
-    const sidebarEl = document.querySelector('.layout-sidebar');
-    const topbarEl = document.querySelector('.layout-topbar__sidebar-button');
+  // TODO these depend on classes from inside the sidebar, come up with a way to not need to
+  // know this knowledge
+  const sidebarEl = document.querySelector('.layout-sidebar');
+  const topbarEl = document.querySelector('.layout-topbar__sidebar-button');
 
-    return !(sidebarEl.isSameNode(event.target) || sidebarEl.contains(event.target) || topbarEl.isSameNode(event.target) || topbarEl.contains(event.target));
+  return !(
+    sidebarEl.isSameNode(event.target) ||
+    sidebarEl.contains(event.target) ||
+    topbarEl.isSameNode(event.target) ||
+    topbarEl.contains(event.target)
+  );
 }
 </script>
 
 <template>
-    <div class="layout-wrapper" :class="containerClass">
-        <app-topbar></app-topbar>
-        <app-sidebar></app-sidebar>
-        <div class="layout-main-container">
-            <div class="layout-main">
-                <router-view></router-view>
-            </div>
-            <app-footer></app-footer>
-        </div>
-        <div class="layout-mask animate-fadein"></div>
+  <div class="layout-wrapper">
+    <app-topbar></app-topbar>
+    <app-sidebar
+      class="layout-wrapper__sidebar"
+      :class="sidebarClass"
+    ></app-sidebar>
+    <div class="layout-wrapper__main-container" :class="mainContainerClass">
+      <div class="layout-wrapper__main">
+        <router-view></router-view>
+      </div>
+      <app-footer></app-footer>
     </div>
-    <Toast />
+    <div class="layout-wrapper__mask animate-fadein" :class="maskClass"></div>
+  </div>
+  <Toast />
 </template>
+
+<style lang="scss">
+.layout-wrapper {
+  min-height: 100vh;
+
+  &__main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+    padding: 6rem 2rem 0 2rem;
+    transition: margin-left var(--layout-section-transition-duration);
+  }
+
+  &__main {
+    flex: 1 1 auto;
+    padding-bottom: 2rem;
+  }
+}
+
+@media screen and (min-width: 1960px) {
+  .layout-wrpper {
+    &__main {
+      width: 1504px;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .layout-wrapper {
+    &__sidebar {
+      &--overlay {
+        transform: translateX(-100%);
+        left: 0;
+        top: 0;
+        height: 100vh;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-right: 1px solid var(--surface-border);
+        transition:
+          transform 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99),
+          left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+        box-shadow:
+          0px 3px 5px rgba(0, 0, 0, 0.02),
+          0px 0px 2px rgba(0, 0, 0, 0.05),
+          0px 1px 4px rgba(0, 0, 0, 0.08);
+      }
+
+      &--overlay-active {
+        transform: translateX(0);
+      }
+
+      &--static--inactive {
+        transform: translateX(-100%);
+        left: 0;
+      }
+    }
+
+    &__main-container {
+      &--overlay {
+        margin-left: 0;
+        padding-left: 2rem;
+      }
+
+      &--static {
+        margin-left: 22rem;
+      }
+
+      &--static-inactive {
+        margin-left: 0;
+        padding-left: 2rem;
+      }
+    }
+
+    &__mask {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .layout-wrapper {
+    &__sidebar {
+      transform: translateX(-100%);
+      left: 0;
+      top: 0;
+      height: 100vh;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      transition:
+        transform 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99),
+        left 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+
+      &--mobile-active {
+        transform: translateX(0);
+      }
+    }
+
+    &__main-container {
+      margin-left: 0;
+      padding-left: 2rem;
+    }
+
+    &__mask {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 998;
+      width: 100%;
+      height: 100%;
+      background-color: var(--maskbg);
+
+      &--mobile-active {
+        display: block;
+      }
+    }
+  }
+}
+</style>
