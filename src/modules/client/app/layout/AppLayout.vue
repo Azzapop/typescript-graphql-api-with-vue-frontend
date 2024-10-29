@@ -146,7 +146,7 @@ function isOutsideClicked(event) {
         transform: translateX(0);
       }
 
-      &--static--inactive {
+      &--static-inactive {
         transform: translateX(-100%);
         left: 0;
       }
