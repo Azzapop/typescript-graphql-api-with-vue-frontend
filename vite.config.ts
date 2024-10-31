@@ -21,4 +21,11 @@ export default defineConfig({
     minify: true,
     cssMinify: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler' // or "modern"
+      }
+    }
+  }
 });
