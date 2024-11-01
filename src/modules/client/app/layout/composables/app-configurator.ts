@@ -120,7 +120,6 @@ export const useAppConfigurator = () => {
     }
   };
 
-  // TODO this is technically not also surface colours
   const updateColors = (type: 'primary' | 'surface', color: ColorPalette) => {
     if (type === 'primary') {
       setPrimary(color.name);
