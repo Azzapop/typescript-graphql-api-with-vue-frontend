@@ -51,7 +51,7 @@ watch(
   () => layoutState.activeMenuItem,
   (newVal) => {
     isActiveMenu.value =
-      newVal === itemKey.value || newVal.startsWith(itemKey.value + '-');
+      newVal === itemKey.value || !!newVal?.startsWith(itemKey.value + '-');
   }
 );
 
@@ -75,8 +75,12 @@ const itemClick = (event: MouseEvent, item: MenuItem) => {
   const foundItemKey = item.items
     ? isActiveMenu.value
       ? props.parentItemKey
-      : itemKey
+      : itemKey.value
     : itemKey.value;
+
+  if (!foundItemKey) {
+    throw new Error('Somehow have no item key.');
+  }
 
   setActiveMenuItem(foundItemKey);
 };
@@ -146,7 +150,7 @@ const checkActiveRoute = (item: MenuItem) => {
           `layout-menuitem__submenu--depth-${depth}`,
         ]"
       >
-        <app-menu-item
+        <AppMenuItem
           v-for="(child, i) in item.items"
           :key="child"
           :index="i"
@@ -154,7 +158,7 @@ const checkActiveRoute = (item: MenuItem) => {
           :parentItemKey="itemKey"
           :root="false"
           :depth="depth + 1"
-        ></app-menu-item>
+        ></AppMenuItem>
       </ul>
     </Transition>
   </li>
