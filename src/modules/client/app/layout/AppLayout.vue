@@ -7,8 +7,14 @@ import { useLayout } from './composables/layout';
 
 const { layoutConfig, layoutState, isSidebarActive, resetMenu } = useLayout();
 
+const outsideClickListenerFunc = (event: MouseEvent) => {
+  if (isOutsideClicked(event)) {
+    resetMenu();
+  }
+};
+
 // TODO
-const outsideClickListener = ref<any>(null);
+const outsideClickListener = ref<typeof outsideClickListenerFunc | null>(null);
 
 watch(isSidebarActive, (newVal) => {
   if (newVal) {
@@ -44,11 +50,7 @@ const maskClass = computed(() => {
 
 const bindOutsideClickListener = () => {
   if (!outsideClickListener.value) {
-    outsideClickListener.value = (event: MouseEvent) => {
-      if (isOutsideClicked(event)) {
-        resetMenu();
-      }
-    };
+    outsideClickListener.value = outsideClickListenerFunc;
     document.addEventListener('click', outsideClickListener.value);
   }
 };
@@ -58,7 +60,7 @@ const unbindOutsideClickListener = () => {
     document.removeEventListener('click', outsideClickListener.value);
     outsideClickListener.value = null;
   }
-}
+};
 
 const isNode = (e: EventTarget | null): e is Node => {
   return !(!e || !('nodeType' in e));

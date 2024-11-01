@@ -1,4 +1,4 @@
-import { GqlBadParseError } from '@libs/graphql-errors';
+import { GqlBadParseError, GqlNotFoundError } from '@libs/graphql-errors';
 import { transformPainter } from '@libs/graphql-transformers';
 import type { GqlPaintingResolvers } from '@libs/graphql-types';
 import { prisma } from '@modules/prisma';
@@ -12,6 +12,9 @@ export const painter: GqlPaintingResolvers['painter'] = async (
   const dbPainter = await prisma.painter.findFirst({
     where: { id: painterId },
   });
+  if (dbPainter === null) {
+    throw new GqlNotFoundError();
+  }
   const result = transformPainter(dbPainter);
 
   if (!result) {

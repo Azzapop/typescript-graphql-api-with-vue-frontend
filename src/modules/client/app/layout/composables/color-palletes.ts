@@ -1,4 +1,4 @@
-import { ColorPalette } from "./types";
+import type { ColorPalette } from "./types";
 
 export const colorPalettes: ColorPalette[] = [
   { name: 'noir', palette: {} },

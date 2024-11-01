@@ -1,3 +1,4 @@
+import type { MenuItem } from 'primevue/menuitem';
 import { computed, reactive, readonly } from 'vue';
 import type { ColorName } from './color-palletes';
 import type { PresetName } from './presets';
@@ -26,7 +27,7 @@ type LayoutState = {
   configSidebarVisible: boolean;
   staticMenuMobileActive: boolean;
   menuHoverActive: boolean;
-  activeMenuItem: any;
+  activeMenuItem: MenuItem | null;
 };
 
 const layoutState = reactive<LayoutState>({
@@ -52,8 +53,7 @@ export const useLayout = () => {
     layoutConfig.preset = value;
   };
 
-  // TODO
-  const setActiveMenuItem = (item: any) => {
+  const setActiveMenuItem = (item: MenuItem) => {
     layoutState.activeMenuItem = item.value || item;
   };
 
