@@ -1,5 +1,4 @@
 import { createGqlPainterInput } from '#test/graphql';
-import { logger } from '@libs/logger';
 import { expect, it } from 'vitest';
 import { transformPainterInput } from './transform-painter-input';
 
