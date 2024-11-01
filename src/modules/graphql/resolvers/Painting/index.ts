@@ -1,4 +1,4 @@
-import type { GqlPaintingResolvers } from '@libs/graphql-types';
+import type { GqlPaintingResolvers } from '~libs/graphql-types';
 import { painter } from './painter';
 import { technique } from './technique';
 

@@ -1,8 +1,8 @@
-import type { GqlPaintingInput } from '@libs/graphql-types';
-import { GqlPaintingInputSchema } from '@libs/graphql-validators';
-import { logger } from '@libs/logger';
-import { PaintingCreateInputSchema } from '@libs/prisma-validators/zod';
 import type { Prisma } from '@prisma/client';
+import type { GqlPaintingInput } from '~libs/graphql-types';
+import { GqlPaintingInputSchema } from '~libs/graphql-validators';
+import { logger } from '~libs/logger';
+import { PaintingCreateInputSchema } from '~libs/prisma-validators/zod';
 
 const GqlToPrisma = GqlPaintingInputSchema()
   .transform(

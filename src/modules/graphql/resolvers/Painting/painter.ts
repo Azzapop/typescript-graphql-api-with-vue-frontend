@@ -1,7 +1,7 @@
-import { GqlBadParseError, GqlNotFoundError } from '@libs/graphql-errors';
-import { transformPainter } from '@libs/graphql-transformers';
-import type { GqlPaintingResolvers } from '@libs/graphql-types';
-import { prisma } from '@modules/prisma';
+import { GqlBadParseError, GqlNotFoundError } from '~libs/graphql-errors';
+import { transformPainter } from '~libs/graphql-transformers';
+import type { GqlPaintingResolvers } from '~libs/graphql-types';
+import { prisma } from '~modules/prisma';
 
 // TODO hide authorId in the schema?
 export const painter: GqlPaintingResolvers['painter'] = async (

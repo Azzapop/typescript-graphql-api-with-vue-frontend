@@ -1,4 +1,4 @@
-import type { GqlMutationResolvers } from '@libs/graphql-types';
+import type { GqlMutationResolvers } from '~libs/graphql-types';
 import { createPainter } from './createPainter';
 import { createPainting } from './createPainting';
 

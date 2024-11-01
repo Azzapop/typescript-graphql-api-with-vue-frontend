@@ -1,7 +1,7 @@
-import { createViteServer } from '@libs/vite';
 import type { Express } from 'express';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'path';
+import { createViteServer } from '~libs/vite';
 import { createServerHandler } from './create-server-handler';
 
 export const serverEntryDev = async () => {

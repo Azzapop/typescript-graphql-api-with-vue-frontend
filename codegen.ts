@@ -28,7 +28,7 @@ const config: CodegenConfig = {
       plugins: [addEslintDisable, 'typescript-validation-schema'],
       config: {
         schema: 'zod',
-        importFrom: '@libs/graphql-types',
+        importFrom: '~libs/graphql-types',
         withObjectType: true,
         // TODO switch back to `const` when issue resolved
         // https://github.com/Code-Hex/graphql-codegen-typescript-validation-schema/issues/528
@@ -43,7 +43,7 @@ const config: CodegenConfig = {
       preset: 'near-operation-file',
       presetConfig: {
         extension: '.gql.ts',
-        baseTypesPath: '~@libs/graphql-types',
+        baseTypesPath: '~~libs/graphql-types',
       },
       plugins: [addEslintDisable, 'typescript-operations'],
       config: {

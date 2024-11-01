@@ -1,10 +1,10 @@
 import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { createApolloClient } from '@modules/graphql/create-apollo-client';
 import Aura from '@primevue/themes/aura';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import { createSSRApp, h, provide } from 'vue';
+import { createApolloClient } from '~modules/graphql/create-apollo-client';
 import App from './App.vue';
 import './assets/styles.scss';
 import './assets/tailwind.css';

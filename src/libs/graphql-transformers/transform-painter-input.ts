@@ -1,12 +1,16 @@
-import type { GqlPainterInput } from '@libs/graphql-types';
-import { GqlPainterInputSchema } from '@libs/graphql-validators';
-import { logger } from '@libs/logger';
-import { PainterCreateInputSchema } from '@libs/prisma-validators';
 import type { Prisma } from '@prisma/client';
+import type { GqlPainterInput } from '~libs/graphql-types';
+import { GqlPainterInputSchema } from '~libs/graphql-validators';
+import { logger } from '~libs/logger';
+import { PainterCreateInputSchema } from '~libs/prisma-validators';
 
 const GqlToPrisma = GqlPainterInputSchema()
   .transform(
-    ({ name, country, techniques }): Prisma.PainterCreateInput => ({
+    ({
+      name,
+      country,
+      techniques,
+    }: GqlPainterInput): Prisma.PainterCreateInput => ({
       name,
       country,
       painterTechniques: {
