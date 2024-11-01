@@ -1,4 +1,6 @@
-export const surfacePalletes = [
+import { ColorPalette } from './types';
+
+export const surfacePalletes: ColorPalette[] = [
   {
     name: 'slate',
     palette: {

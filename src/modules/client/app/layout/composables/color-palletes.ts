@@ -1,4 +1,6 @@
-export const colorPalettes = [
+import { ColorPalette } from "./types";
+
+export const colorPalettes: ColorPalette[] = [
   { name: 'noir', palette: {} },
   {
     name: 'emerald',
@@ -259,4 +261,3 @@ export const colorPalettes = [
 ] as const;
 
 export type ColorName = (typeof colorPalettes)[number]['name'];
-export type ColorPalette = typeof colorPalettes[number]

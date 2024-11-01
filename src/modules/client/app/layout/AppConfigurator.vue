@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useAppConfigurator } from './composables/app-configurator';
 import { useLayout } from './composables/layout';
 

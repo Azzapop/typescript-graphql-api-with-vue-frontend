@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import AppConfigurator from './AppConfigurator.vue';
 import { useLayout } from './composables/layout';
 
@@ -311,17 +311,6 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
       flex-direction: column;
     }
 
-    //    padding: 0 2rem;
-    //
-    //    &__logo-container {
-    //      width: auto;
-    //    }
-    //
-    //    &__sidebar-button {
-    //      margin-left: 0;
-    //      margin-right: 0.5rem;
-    //    }
-    //
     &__menu-item {
       display: flex;
       width: 100%;
