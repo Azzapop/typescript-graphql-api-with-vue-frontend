@@ -1,9 +1,9 @@
 import { updatePreset, updateSurfacePalette, $t } from '@primevue/themes';
 import { ref } from 'vue';
-import { colorPalettes } from './color-palletes';
+import { colorPalettes } from './color-palettes';
 import { useLayout } from './layout';
 import { presets } from './presets';
-import { surfacePalletes } from './surface-palletes';
+import { surfacePalletes } from './surface-palettes';
 import type { ColorPalette } from './types';
 
 export const useAppConfigurator = () => {

@@ -1,8 +1,8 @@
 import type { MenuItem } from 'primevue/menuitem';
 import { computed, reactive, readonly } from 'vue';
-import type { ColorName } from './color-palletes';
+import type { ColorName } from './color-palettes';
 import type { PresetName } from './presets';
-import type { SurfaceName } from './surface-palletes';
+import type { SurfaceName } from './surface-palettes';
 
 type LayoutConfig = {
   preset: PresetName;
