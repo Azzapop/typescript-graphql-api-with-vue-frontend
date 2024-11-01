@@ -137,6 +137,6 @@ export const surfacePalletes: ColorPalette[] = [
       950: '#0c1920',
     },
   },
-];
+] as const;
 
 export type SurfaceName = (typeof surfacePalletes)[number]['name'];
