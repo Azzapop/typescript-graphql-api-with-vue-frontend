@@ -13,7 +13,6 @@ const outsideClickListenerFunc = (event: MouseEvent) => {
   }
 };
 
-// TODO
 const outsideClickListener = ref<typeof outsideClickListenerFunc | null>(null);
 
 watch(isSidebarActive, (newVal) => {
