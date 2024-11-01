@@ -163,7 +163,7 @@ const {
   }
 
   &__selector {
-    gap: .5rem;
+    gap: 0.5rem;
     flex-direction: column;
     display: flex;
   }

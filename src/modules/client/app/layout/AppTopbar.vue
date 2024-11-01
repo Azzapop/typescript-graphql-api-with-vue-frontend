@@ -83,7 +83,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
           >
             <i class="pi pi-palette layout-topbar__action-icon"></i>
           </button>
-          <AppConfigurator class="layout-topbar__app-configurator--hidden"/>
+          <AppConfigurator class="layout-topbar__app-configurator--hidden" />
         </div>
       </div>
 
@@ -207,7 +207,6 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
   }
 
   &__app-configurator {
-
     &--hidden {
       display: none;
     }
@@ -260,7 +259,6 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
   }
 
   &__menu {
-
     &--hidden {
       display: none;
     }
@@ -278,8 +276,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
 @media (min-width: 992px) {
   .layout-topbar {
-    
-    // We get a little bit tricky here with the css. By being slightly more specific only on larger 
+    // We get a little bit tricky here with the css. By being slightly more specific only on larger
     // screens we are able to hide the menu by default on smaller screen sizes
     &__menu {
       display: block;

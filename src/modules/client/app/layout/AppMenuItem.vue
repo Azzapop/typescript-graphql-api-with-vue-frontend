@@ -1,4 +1,5 @@
-<script setup>
+<script setup lang="ts">
+import type { MenuItem } from 'primevue/menuitem';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useLayout } from './composables/layout';
@@ -31,14 +32,14 @@ const props = defineProps({
 });
 
 const isActiveMenu = ref(false);
-const itemKey = ref(null);
+const itemKey = ref<string | undefined>();
 
 onBeforeMount(() => {
   itemKey.value = props.parentItemKey
     ? props.parentItemKey + '-' + props.index
     : String(props.index);
 
-  const activeItem = layoutState.activeMenuItem;
+  const { activeMenuItem: activeItem } = layoutState;
 
   isActiveMenu.value =
     activeItem === itemKey.value || activeItem
@@ -54,7 +55,7 @@ watch(
   }
 );
 
-function itemClick(event, item) {
+const itemClick = (event: MouseEvent, item: MenuItem) => {
   if (item.disabled) {
     event.preventDefault();
     return;
@@ -78,11 +79,11 @@ function itemClick(event, item) {
     : itemKey.value;
 
   setActiveMenuItem(foundItemKey);
-}
+};
 
-function checkActiveRoute(item) {
+const checkActiveRoute = (item: MenuItem) => {
   return route.path === item.to;
-}
+};
 </script>
 
 <template>
@@ -95,8 +96,12 @@ function checkActiveRoute(item) {
     <a
       v-if="!root && (!item.to || item.items) && item.visible !== false"
       :href="item.url"
-      @click="itemClick($event, item, index)"
-      :class="[item.class, 'layout-menuitem__anchor', `layout-menuitem__anchor--depth-${depth}`]"
+      @click="itemClick($event, item)"
+      :class="[
+        item.class,
+        'layout-menuitem__anchor',
+        `layout-menuitem__anchor--depth-${depth}`,
+      ]"
       :target="item.target"
       tabindex="0"
     >
@@ -111,7 +116,7 @@ function checkActiveRoute(item) {
     <!-- If no submenu, render a router link directly -->
     <router-link
       v-if="item.to && !item.items && item.visible !== false"
-      @click="itemClick($event, item, index)"
+      @click="itemClick($event, item)"
       :class="[
         item.class,
         'layout-menuitem__anchor',
@@ -134,7 +139,13 @@ function checkActiveRoute(item) {
       v-if="item.items && item.visible !== false"
       name="layout-menuitem__submenu"
     >
-    <ul v-show="root ? true : isActiveMenu" :class="['layout-menuitem__submenu', `layout-menuitem__submenu--depth-${depth}`]">
+      <ul
+        v-show="root ? true : isActiveMenu"
+        :class="[
+          'layout-menuitem__submenu',
+          `layout-menuitem__submenu--depth-${depth}`,
+        ]"
+      >
         <app-menu-item
           v-for="(child, i) in item.items"
           :key="child"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { MenuItem } from 'primevue/menuitem';
+import type { MenuItem } from 'primevue/menuitem';
 import { ref } from 'vue';
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
 
 // First level: label
@@ -164,7 +164,7 @@ const model: Ref = ref<MenuItem[]>([
         :item="item"
         :index="i"
       ></app-menu-item>
-      <li v-if="item.separator" class="menu-separator"></li>
+      <li v-if="item.separator" class="layout-menu__separator"></li>
     </template>
   </ul>
 </template>
@@ -174,5 +174,9 @@ const model: Ref = ref<MenuItem[]>([
   margin: 0;
   padding: 0;
   list-style-type: none;
+
+  &__seperate {
+    // TODO
+  }
 }
 </style>

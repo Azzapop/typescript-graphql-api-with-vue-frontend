@@ -10,10 +10,10 @@ import './assets/styles.scss';
 import './assets/tailwind.css';
 import { createVueRouter } from './create-vue-router';
 
-export function createVueApp(
+export const createVueApp = (
   opts: { isServer: boolean },
   deps: { apolloClient?: ApolloClient<NormalizedCacheObject> } = {}
-) {
+) => {
   const { apolloClient = createApolloClient(opts) } = deps;
 
   const app = createSSRApp({
@@ -34,9 +34,9 @@ export function createVueApp(
       preset: Aura,
       options: {
         darkModeSelector: '.app-dark',
-      }
+      },
     },
   });
 
   return { app, router, store };
-}
+};

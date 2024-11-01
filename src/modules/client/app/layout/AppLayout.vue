@@ -1,5 +1,4 @@
-<script setup>
-// TODO lang=ts
+<script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import AppFooter from './AppFooter.vue';
 import AppSidebar from './AppSidebar.vue';
@@ -8,7 +7,8 @@ import { useLayout } from './composables/layout';
 
 const { layoutConfig, layoutState, isSidebarActive, resetMenu } = useLayout();
 
-const outsideClickListener = ref(null);
+// TODO
+const outsideClickListener = ref<any>(null);
 
 watch(isSidebarActive, (newVal) => {
   if (newVal) {
@@ -18,7 +18,7 @@ watch(isSidebarActive, (newVal) => {
   }
 });
 
-const classes = (baseClassName) => {
+const classes = (baseClassName: string) => {
   return {
     [`${baseClassName}--overlay`]: layoutConfig.menuMode === 'overlay',
     [`${baseClassName}--overlay-active`]: layoutState.overlayMenuActive,
@@ -42,37 +42,43 @@ const maskClass = computed(() => {
   return classes('layout-wrapper__mask');
 });
 
-function bindOutsideClickListener() {
+const bindOutsideClickListener = () => {
   if (!outsideClickListener.value) {
-    outsideClickListener.value = (event) => {
+    outsideClickListener.value = (event: MouseEvent) => {
       if (isOutsideClicked(event)) {
         resetMenu();
       }
     };
     document.addEventListener('click', outsideClickListener.value);
   }
-}
+};
 
-function unbindOutsideClickListener() {
+const unbindOutsideClickListener = () => {
   if (outsideClickListener.value) {
-    document.removeEventListener('click', outsideClickListener);
+    document.removeEventListener('click', outsideClickListener.value);
     outsideClickListener.value = null;
   }
 }
 
-function isOutsideClicked(event) {
+const isNode = (e: EventTarget | null): e is Node => {
+  return !(!e || !('nodeType' in e));
+};
+
+const isOutsideClicked = (event: MouseEvent) => {
   // TODO these depend on classes from inside the sidebar, come up with a way to not need to
   // know this knowledge
   const sidebarEl = document.querySelector('.layout-sidebar');
   const topbarEl = document.querySelector('.layout-topbar__sidebar-button');
 
+  if (!isNode(event.target)) return false;
+
   return !(
-    sidebarEl.isSameNode(event.target) ||
-    sidebarEl.contains(event.target) ||
-    topbarEl.isSameNode(event.target) ||
-    topbarEl.contains(event.target)
+    sidebarEl?.isSameNode(event.target) ||
+    sidebarEl?.contains(event.target) ||
+    topbarEl?.isSameNode(event.target) ||
+    topbarEl?.contains(event.target)
   );
-}
+};
 </script>
 
 <template>
