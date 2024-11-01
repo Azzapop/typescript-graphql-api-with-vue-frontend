@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppLayout from '@app/layout/AppLayout.vue';
 import { defineStore } from 'pinia';
 import { ref, onServerPrefetch, onMounted } from 'vue';
 import { usePainters } from './use-painters';
@@ -30,7 +31,9 @@ onMounted(async () => {
 });
 </script>
 <template v-if="store.painters !== null">
-  <div v-for="painter in store.painters" v-bind:key="painter?.name">
-    <p>{{ painter?.name }}</p>
-  </div>
+  <AppLayout>
+    <div v-for="painter in store.painters" v-bind:key="painter?.name">
+      <p>{{ painter?.name }}</p>
+    </div>
+  </AppLayout>
 </template>
