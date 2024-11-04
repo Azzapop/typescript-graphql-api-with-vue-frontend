@@ -12,6 +12,7 @@ export default defineConfig({
     graphqlLoader(),
     Components({
       resolvers: [PrimeVueResolver()],
+      dts: 'src/shims/components.d.ts'
     }),
   ],
   optimizeDeps: { exclude: ['fsevents'] },
