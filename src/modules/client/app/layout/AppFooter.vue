@@ -7,7 +7,7 @@
       href="https://primevue.org"
       target="_blank"
       rel="noopener noreferrer"
-      class="text-primary font-bold hover:underline"
+      class="layout-footer__link"
       >PrimeVue</a
     >
   </div>
@@ -21,5 +21,14 @@
   padding: 1rem 0 1rem 0;
   gap: 0.5rem;
   border-top: 1px solid var(--surface-border);
+
+  &__link {
+    color: var(--p-primary-color);
+    font-weight: 700;
+
+    &:hover {
+      text-decoration-line: underline;
+    }
+  }
 }
 </style>

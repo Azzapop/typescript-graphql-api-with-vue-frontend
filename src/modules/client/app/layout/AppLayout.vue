@@ -91,7 +91,7 @@ const isOutsideClicked = (event: MouseEvent) => {
     ></app-sidebar>
     <div class="layout-wrapper__main-container" :class="mainContainerClass">
       <div class="layout-wrapper__main">
-        <router-view></router-view>
+        <slot></slot>
       </div>
       <app-footer></app-footer>
     </div>

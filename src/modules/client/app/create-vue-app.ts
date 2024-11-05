@@ -6,8 +6,9 @@ import PrimeVue from 'primevue/config';
 import { createSSRApp, h, provide } from 'vue';
 import { createApolloClient } from '~modules/graphql/create-apollo-client';
 import App from './App.vue';
-import './assets/styles.scss';
-import './assets/tailwind.css';
+import './assets/styles/index.scss';
+import './assets/styles/lato-font.css';
+import './assets/styles/tailwind.css';
 import { createVueRouter } from './create-vue-router';
 
 export const createVueApp = (
