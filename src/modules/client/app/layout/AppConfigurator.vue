@@ -92,19 +92,13 @@ const {
 .config-panel {
   border-radius: var(--p-content-border-radius);
   border-color: var(--p-content-border-color);
-  --tw-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05),
+  --shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05),
     0px 1px 4px rgba(0, 0, 0, 0.08);
-  --tw-shadow-colored: 0px 3px 5px var(--tw-shadow-color),
-    0px 0px 2px var(--tw-shadow-color), 0px 1px 4px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --ring-offet-shadow: 0 0 #0000;
+  --ring-shadow: 0 0 #0000;
+  box-shadow: var(--ring-offet-shadow), var(--ring-shadow), var(--shadow);
   padding: 1rem;
-  --tw-bg-opacity: 1;
-  background-color: color-mix(
-    in srgb,
-    var(--p-surface-0) calc(100% * var(--tw-bg-opacity)),
-    transparent
-  );
+  background-color: var(--p-surface-0);
   border-width: 1px;
   transform-origin: top;
   width: 16rem;
@@ -114,12 +108,7 @@ const {
   box-sizing: border-box;
 
   &--dark {
-    --tw-bg-opacity: 1;
-    background-color: color-mix(
-      in srgb,
-      var(--p-surface-900) calc(100% * var(--tw-bg-opacity)),
-      transparent
-    );
+    background-color: var(--p-surface-900);
   }
 
   &__settings {
@@ -154,11 +143,7 @@ const {
     height: 1.25rem;
 
     &--outline-primary {
-      outline-color: color-mix(
-        in srgb,
-        var(--p-primary-color) calc(100% * 1),
-        transparent
-      );
+      outline-color: var(--p-primary-color);
     }
   }
 
