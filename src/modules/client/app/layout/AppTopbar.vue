@@ -1,8 +1,19 @@
 <script setup lang="ts">
+import Popover from 'primevue/popover';
+import { useTemplateRef } from 'vue';
+import { assert } from '~libs/client-utils';
 import AppConfigurator from './AppConfigurator.vue';
 import { useLayout } from './composables/layout';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+
+const appConfiguratorPopover = useTemplateRef<InstanceType<typeof Popover>>(
+  'app-configurator-popover'
+);
+const toggleAppConfigurator = (e: Event) => {
+  assert(appConfiguratorPopover.value);
+  appConfiguratorPopover.value.toggle(e);
+};
 </script>
 
 <template>
@@ -70,20 +81,15 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
         </button>
         <div class="layout-topbar__app-configurator-container">
           <button
-            v-styleclass="{
-              selector: '@next',
-              enterFromClass: 'layout-topbar__app-configurator--hidden',
-              enterActiveClass: 'animate-scalein',
-              leaveToClass: 'layout-topbar__app-configurator--hidden',
-              leaveActiveClass: 'animate-fadeout',
-              hideOnOutsideClick: true,
-            }"
+            @click="toggleAppConfigurator"
             type="button"
             class="layout-topbar__action layout-topbar__action--highlight"
           >
             <i class="pi pi-palette layout-topbar__action-icon"></i>
           </button>
-          <AppConfigurator class="layout-topbar__app-configurator--hidden" />
+          <Popover ref="app-configurator-popover">
+            <AppConfigurator />
+          </Popover>
         </div>
       </div>
 
@@ -101,6 +107,7 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
         <i class="pi pi-ellipsis-v layout-topbar__action-icon"></i>
       </button>
 
+      <!-- TODO convert the menu to use the Popover component -->
       <div class="layout-topbar__menu layout-topbar__menu--hidden">
         <div class="layout-topbar__menu-content">
           <button
@@ -204,12 +211,6 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
   &__app-configurator-container {
     position: relative;
-  }
-
-  &__app-configurator {
-    &--hidden {
-      display: none;
-    }
   }
 
   &__action {

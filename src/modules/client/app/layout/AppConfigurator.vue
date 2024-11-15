@@ -18,7 +18,7 @@ const {
 </script>
 
 <template>
-  <div class="config-panel" :class="{ 'config-panel--dark': isDarkTheme }">
+  <div class="config-panel">
     <div class="config-panel__settings">
       <div>
         <span class="config-panel__label">Primary</span>
@@ -90,26 +90,7 @@ const {
 </template>
 <style lang="scss">
 .config-panel {
-  border-radius: var(--p-content-border-radius);
-  border-color: var(--p-content-border-color);
-  --shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05),
-    0px 1px 4px rgba(0, 0, 0, 0.08);
-  --ring-offet-shadow: 0 0 #0000;
-  --ring-shadow: 0 0 #0000;
-  box-shadow: var(--ring-offet-shadow), var(--ring-shadow), var(--shadow);
-  padding: 1rem;
-  background-color: var(--p-surface-0);
-  border-width: 1px;
-  transform-origin: top;
-  width: 16rem;
-  top: 3.25rem;
-  right: 0px;
-  position: absolute;
-  box-sizing: border-box;
-
-  &--dark {
-    background-color: var(--p-surface-900);
-  }
+  width: 15rem;
 
   &__settings {
     gap: 1rem;
