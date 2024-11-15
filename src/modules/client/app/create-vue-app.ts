@@ -30,8 +30,10 @@ export const createVueApp = (
 
   app.use(PrimeVue, {
     theme: {
+      // TODO Can we avoid having to set the theme here due to the AppConfigurator?
       preset: Aura,
       options: {
+        // TODO Tie this into the layout so there's no need to remember to change it everywhere
         darkModeSelector: '.app-dark',
       },
     },
