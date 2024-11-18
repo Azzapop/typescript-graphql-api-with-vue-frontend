@@ -1,8 +1,8 @@
-import type { GqlPainter, GqlResolversTypes } from '@libs/graphql-types';
-import { GqlPainterSchema } from '@libs/graphql-validators';
-import { logger } from '@libs/logger';
-import { PainterSchema } from '@libs/prisma-validators';
-import { Painter } from '@prisma/client';
+import type { Painter } from '@prisma/client';
+import type { GqlPainter, GqlResolversTypes } from '~libs/graphql-types';
+import { GqlPainterSchema } from '~libs/graphql-validators';
+import { logger } from '~libs/logger';
+import { PainterSchema } from '~libs/prisma-validators';
 
 const PrismaToGql = PainterSchema.transform(
   ({ id, name, country }): GqlPainter => ({

@@ -1,0 +1,8 @@
+// Make sure preflight is first so the our own styles apply correctly
+@use './preflight.css';
+// Include lato font styles
+@use './lato-font.css';
+// Include custom base layout styles that apply globally
+@use './layout/layout.scss';
+// Include any libary styles below
+@import 'primeicons/primeicons.css';

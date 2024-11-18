@@ -1,4 +1,4 @@
-import type { GqlPainterResolvers } from '@libs/graphql-types';
+import type { GqlPainterResolvers } from '~libs/graphql-types';
 import { techniques } from './techniques';
 
 export const Painter: GqlPainterResolvers = {
