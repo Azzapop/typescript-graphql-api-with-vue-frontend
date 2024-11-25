@@ -23,6 +23,6 @@ export const createViteServer = async (
         port: hmrPort,
       },
     },
-    appType: 'custom',
+    appType: 'spa',
   });
 };

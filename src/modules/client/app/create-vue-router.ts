@@ -10,12 +10,10 @@ import PaintersPage from './pages/PaintersPage/PaintersPage.vue';
 const routes = [
   {
     path: '/',
-    name: '',
     component: HomePage,
   },
   {
     path: '/painters',
-    name: '',
     component: PaintersPage,
   },
 ];
