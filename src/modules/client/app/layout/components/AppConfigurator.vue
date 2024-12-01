@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAppConfigurator } from './composables/app-configurator';
-import { useLayout } from './composables/layout';
+import { useAppConfigurator } from '../composables/app-configurator';
+import { useLayout } from '../composables/layout';
 
 const { layoutConfig, isDarkTheme } = useLayout();
 

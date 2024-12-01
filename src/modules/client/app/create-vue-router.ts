@@ -5,6 +5,7 @@ import {
   createMemoryHistory,
 } from 'vue-router';
 import HomePage from './pages/HomePage/HomePage.vue';
+import NotFound from './pages/NotFound/NotFound.vue';
 import PaintersPage from './pages/PaintersPage/PaintersPage.vue';
 
 const routes = [
@@ -15,6 +16,10 @@ const routes = [
   {
     path: '/painters',
     component: PaintersPage,
+  },
+  {
+    path: '/pages/notfound',
+    component: NotFound,
   },
 ];
 

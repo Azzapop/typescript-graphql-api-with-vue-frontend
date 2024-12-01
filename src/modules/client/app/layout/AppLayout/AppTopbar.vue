@@ -2,8 +2,8 @@
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
-import AppConfigurator from './AppConfigurator.vue';
-import { useLayout } from './composables/layout';
+import AppConfigurator from '../components/AppConfigurator.vue';
+import { useLayout } from '../composables/layout';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
