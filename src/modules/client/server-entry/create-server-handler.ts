@@ -1,6 +1,7 @@
 import type { RequestHandler } from 'express';
 import type { ViteDevServer } from 'vite';
 import { asyncHanlder } from '~libs/async-handler';
+// TODO spelling
 import { renderHtml } from './render-html';
 
 export const createServerHandler = (opts: {
@@ -36,8 +37,6 @@ export const createServerHandler = (opts: {
         const { stack } = e;
         msg = stack;
       }
-
-      console.log(msg);
 
       res.status(500).end(msg);
     }
