@@ -2,6 +2,7 @@
 import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
 import { useLayout } from '@app/layout/composables/layout';
 import Divider from 'primevue/divider';
+import InfoCard from '@app/components/InfoCard.vue';
 
 const { isDarkTheme } = useLayout();
 </script>
@@ -45,27 +46,22 @@ const { isDarkTheme } = useLayout();
             />
           </g>
         </svg>
-        <div class="not-found__card">
-          <div
-            class="not-found__card-contents"
-            :class="{ 'not-found__card-contents--dark': isDarkTheme }"
-          >
-            <span class="not-found__pre-title">404</span>
-            <h1 class="not-found__title">Not Found</h1>
-            <div class="not-found__subtext">
-              Requested resource is not available.
-            </div>
+        <InfoCard
+          :preTitle="'404'"
+          title="Not Found"
+          subtitle="Requested resource is not available."
+          :dark="isDarkTheme"
+          buttonLabel="Go to Dashboard"
+          buttonTo="/"
+        >
+          <div class="not-found__links">
             <router-link to="/" class="not-found__link">
               <span class="not-found__link-icon-box">
                 <i class="not-found__link-icon pi pi-fw pi-table !text-2xl"></i>
               </span>
               <span class="not-found__link-content">
-                <span class="not-found__link-title"
-                  >Frequently Asked Questions</span
-                >
-                <span class="not-found__link-subtext"
-                  >Ultricies mi quis hendrerit dolor.</span
-                >
+                <span class="not-found__link-title">Frequently Asked Questions</span>
+                <span class="not-found__link-subtext">Ultricies mi quis hendrerit dolor.</span>
               </span>
             </router-link>
             <Divider class="not-found__link-divider" />
@@ -75,9 +71,7 @@ const { isDarkTheme } = useLayout();
               </span>
               <span class="not-found__link-content">
                 <span class="not-found__link-title">Solution Center</span>
-                <span class="not-found__link-subtext"
-                  >Phasellus faucibus scelerisque eleifend.</span
-                >
+                <span class="not-found__link-subtext">Phasellus faucibus scelerisque eleifend.</span>
               </span>
             </router-link>
             <Divider class="not-found__link-divider" />
@@ -87,15 +81,12 @@ const { isDarkTheme } = useLayout();
               </span>
               <span class="not-found__link-content">
                 <span class="not-found__link-title">Permission Manager</span>
-                <span class="not-found__link-subtext"
-                  >Accumsan in nisl nisi scelerisque</span
-                >
+                <span class="not-found__link-subtext">Accumsan in nisl nisi scelerisque</span>
               </span>
             </router-link>
             <Divider class="not-found__link-divider" />
-            <Button as="router-link" label="Go to Dashboard" to="/" />
           </div>
-        </div>
+        </InfoCard>
       </div>
     </div>
   </FloatingMenuLayout>
@@ -124,60 +115,10 @@ const { isDarkTheme } = useLayout();
     margin-bottom: 2rem;
   }
 
-  &__card {
-    border-radius: 56px;
-    padding: 0.3rem;
-    background: linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--primary-color), transparent 60%) 10%,
-      var(--surface-ground) 30%
-    );
-  }
-
-  &__card-contents {
-    border-radius: 53px; // TODO why not var?
-    padding-top: 5rem;
-    padding-bottom: 5rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    background-color: var(--p-surface-0);
-    align-items: center;
+  &__links {
+    display: flex;
     flex-direction: column;
     width: 100%;
-    display: flex;
-
-    &--dark {
-      background-color: var(--p-surface-900); // TODO whyyy
-    }
-
-    @media (min-width: 576px) {
-      padding-left: 5rem;
-      padding-right: 5rem;
-    }
-  }
-
-  &__pre-title {
-    color: var(--p-primary-color);
-    font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-  }
-
-  &__title {
-    font-weight: 700;
-    font-size: 1.875rem;
-    line-height: 2.25rem;
-    margin-bottom: 0.5rem;
-    margin-top: 0;
-
-    @media (min-width: 992px) {
-      font-size: 3rem;
-      line-height: 1;
-    }
-  }
-
-  &__subtext {
-    margin-bottom: 4rem;
   }
 
   &__link {
