@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
-import { useLayout } from '@app/layout/composables/layout';
 import InfoCard from '@app/components/InfoCard.vue';
-
-// Import the image so Vite/Webpack resolves it as a module
-import noAccessImg from '../../../assets/images/no-access.svg';
-
-const { isDarkTheme } = useLayout();
+import NoAccessImage from './NoAccessImage.vue';
 </script>
 
 <template>
@@ -17,18 +12,11 @@ const { isDarkTheme } = useLayout();
           title="Access Denied"
           subtitle="You do not have the necessary permisions. Please contact admins."
           icon="pi pi-fw pi-lock"
-          :image="noAccessImg"
-          color="warning"
-          :dark="isDarkTheme"
+          severity="warn"
+          buttonLabel="Go to Dashboard"
+          buttonTo="/"
         >
-          <div class="no-access__button-container">
-            <Button
-              as="router-link"
-              label="Go to Dashboard"
-              to="/"
-              severity="warn"
-            />
-          </div>
+          <NoAccessImage />
         </InfoCard>
       </div>
     </div>

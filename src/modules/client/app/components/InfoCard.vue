@@ -1,22 +1,31 @@
 <script setup lang="ts">
-defineProps<{
-  title: string;
-  subtitle?: string;
-  preTitle?: string;
-  icon?: string; // icon class, e.g. 'pi pi-fw pi-lock'
-  image?: string; // image src
-  color?: 'primary' | 'warning';
-  dark?: boolean;
-  buttonLabel?: string;
-  buttonTo?: string;
-  buttonSeverity?: string;
-}>();
+import { useLayout } from '@app/layout/composables/layout';
+import { PropType } from 'vue';
+
+defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  subtitle: String,
+  preTitle: String,
+  icon: String,
+  severity: {
+    type: String as PropType<'primary' | 'warn'>,
+    default: 'primary',
+    validator: (val: string) => ['primary', 'warn'].includes(val),
+  },
+  buttonLabel: String,
+  buttonTo: String,
+});
+
+const { isDarkTheme } = useLayout();
 </script>
 
 <template>
   <div
     class="info-card"
-    :class="[`info-card--${color || 'primary'}`, { 'info-card--dark': dark }]"
+    :class="[`info-card--${severity}`, { 'info-card--dark': isDarkTheme }]"
   >
     <div class="info-card__inner">
       <div class="info-card__content">
@@ -26,14 +35,13 @@ defineProps<{
         <span v-if="preTitle" class="info-card__pre-title">{{ preTitle }}</span>
         <h1 class="info-card__title">{{ title }}</h1>
         <span v-if="subtitle" class="info-card__subtitle">{{ subtitle }}</span>
-        <img v-if="image" :src="image" class="info-card__image" />
         <slot></slot>
         <Button
           v-if="buttonLabel && buttonTo"
           as="router-link"
           :label="buttonLabel"
           :to="buttonTo"
-          :severity="buttonSeverity || undefined"
+          :severity="severity"
           class="info-card__button"
         />
       </div>
@@ -51,10 +59,10 @@ defineProps<{
     var(--surface-ground) 30%
   );
 
-  &--warning {
+  &--warn {
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--warning-color-muted), transparent 60%) 10%,
+      color-mix(in srgb, var(--warn-color-muted), transparent 60%) 10%,
       var(--surface-ground) 30%
     );
   }
@@ -94,7 +102,7 @@ defineProps<{
     align-items: center;
     display: flex;
   }
-  &--warning &__icon-container {
+  &--warn &__icon-container {
     border-color: rgb(249 115 22);
   }
 
@@ -103,7 +111,7 @@ defineProps<{
     font-size: 1.5rem !important;
     line-height: 2rem !important;
   }
-  &--warning &__icon {
+  &--warn &__icon {
     color: rgb(249 115 22);
   }
 
@@ -127,10 +135,6 @@ defineProps<{
   &__subtitle {
     color: var(--p-text-muted-color);
     margin-bottom: 2rem;
-  }
-  &__image {
-    margin-bottom: 2rem;
-    width: 80%;
   }
   &__button {
     text-align: center;
