@@ -4,10 +4,10 @@ import {
   createWebHistory,
   createMemoryHistory,
 } from 'vue-router';
-import HomePage from './pages/HomePage/HomePage.vue';
-import NotFound from './pages/NotFound/NotFound.vue';
-import NoAccess from './pages/auth/NoAccess/NoAccess.vue'
-import PaintersPage from './pages/PaintersPage/PaintersPage.vue';
+import HomePage from './pages/Home/HomePage.vue';
+import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
+import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue'
+import PaintersPage from './pages/Painters/PaintersPage.vue';
 
 const routes = [
   {
@@ -20,11 +20,11 @@ const routes = [
   },
   {
     path: '/pages/notfound',
-    component: NotFound,
+    component: NotFoundPage,
   },
   {
     path: '/auth/access',
-    component: NoAccess,
+    component: NoAccessPage,
   }
 ];
 
