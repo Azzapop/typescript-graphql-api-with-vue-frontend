@@ -11,9 +11,9 @@ defineProps({
   preTitle: String,
   icon: String,
   severity: {
-    type: String as PropType<'primary' | 'warn'>,
+    type: String as PropType<'primary' | 'warn' | 'danger'>,
     default: 'primary',
-    validator: (val: string) => ['primary', 'warn'].includes(val),
+    validator: (val: string) => ['primary', 'warn', 'danger'].includes(val),
   },
   buttonLabel: String,
   buttonTo: String,
@@ -67,6 +67,14 @@ const { isDarkTheme } = useLayout();
     );
   }
 
+  &--danger {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--danger-color-muted, #f87171), transparent 60%) 10%,
+      var(--surface-ground) 30%
+    );
+  }
+
   &--dark .info-card__inner {
     background-color: var(--p-surface-900);
   }
@@ -103,7 +111,10 @@ const { isDarkTheme } = useLayout();
     display: flex;
   }
   &--warn &__icon-container {
-    border-color: rgb(249 115 22);
+    border-color: rgb(249, 115, 22);
+  }
+  &--danger &__icon-container {
+    border-color: rgb(220, 38, 38);
   }
 
   &__icon {
@@ -112,7 +123,10 @@ const { isDarkTheme } = useLayout();
     line-height: 2rem !important;
   }
   &--warn &__icon {
-    color: rgb(249 115 22);
+    color: rgb(249, 115, 22);
+  }
+  &--danger &__icon {
+    color: rgb(220, 38, 38);
   }
 
   &__pre-title {

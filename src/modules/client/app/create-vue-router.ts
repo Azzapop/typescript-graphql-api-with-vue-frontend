@@ -8,6 +8,7 @@ import HomePage from './pages/Home/HomePage.vue';
 import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
 import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue'
 import PaintersPage from './pages/Painters/PaintersPage.vue';
+import ErrorPage from './pages/auth/Error/ErrorPage.vue';
 
 const routes = [
   {
@@ -25,6 +26,10 @@ const routes = [
   {
     path: '/auth/access',
     component: NoAccessPage,
+  },
+  {
+    path: '/auth/error',
+    component: ErrorPage,
   }
 ];
 
