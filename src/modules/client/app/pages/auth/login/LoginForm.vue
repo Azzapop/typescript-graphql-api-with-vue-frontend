@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Button from 'primevue/button';
 import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
@@ -8,6 +9,8 @@ const email = defineModel<string>('email');
 const password = defineModel<string>('password');
 const checked = defineModel<boolean>('checked');
 const onSubmit = defineModel<() => void>('submit');
+
+const { t } = useNamespacedI18n('login-form') 
 </script>
 
 <template>
@@ -16,20 +19,20 @@ const onSubmit = defineModel<() => void>('submit');
     @submit.prevent="typeof onSubmit === 'function' && onSubmit()"
   >
     <div class="login-form__field">
-      <label for="email" class="login-form__label">Email</label>
+      <label for="email" class="login-form__label">{{ t('email') }}</label>
       <InputText
         id="email"
         v-model="email"
-        placeholder="Email address"
+        :placeholder="t('email-placeholder')"
         class="login-form__input"
       />
     </div>
     <div class="login-form__field">
-      <label for="password" class="login-form__label">Password</label>
+      <label for="password" class="login-form__label">{{ t('password') }}</label>
       <Password
         id="password"
         v-model="password"
-        placeholder="Password"
+        :placeholder="t('password-placeholder')"
         :toggleMask="true"
         :feedback="false"
         class="login-form__input"
@@ -44,12 +47,12 @@ const onSubmit = defineModel<() => void>('submit');
           class="login-form__checkbox"
         />
         <label for="rememberme" class="login-form__checkbox-label"
-          >Remember me</label
+          >{{ t('remember-me') }}</label
         >
       </div>
-      <span class="login-form__forgot">Forgot password?</span>
+      <span class="login-form__forgot">{{ t('forgot-password') }}</span>
     </div>
-    <Button label="Sign In" class="login-form__button" type="submit" />
+    <Button :label="t('sign-in')" class="login-form__button" type="submit" />
   </form>
 </template>
 

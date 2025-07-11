@@ -4,6 +4,9 @@ import InfoCard from '@app/components/InfoCard.vue';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import { ref } from 'vue';
 import LoginForm from './LoginForm.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
+
+const { t } = useNamespacedI18n('login-page')
 
 const email = ref('');
 const password = ref('');
@@ -22,7 +25,7 @@ const onSubmit = () => {
 
 <template>
   <FloatingMenuCardLayout>
-    <InfoCard title="Welcome to PrimeLand!" subtitle="Sign in to continue">
+    <InfoCard :title="t('welcome')" :subtitle="t('sign-in-to-continue')">
       <template #icon>
         <AppLogo class="login-page__logo" />
       </template>
