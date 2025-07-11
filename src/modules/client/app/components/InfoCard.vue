@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLayout } from '@app/layout/composables/layout';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 defineProps({
   title: {

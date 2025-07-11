@@ -9,7 +9,7 @@ const email = ref('');
 const password = ref('');
 const checked = ref(false);
 
-function onSubmit() {
+const onSubmit = () => {
   // handle login logic here
   // e.g., call an API or route to dashboard
   console.log({ email: email.value, password: password.value, checked: checked.value });

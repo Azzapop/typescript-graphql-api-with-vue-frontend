@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
-import { useLayout } from '@app/layout/composables/layout';
 import Divider from 'primevue/divider';
 import InfoCard from '@app/components/InfoCard.vue';
 import AppLogo from '@app/components/AppLogo.vue';
 import NotFoundLink from './NotFoundLink.vue';
-
-const { isDarkTheme } = useLayout();
 </script>
 
 <template>
