@@ -19,21 +19,21 @@ import NotFoundLink from './NotFoundLink.vue';
       <div class="not-found__links">
         <NotFoundLink
           to="/"
-          icon="pi-table"
+          icon="pi pi-table"
           title="Frequently Asked Questions"
           subtext="Ultricies mi quis hendrerit dolor."
         />
         <Divider class="not-found__link-divider" />
         <NotFoundLink
           to="/"
-          icon="pi-question-circle"
+          icon="pi pi-question-circle"
           title="Solution Center"
           subtext="Phasellus faucibus scelerisque eleifend."
         />
         <Divider class="not-found__link-divider" />
         <NotFoundLink
           to="/"
-          icon="pi-unlock"
+          icon="pi pi-unlock"
           title="Permission Manager"
           subtext="Accumsan in nisl nisi scelerisque"
         />

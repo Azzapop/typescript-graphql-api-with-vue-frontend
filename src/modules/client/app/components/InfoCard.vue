@@ -9,6 +9,7 @@ defineProps({
   },
   subtitle: String,
   preTitle: String,
+  // PrimeVue icon class, e.g., 'pi pi-lock'
   icon: String,
   severity: {
     type: String as PropType<'primary' | 'warn' | 'danger'>,

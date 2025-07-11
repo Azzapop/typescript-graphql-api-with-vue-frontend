@@ -1,7 +1,8 @@
 <script setup lang="ts">
 defineProps<{
   to: string;
-  icon: string; // e.g. 'pi-table', 'pi-question-circle', etc.
+  // PrimeVue icon class, e.g., 'pi pi-lock'
+  icon: string;
   title: string;
   subtext: string;
 }>();
@@ -10,7 +11,7 @@ defineProps<{
 <template>
   <router-link :to="to" class="not-found-link">
     <span class="not-found-link__icon-box">
-      <i :class="`not-found-link__icon pi ${icon}`"></i>
+      <i :class="['not-found-link__icon', icon]"></i>
     </span>
     <span class="not-found-link__content">
       <span class="not-found-link__title">{{ title }}</span>
