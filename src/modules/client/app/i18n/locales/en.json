@@ -1,20 +1,20 @@
 {
-    "error-page": {
-        "title": "Error Occurred",
-        "subtitle": "Requested resource is not available.",
-        "button-label": "Go to Dashboard"
-    },
-    "login-form": {
-        "email": "Email",
-        "email-placeholder": "Email address",
-        "password": "Password",
-        "password-placeholder": "Password",
-        "remember-me": "Remember me",
-        "forgot-password": "Forgot password?",
-        "sign-in": "Sign in"
-    },
-    "login-page": {
-        "welcome": "Welcome to PrimeLand!",
-        "sign-in-to-continue": "Sign in to continue"
-    }
+  "error-page": {
+    "title": "Error Occurred",
+    "subtitle": "Requested resource is not available.",
+    "button-label": "Go to Dashboard"
+  },
+  "login-form": {
+    "email": "Email",
+    "email-placeholder": "Email address",
+    "password": "Password",
+    "password-placeholder": "Password",
+    "remember-me": "Remember me",
+    "forgot-password": "Forgot password?",
+    "sign-in": "Sign in"
+  },
+  "login-page": {
+    "welcome": "Welcome to PrimeLand!",
+    "sign-in-to-continue": "Sign in to continue"
+  }
 }
