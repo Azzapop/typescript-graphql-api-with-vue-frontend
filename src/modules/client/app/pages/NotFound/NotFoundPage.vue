@@ -19,7 +19,7 @@ import NotFoundLink from './NotFoundLink.vue';
       <div class="not-found__links">
         <NotFoundLink
           to="/"
-          icon="pi-table !text-2xl"
+          icon="pi-table"
           title="Frequently Asked Questions"
           subtext="Ultricies mi quis hendrerit dolor."
         />
