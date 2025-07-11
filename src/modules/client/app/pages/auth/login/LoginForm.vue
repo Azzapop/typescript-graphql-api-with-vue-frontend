@@ -100,4 +100,4 @@ const onSubmit = defineModel<() => void>('submit');
       box-sizing: border-box;
     }
   }
-</style> 
+</style>
