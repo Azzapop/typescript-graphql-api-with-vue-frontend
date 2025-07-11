@@ -21,21 +21,6 @@ import NoAccessImage from './NoAccessImage.vue';
 
 <style lang="scss">
 .no-access {
-  &__wrapper {
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    display: flex;
-  }
-
-  &__inner {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    display: flex;
-  }
-
   &__button-container {
     text-align: center;
     margin-top: 2rem;
