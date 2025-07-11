@@ -3,7 +3,7 @@ import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayou
 import { useLayout } from '@app/layout/composables/layout';
 import Divider from 'primevue/divider';
 import InfoCard from '@app/components/InfoCard.vue';
-import NotFoundLogo from './NotFoundLogo.vue';
+import AppLogo from '@app/components/AppLogo.vue';
 import NotFoundLink from './NotFoundLink.vue';
 
 const { isDarkTheme } = useLayout();
@@ -13,7 +13,7 @@ const { isDarkTheme } = useLayout();
   <FloatingMenuLayout>
     <div class="not-found__wrapper">
       <div class="not-found__inner">
-        <NotFoundLogo />
+        <AppLogo />
         <InfoCard
           :preTitle="'404'"
           title="Not Found"
@@ -21,30 +21,30 @@ const { isDarkTheme } = useLayout();
           buttonLabel="Go to Dashboard"
           buttonTo="/"
         >
-          <div class="not-found__links">
-            <NotFoundLink
-              to="/"
-              icon="pi-table !text-2xl"
-              title="Frequently Asked Questions"
-              subtext="Ultricies mi quis hendrerit dolor."
-            />
-            <Divider class="not-found__link-divider" />
-            <NotFoundLink
-              to="/"
-              icon="pi-question-circle"
-              title="Solution Center"
-              subtext="Phasellus faucibus scelerisque eleifend."
-            />
-            <Divider class="not-found__link-divider" />
-            <NotFoundLink
-              to="/"
-              icon="pi-unlock"
-              title="Permission Manager"
-              subtext="Accumsan in nisl nisi scelerisque"
-            />
-            <Divider class="not-found__link-divider" />
-          </div>
-        </InfoCard>
+            <div class="not-found__links">
+              <NotFoundLink
+                to="/"
+                icon="pi-table !text-2xl"
+                title="Frequently Asked Questions"
+                subtext="Ultricies mi quis hendrerit dolor."
+              />
+              <Divider class="not-found__link-divider" />
+              <NotFoundLink
+                to="/"
+                icon="pi-question-circle"
+                title="Solution Center"
+                subtext="Phasellus faucibus scelerisque eleifend."
+              />
+              <Divider class="not-found__link-divider" />
+              <NotFoundLink
+                to="/"
+                icon="pi-unlock"
+                title="Permission Manager"
+                subtext="Accumsan in nisl nisi scelerisque"
+              />
+              <Divider class="not-found__link-divider" />
+            </div>
+          </InfoCard>
       </div>
     </div>
   </FloatingMenuLayout>

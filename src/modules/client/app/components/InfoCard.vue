@@ -29,9 +29,14 @@ const { isDarkTheme } = useLayout();
   >
     <div class="info-card__inner">
       <div class="info-card__content">
-        <div v-if="icon" class="info-card__icon-container">
-          <i :class="['info-card__icon', icon]"></i>
-        </div>
+        <template v-if="icon">
+          <div class="info-card__icon-container">
+            <i :class="['info-card__icon', icon]"></i>
+          </div>
+        </template>
+        <template v-else>
+          <slot name="icon"></slot>
+        </template>
         <span v-if="preTitle" class="info-card__pre-title">{{ preTitle }}</span>
         <h1 class="info-card__title">{{ title }}</h1>
         <span v-if="subtitle" class="info-card__subtitle">{{ subtitle }}</span>

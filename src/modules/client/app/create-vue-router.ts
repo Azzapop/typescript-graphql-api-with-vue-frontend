@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
 import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue'
 import PaintersPage from './pages/Painters/PaintersPage.vue';
 import ErrorPage from './pages/auth/Error/ErrorPage.vue';
+import LoginPage from './pages/auth/login/LoginPage.vue';
 
 const routes = [
   {
@@ -30,6 +31,10 @@ const routes = [
   {
     path: '/auth/error',
     component: ErrorPage,
+  },
+  {
+    path: '/auth/login',
+    component: LoginPage,
   }
 ];
 
