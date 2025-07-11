@@ -45,21 +45,6 @@ import NotFoundLink from './NotFoundLink.vue';
 
 <style lang="scss">
 .not-found {
-  &__wrapper {
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    display: flex;
-  }
-
-  &__inner {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    display: flex;
-  }
-
   &__links {
     display: flex;
     flex-direction: column;
