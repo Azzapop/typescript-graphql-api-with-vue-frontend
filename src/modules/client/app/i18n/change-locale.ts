@@ -1,4 +1,4 @@
-import { i18n } from './i18n';
+import { i18n } from './create-app-i18n';
 import type { Locale } from './messages';
 
 const loadedLanguages = new Set<Locale>(['en']);

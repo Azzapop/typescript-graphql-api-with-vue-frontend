@@ -4,8 +4,10 @@ import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
 import AppConfigurator from '../components/AppConfigurator.vue';
 import { useLayout } from '../composables/layout';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+const { t } = useNamespacedI18n('app-topbar');
 
 const topbarAppConfiguratorPopover = useTemplateRef<
   InstanceType<typeof Popover>
@@ -117,9 +119,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-calendar layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Calendar</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('calendar') }}
+            </span>
           </button>
           <button
             type="button"
@@ -128,9 +130,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-inbox layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Messages</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('messages') }}
+            </span>
           </button>
           <button
             type="button"
@@ -139,9 +141,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-user layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Profile</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('profile') }}
+            </span>
           </button>
         </div>
       </div>

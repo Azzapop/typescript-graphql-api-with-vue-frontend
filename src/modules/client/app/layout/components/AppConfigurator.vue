@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useAppConfigurator } from '../composables/app-configurator';
 import { useLayout } from '../composables/layout';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { layoutConfig, isDarkTheme } = useLayout();
+const { t } = useNamespacedI18n('app-configurator');
 
 const {
   preset,
@@ -21,7 +23,7 @@ const {
   <div class="config-panel">
     <div class="config-panel__settings">
       <div>
-        <span class="config-panel__label">Primary</span>
+        <span class="config-panel__label">{{ t('primary') }}</span>
         <div class="config-panel__colors">
           <button
             v-for="primaryColor of primaryColors"
@@ -43,7 +45,7 @@ const {
         </div>
       </div>
       <div>
-        <span class="config-panel__label">Surface</span>
+        <span class="config-panel__label">{{ t('surface') }}</span>
         <div class="config-panel__colors">
           <button
             v-for="surface of surfaces"
@@ -66,7 +68,7 @@ const {
         </div>
       </div>
       <div class="config-panel__selector">
-        <span class="config-panel__label">Presets</span>
+        <span class="config-panel__label">{{ t('presets') }}</span>
         <SelectButton
           v-model="preset"
           @change="onPresetChange"
@@ -75,11 +77,11 @@ const {
         />
       </div>
       <div class="config-panel__selector">
-        <span class="config-panel__label">Menu Mode</span>
+        <span class="config-panel__label">{{ t('menu-mode') }}</span>
         <SelectButton
           v-model="menuMode"
           @change="onMenuModeChange"
-          :options="menuModeOptions"
+          :options="menuModeOptions.map(opt => ({ ...opt, label: t(opt.value) }))"
           :allowEmpty="false"
           optionLabel="label"
           optionValue="value"
