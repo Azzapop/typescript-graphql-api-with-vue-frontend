@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <router-link :to="to" class="not-found-link">
     <span class="not-found-link__icon-box">
-      <i :class="`not-found-link__icon pi pi-fw ${icon}`"></i>
+      <i :class="`not-found-link__icon pi ${icon}`"></i>
     </span>
     <span class="not-found-link__content">
       <span class="not-found-link__title">{{ title }}</span>
