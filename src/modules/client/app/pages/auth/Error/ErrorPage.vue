@@ -7,7 +7,7 @@ import ErrorImage from './ErrorImage.vue';
 <template>
   <FloatingMenuCardLayout>
     <InfoCard
-      icon="pi pi-fw pi-exclamation-circle"
+      icon="pi pi-exclamation-circle"
       title="Error Occurred"
       subtitle="Requested resource is not available."
       buttonLabel="Go to Dashboard"
