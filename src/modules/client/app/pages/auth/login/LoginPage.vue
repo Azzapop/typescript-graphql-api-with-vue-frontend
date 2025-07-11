@@ -34,22 +34,6 @@ const onSubmit = () => {
 
 <style scoped lang="scss">
 .login-page {
-  &__wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-ground);
-  }
-
-  &__inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
   &__logo {
     width: 4rem;
     margin-bottom: 2rem;
