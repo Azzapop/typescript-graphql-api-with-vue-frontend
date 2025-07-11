@@ -9,7 +9,7 @@ import NoAccessImage from './NoAccessImage.vue';
         <InfoCard
           title="Access Denied"
           subtitle="You do not have the necessary permisions. Please contact admins."
-          icon="pi pi-fw pi-lock"
+          icon="pi pi-lock"
           severity="warn"
           buttonLabel="Go to Dashboard"
           buttonTo="/"
