@@ -37,8 +37,6 @@ export const createServerHandler = (opts: {
         msg = stack;
       }
 
-      console.log(msg);
-
       res.status(500).end(msg);
     }
   };

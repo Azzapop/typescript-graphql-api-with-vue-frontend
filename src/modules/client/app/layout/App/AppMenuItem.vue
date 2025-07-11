@@ -2,7 +2,7 @@
 import type { MenuItem } from 'primevue/menuitem';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { useLayout } from './composables/layout';
+import { useLayout } from '../composables/layout';
 
 const route = useRoute();
 

@@ -2,17 +2,17 @@
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
-import AppConfigurator from './AppConfigurator.vue';
-import { useLayout } from './composables/layout';
+import AppConfigurator from '../components/AppConfigurator.vue';
+import { useLayout } from '../composables/layout';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 
-const appConfiguratorPopover = useTemplateRef<InstanceType<typeof Popover>>(
-  'app-configurator-popover'
-);
+const topbarAppConfiguratorPopover = useTemplateRef<
+  InstanceType<typeof Popover>
+>('topbar-app-configurator-popover');
 const toggleAppConfigurator = (e: Event) => {
-  assert(appConfiguratorPopover.value);
-  appConfiguratorPopover.value.toggle(e);
+  assert(topbarAppConfiguratorPopover.value);
+  topbarAppConfiguratorPopover.value.toggle(e);
 };
 </script>
 
@@ -87,7 +87,7 @@ const toggleAppConfigurator = (e: Event) => {
           >
             <i class="pi pi-palette layout-topbar__action-icon"></i>
           </button>
-          <Popover ref="app-configurator-popover">
+          <Popover ref="topbar-app-configurator-popover">
             <AppConfigurator />
           </Popover>
         </div>

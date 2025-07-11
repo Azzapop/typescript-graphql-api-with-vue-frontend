@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@app/layout/AppLayout.vue';
+import AppLayout from '@app/layout/App/AppLayout.vue';
 import Button from 'primevue/button';
 
 const t = '123';

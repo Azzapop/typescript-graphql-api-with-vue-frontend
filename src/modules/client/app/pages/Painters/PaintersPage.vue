@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AppLayout from '@app/layout/AppLayout.vue';
+import AppLayout from '@app/layout/App/AppLayout.vue';
 import { defineStore } from 'pinia';
 import { ref, onServerPrefetch, onMounted } from 'vue';
 import { usePainters } from './use-painters';
