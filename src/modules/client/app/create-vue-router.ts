@@ -6,9 +6,9 @@ import {
 } from 'vue-router';
 import HomePage from './pages/Home/HomePage.vue';
 import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
-import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue'
 import PaintersPage from './pages/Painters/PaintersPage.vue';
 import ErrorPage from './pages/auth/Error/ErrorPage.vue';
+import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
 import LoginPage from './pages/auth/login/LoginPage.vue';
 
 const routes = [
@@ -35,7 +35,7 @@ const routes = [
   {
     path: '/auth/login',
     component: LoginPage,
-  }
+  },
 ];
 
 export const createVueRouter = (opts: { isServer: boolean }): Router => {

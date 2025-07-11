@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import InfoCard from '@app/components/InfoCard.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import ErrorImage from './ErrorImage.vue';
 </script>
 

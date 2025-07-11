@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import Button from 'primevue/button';
+import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
-import Checkbox from 'primevue/checkbox';
-import Button from 'primevue/button';
 
 const email = defineModel<string>('email');
 const password = defineModel<string>('password');
@@ -11,19 +11,41 @@ const onSubmit = defineModel<() => void>('submit');
 </script>
 
 <template>
-  <form class="login-form" @submit.prevent="typeof onSubmit === 'function' && onSubmit()">
+  <form
+    class="login-form"
+    @submit.prevent="typeof onSubmit === 'function' && onSubmit()"
+  >
     <div class="login-form__field">
       <label for="email" class="login-form__label">Email</label>
-      <InputText id="email" v-model="email" placeholder="Email address" class="login-form__input" />
+      <InputText
+        id="email"
+        v-model="email"
+        placeholder="Email address"
+        class="login-form__input"
+      />
     </div>
     <div class="login-form__field">
       <label for="password" class="login-form__label">Password</label>
-      <Password id="password" v-model="password" placeholder="Password" :toggleMask="true" :feedback="false" class="login-form__input" />
+      <Password
+        id="password"
+        v-model="password"
+        placeholder="Password"
+        :toggleMask="true"
+        :feedback="false"
+        class="login-form__input"
+      />
     </div>
     <div class="login-form__options">
       <div class="login-form__remember">
-        <Checkbox v-model="checked" id="rememberme" binary class="login-form__checkbox" />
-        <label for="rememberme" class="login-form__checkbox-label">Remember me</label>
+        <Checkbox
+          v-model="checked"
+          id="rememberme"
+          binary
+          class="login-form__checkbox"
+        />
+        <label for="rememberme" class="login-form__checkbox-label"
+          >Remember me</label
+        >
       </div>
       <span class="login-form__forgot">Forgot password?</span>
     </div>
@@ -91,13 +113,13 @@ const onSubmit = defineModel<() => void>('submit');
   }
 }
 
-  // Fix: PrimeVue Password's internal input does not expand to 100% width by default.
-  // This ensures the input fills the parent container as expected in forms.
-  .login-form :deep(.p-password) {
+// Fix: PrimeVue Password's internal input does not expand to 100% width by default.
+// This ensures the input fills the parent container as expected in forms.
+.login-form :deep(.p-password) {
+  width: 100%;
+  .p-inputtext {
     width: 100%;
-    .p-inputtext {
-      width: 100%;
-      box-sizing: border-box;
-    }
+    box-sizing: border-box;
   }
+}
 </style>

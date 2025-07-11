@@ -76,7 +76,8 @@ const { isDarkTheme } = useLayout();
   &--danger {
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--danger-color-muted, #f87171), transparent 60%) 10%,
+      color-mix(in srgb, var(--danger-color-muted, #f87171), transparent 60%)
+        10%,
       var(--surface-ground) 30%
     );
   }
@@ -161,4 +162,4 @@ const { isDarkTheme } = useLayout();
     margin-top: 2rem;
   }
 }
-</style> 
+</style>

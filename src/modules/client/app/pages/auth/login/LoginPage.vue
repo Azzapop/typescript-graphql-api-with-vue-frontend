@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
-import InfoCard from '@app/components/InfoCard.vue';
-import LoginForm from './LoginForm.vue';
 import AppLogo from '@app/components/AppLogo.vue';
+import InfoCard from '@app/components/InfoCard.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
+import { ref } from 'vue';
+import LoginForm from './LoginForm.vue';
 
 const email = ref('');
 const password = ref('');
@@ -12,8 +12,12 @@ const checked = ref(false);
 const onSubmit = () => {
   // handle login logic here
   // e.g., call an API or route to dashboard
-  console.log({ email: email.value, password: password.value, checked: checked.value });
-}
+  console.log({
+    email: email.value,
+    password: password.value,
+    checked: checked.value,
+  });
+};
 </script>
 
 <template>
