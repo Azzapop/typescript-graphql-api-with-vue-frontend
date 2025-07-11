@@ -28,4 +28,4 @@ import FloatingMenuLayout from './FloatingMenuLayout.vue';
   justify-content: center;
   width: 100%;
 }
-</style> 
+</style>
