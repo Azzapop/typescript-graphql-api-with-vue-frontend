@@ -18,22 +18,3 @@ import ErrorImage from './ErrorImage.vue';
     </InfoCard>
   </FloatingMenuCardLayout>
 </template>
-
-<style lang="scss">
-.error-page {
-  &__wrapper {
-    overflow: hidden;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    display: flex;
-  }
-
-  &__inner {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    display: flex;
-  }
-}
-</style>
