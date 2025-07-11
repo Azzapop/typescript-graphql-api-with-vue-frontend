@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import InfoCard from '@app/components/InfoCard.vue';
 import ErrorImage from './ErrorImage.vue';
 </script>
 
 <template>
-  <FloatingMenuLayout>
-    <div class="error-page__wrapper">
-      <div class="error-page__inner">
-        <InfoCard
-          icon="pi pi-fw pi-exclamation-circle"
-          title="Error Occurred"
-          subtitle="Requested resource is not available."
-          buttonLabel="Go to Dashboard"
-          buttonTo="/"
-          severity="danger"
-        >
-          <ErrorImage />
-        </InfoCard>
-      </div>
-    </div>
-  </FloatingMenuLayout>
+  <FloatingMenuCardLayout>
+    <InfoCard
+      icon="pi pi-fw pi-exclamation-circle"
+      title="Error Occurred"
+      subtitle="Requested resource is not available."
+      buttonLabel="Go to Dashboard"
+      buttonTo="/"
+      severity="danger"
+    >
+      <ErrorImage />
+    </InfoCard>
+  </FloatingMenuCardLayout>
 </template>
 
 <style lang="scss">

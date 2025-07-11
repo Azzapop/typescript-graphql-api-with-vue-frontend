@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import InfoCard from '@app/components/InfoCard.vue';
 import LoginForm from './LoginForm.vue';
 import AppLogo from '@app/components/AppLogo.vue';
@@ -17,23 +17,19 @@ function onSubmit() {
 </script>
 
 <template>
-  <FloatingMenuLayout>
-    <div class="login-page__wrapper">
-      <div class="login-page__inner">
-        <InfoCard title="Welcome to PrimeLand!" subtitle="Sign in to continue">
-          <template #icon>
-            <AppLogo class="login-page__logo" />
-          </template>
-          <LoginForm
-            v-model:email="email"
-            v-model:password="password"
-            v-model:checked="checked"
-            @submit="onSubmit"
-          />
-        </InfoCard>
-        </div>
-    </div>
-  </FloatingMenuLayout>
+  <FloatingMenuCardLayout>
+    <InfoCard title="Welcome to PrimeLand!" subtitle="Sign in to continue">
+      <template #icon>
+        <AppLogo class="login-page__logo" />
+      </template>
+      <LoginForm
+        v-model:email="email"
+        v-model:password="password"
+        v-model:checked="checked"
+        @submit="onSubmit"
+      />
+    </InfoCard>
+  </FloatingMenuCardLayout>
 </template>
 
 <style scoped lang="scss">

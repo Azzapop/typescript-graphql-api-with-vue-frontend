@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import InfoCard from '@app/components/InfoCard.vue';
 import NoAccessImage from './NoAccessImage.vue';
 </script>
 
 <template>
-  <FloatingMenuLayout>
-    <div class="no-access__wrapper">
-      <div class="no-access__inner">
+  <FloatingMenuCardLayout>
         <InfoCard
           title="Access Denied"
           subtitle="You do not have the necessary permisions. Please contact admins."
@@ -18,9 +16,7 @@ import NoAccessImage from './NoAccessImage.vue';
         >
           <NoAccessImage />
         </InfoCard>
-      </div>
-    </div>
-  </FloatingMenuLayout>
+  </FloatingMenuCardLayout>
 </template>
 
 <style lang="scss">

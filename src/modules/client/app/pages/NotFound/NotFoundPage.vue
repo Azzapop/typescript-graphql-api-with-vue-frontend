@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FloatingMenuLayout from '@app/layout/FloatingMenuLayout/FloatingMenuLayout.vue';
+import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import { useLayout } from '@app/layout/composables/layout';
 import Divider from 'primevue/divider';
 import InfoCard from '@app/components/InfoCard.vue';
@@ -10,44 +10,40 @@ const { isDarkTheme } = useLayout();
 </script>
 
 <template>
-  <FloatingMenuLayout>
-    <div class="not-found__wrapper">
-      <div class="not-found__inner">
-        <AppLogo />
-        <InfoCard
-          :preTitle="'404'"
-          title="Not Found"
-          subtitle="Requested resource is not available."
-          buttonLabel="Go to Dashboard"
-          buttonTo="/"
-        >
-            <div class="not-found__links">
-              <NotFoundLink
-                to="/"
-                icon="pi-table !text-2xl"
-                title="Frequently Asked Questions"
-                subtext="Ultricies mi quis hendrerit dolor."
-              />
-              <Divider class="not-found__link-divider" />
-              <NotFoundLink
-                to="/"
-                icon="pi-question-circle"
-                title="Solution Center"
-                subtext="Phasellus faucibus scelerisque eleifend."
-              />
-              <Divider class="not-found__link-divider" />
-              <NotFoundLink
-                to="/"
-                icon="pi-unlock"
-                title="Permission Manager"
-                subtext="Accumsan in nisl nisi scelerisque"
-              />
-              <Divider class="not-found__link-divider" />
-            </div>
-          </InfoCard>
+  <FloatingMenuCardLayout>
+    <AppLogo class="not-found__logo" />
+    <InfoCard
+      :preTitle="'404'"
+      title="Not Found"
+      subtitle="Requested resource is not available."
+      buttonLabel="Go to Dashboard"
+      buttonTo="/"
+    >
+      <div class="not-found__links">
+        <NotFoundLink
+          to="/"
+          icon="pi-table !text-2xl"
+          title="Frequently Asked Questions"
+          subtext="Ultricies mi quis hendrerit dolor."
+        />
+        <Divider class="not-found__link-divider" />
+        <NotFoundLink
+          to="/"
+          icon="pi-question-circle"
+          title="Solution Center"
+          subtext="Phasellus faucibus scelerisque eleifend."
+        />
+        <Divider class="not-found__link-divider" />
+        <NotFoundLink
+          to="/"
+          icon="pi-unlock"
+          title="Permission Manager"
+          subtext="Accumsan in nisl nisi scelerisque"
+        />
+        <Divider class="not-found__link-divider" />
       </div>
-    </div>
-  </FloatingMenuLayout>
+    </InfoCard>
+  </FloatingMenuCardLayout>
 </template>
 
 <style lang="scss">
