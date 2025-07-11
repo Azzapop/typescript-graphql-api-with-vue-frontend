@@ -67,4 +67,4 @@ defineProps<{
     }
   }
 }
-</style> 
+</style>
