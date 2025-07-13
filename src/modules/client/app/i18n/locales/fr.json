@@ -1,0 +1,105 @@
+{
+  "error-page": {
+    "title": "Erreur Survenue",
+    "subtitle": "La ressource demandée n'est pas disponible.",
+    "button-label": "Aller au Tableau de Bord"
+  },
+  "login-form": {
+    "email": "E-mail",
+    "email-placeholder": "Adresse e-mail",
+    "password": "Mot de passe",
+    "password-placeholder": "Mot de passe",
+    "remember-me": "Se souvenir de moi",
+    "forgot-password": "Mot de passe oublié ?",
+    "sign-in": "Se connecter"
+  },
+  "login-page": {
+    "welcome": "Bienvenue sur PrimeLand !",
+    "sign-in-to-continue": "Connectez-vous pour continuer"
+  },
+  "not-found-page": {
+    "pre-title": "404",
+    "title": "Non Trouvé",
+    "subtitle": "La ressource demandée n'est pas disponible.",
+    "button-label": "Aller au Tableau de Bord"
+  },
+  "not-found-link": {
+    "faq-title": "Questions Fréquemment Posées",
+    "faq-subtext": "Ultricies mi quis hendrerit dolor.",
+    "solution-title": "Centre de Solutions",
+    "solution-subtext": "Phasellus faucibus scelerisque eleifend.",
+    "permission-title": "Gestionnaire de Permissions",
+    "permission-subtext": "Accumsan in nisl nisi scelerisque"
+  },
+  "no-access-page": {
+    "title": "Accès Refusé",
+    "subtitle": "Vous n'avez pas les permissions nécessaires. Veuillez contacter les administrateurs.",
+    "button-label": "Aller au Tableau de Bord"
+  },
+  "app-menu": {
+    "home": "Accueil",
+    "dashboard": "Tableau de Bord",
+    "ui-components": "Composants UI",
+    "form-layout": "Mise en Page de Formulaire",
+    "input": "Saisie",
+    "button": "Bouton",
+    "table": "Tableau",
+    "list": "Liste",
+    "tree": "Arbre",
+    "panel": "Panneau",
+    "overlay": "Superposition",
+    "media": "Médias",
+    "menu": "Menu",
+    "message": "Message",
+    "file": "Fichier",
+    "chart": "Graphique",
+    "timeline": "Chronologie",
+    "misc": "Divers",
+    "pages": "Pages",
+    "landing": "Page d'Accueil",
+    "auth": "Authentification",
+    "login": "Connexion",
+    "error": "Erreur",
+    "access-denied": "Accès Refusé",
+    "crud": "CRUD",
+    "not-found": "Non Trouvé",
+    "empty": "Vide",
+    "hierarchy": "Hiérarchie",
+    "submenu-1": "Sous-menu 1",
+    "submenu-1-1": "Sous-menu 1.1",
+    "submenu-1-1-1": "Sous-menu 1.1.1",
+    "submenu-1-1-2": "Sous-menu 1.1.2",
+    "submenu-1-1-3": "Sous-menu 1.1.3",
+    "submenu-1-2": "Sous-menu 1.2",
+    "submenu-1-2-1": "Sous-menu 1.2.1",
+    "submenu-2": "Sous-menu 2",
+    "submenu-2-1": "Sous-menu 2.1",
+    "submenu-2-1-1": "Sous-menu 2.1.1",
+    "submenu-2-1-2": "Sous-menu 2.1.2",
+    "submenu-2-2": "Sous-menu 2.2",
+    "submenu-2-2-1": "Sous-menu 2.2.1",
+    "get-started": "Commencer",
+    "documentation": "Documentation",
+    "view-source": "Voir le Code"
+  },
+  "app-topbar": {
+    "calendar": "Calendrier",
+    "messages": "Messages",
+    "profile": "Profil"
+  },
+  "app-configurator": {
+    "primary": "Primaire",
+    "surface": "Surface",
+    "presets": "Préréglages",
+    "menu-mode": "Mode Menu",
+    "static": "Statique",
+    "overlay": "Superposition"
+  },
+  "home-page": {
+    "home": "Accueil",
+    "submit": "Soumettre"
+  },
+  "language-switcher": {
+    "language": "Langue"
+  }
+} 

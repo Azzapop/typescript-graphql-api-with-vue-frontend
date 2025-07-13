@@ -58,6 +58,9 @@
     "static": "Static",
     "overlay": "Overlay"
   },
+  "language-switcher": {
+    "language": "Language"
+  },
   "home-page": {
     "home": "Home",
     "submit": "Submit"

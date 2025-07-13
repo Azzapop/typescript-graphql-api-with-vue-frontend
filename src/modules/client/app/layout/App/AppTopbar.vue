@@ -3,6 +3,7 @@ import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
 import AppConfigurator from '../components/AppConfigurator.vue';
+import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { useLayout } from '../composables/layout';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
@@ -15,6 +16,14 @@ const topbarAppConfiguratorPopover = useTemplateRef<
 const toggleAppConfigurator = (e: Event) => {
   assert(topbarAppConfiguratorPopover.value);
   topbarAppConfiguratorPopover.value.toggle(e);
+};
+
+const topbarLanguageSwitcherPopover = useTemplateRef<
+  InstanceType<typeof Popover>
+>('topbar-language-switcher-popover');
+const toggleLanguageSwitcher = (e: Event) => {
+  assert(topbarLanguageSwitcherPopover.value);
+  topbarLanguageSwitcherPopover.value.toggle(e);
 };
 </script>
 
@@ -91,6 +100,18 @@ const toggleAppConfigurator = (e: Event) => {
           </button>
           <Popover ref="topbar-app-configurator-popover">
             <AppConfigurator />
+          </Popover>
+        </div>
+        <div class="layout-topbar__language-switcher-container">
+          <button
+            @click="toggleLanguageSwitcher"
+            type="button"
+            class="layout-topbar__action layout-topbar__action--highlight"
+          >
+            <i class="pi pi-language layout-topbar__action-icon"></i>
+          </button>
+          <Popover ref="topbar-language-switcher-popover">
+            <LanguageSwitcher />
           </Popover>
         </div>
       </div>
@@ -212,6 +233,10 @@ const toggleAppConfigurator = (e: Event) => {
   }
 
   &__app-configurator-container {
+    position: relative;
+  }
+
+  &__language-switcher-container {
     position: relative;
   }
 

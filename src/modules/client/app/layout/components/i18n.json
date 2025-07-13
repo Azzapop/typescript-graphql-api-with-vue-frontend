@@ -6,5 +6,8 @@
     "menu-mode": "Menu Mode",
     "static": "Static",
     "overlay": "Overlay"
+  },
+  "language-switcher": {
+    "language": "Language"
   }
 } 
