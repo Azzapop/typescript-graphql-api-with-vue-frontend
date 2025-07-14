@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
-import Select from 'primevue/select';
+import Listbox from 'primevue/listbox';
 import type { Locale } from '@app/i18n/messages';
 import { loadLocaleMessages } from '@app/i18n/change-locale';
 
@@ -30,7 +30,7 @@ const changeLocale = async (event: { value: Locale }) => {
     <div class="language-switcher__settings">
       <div class="language-switcher__selector">
         <span class="language-switcher__label">{{ t('language') }}</span>
-        <Select
+        <Listbox
           v-model="currentLocale"
           @change="changeLocale"
           :options="supportedLocales"
@@ -38,7 +38,7 @@ const changeLocale = async (event: { value: Locale }) => {
           optionLabel="label"
           optionValue="value"
           placeholder="Select Language"
-          class="language-switcher__dropdown"
+          class="language-switcher__listbox"
         >
           <template #option="{ option }">
             <div class="language-switcher__option">
@@ -46,13 +46,7 @@ const changeLocale = async (event: { value: Locale }) => {
               <span class="language-switcher__label-text">{{ option.label }}</span>
             </div>
           </template>
-          <template #value="{ value }">
-            <div v-if="value" class="language-switcher__selected">
-              <span class="language-switcher__flag">{{ supportedLocales.find(locale => locale.value === value)?.flag }}</span>
-              <span class="language-switcher__label-text">{{ supportedLocales.find(locale => locale.value === value)?.label }}</span>
-            </div>
-          </template>
-        </Select>
+        </Listbox>
       </div>
     </div>
   </div>
@@ -81,10 +75,6 @@ const changeLocale = async (event: { value: Locale }) => {
     display: flex;
   }
 
-  &__dropdown {
-    width: 100%;
-  }
-
   &__option {
     display: flex;
     align-items: center;
@@ -104,5 +94,11 @@ const changeLocale = async (event: { value: Locale }) => {
   &__label-text {
     font-size: 0.875rem;
   }
+}
+
+// We need a more specific selector to override the default styles of the Listbox component
+.language-switcher .language-switcher__listbox {
+  border: none;
+  box-shadow: none;
 }
 </style> 
