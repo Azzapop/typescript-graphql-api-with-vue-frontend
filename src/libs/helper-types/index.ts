@@ -1,0 +1,1 @@
+export { type ExhaustiveTuple } from './exhaustive-tuple';

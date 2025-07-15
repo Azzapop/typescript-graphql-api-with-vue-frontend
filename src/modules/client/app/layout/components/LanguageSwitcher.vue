@@ -1,24 +1,25 @@
+// NOTE: There is a known issue with PrimeVue's Listbox hover state where the hover style can remain stuck on an option after selecting a locale and then hovering another option.
+// This occurs even when using the default template, and is likely a bug or limitation in the current PrimeVue version.
+// If PrimeVue updates or a workaround is found, this should be revisited.
+
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Listbox from 'primevue/listbox';
-import type { Locale } from '@app/i18n/messages';
-import { loadLocaleMessages } from '@app/i18n/change-locale';
+import type { Locale } from '~modules/client/app/i18n/supported-locales';
+import { loadLocaleMessages } from '@app/i18n/load-locale-messages';
+import { useSupportedLocaleOptions } from './composables/use-supported-locales';
 
 const { locale: currentLocale, setLocaleMessage } = useI18n({ useScope: 'global' });
 const { t } = useNamespacedI18n('language-switcher');
 
-const supportedLocales: { value: Locale; label: string; flag: string }[] = [
-  { value: 'en-AU', label: 'English (Australia)', flag: '🇦🇺' },
-  { value: 'es', label: 'Español', flag: '🇪🇸' },
-  { value: 'fr', label: 'Français', flag: '🇫🇷' },
-  { value: 'de', label: 'Deutsch', flag: '🇩🇪' },
-];
+const supportedLocalesOptions = useSupportedLocaleOptions();
 
 const changeLocale = async (event: { value: Locale }) => {
   const newLocale = event.value;
+
+  if (!newLocale) return
   if (currentLocale.value === newLocale) return
-  console.log('changing locale', newLocale)
 
   await loadLocaleMessages(newLocale, setLocaleMessage)
   currentLocale.value = newLocale
@@ -31,9 +32,9 @@ const changeLocale = async (event: { value: Locale }) => {
       <div class="language-switcher__selector">
         <span class="language-switcher__label">{{ t('language') }}</span>
         <Listbox
-          v-model="currentLocale"
+          :modelValue="currentLocale"
           @change="changeLocale"
-          :options="supportedLocales"
+          :options="supportedLocalesOptions"
           :allowEmpty="false"
           optionLabel="label"
           optionValue="value"
@@ -76,12 +77,6 @@ const changeLocale = async (event: { value: Locale }) => {
   }
 
   &__option {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  &__selected {
     display: flex;
     align-items: center;
     gap: 0.5rem;
