@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { MenuItem } from 'primevue/menuitem';
-import { ref } from 'vue';
-import type { Ref } from 'vue';
+import { computed } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
@@ -10,7 +9,8 @@ const { t } = useNamespacedI18n('app-menu');
 // First level: label
 // Second level: items
 // Third level: recursive items etc
-const model: Ref = ref<MenuItem[]>([
+// Make the model reactive to locale changes using computed
+const model = computed<MenuItem[]>(() => [
   {
     label: t('home'),
     items: [{ label: t('dashboard'), icon: 'pi pi-fw pi-home', to: '/' }],
