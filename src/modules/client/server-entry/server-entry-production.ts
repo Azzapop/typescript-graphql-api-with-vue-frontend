@@ -6,13 +6,13 @@ import { resolve as pathResolve, join as pathJoin } from 'path';
 import serveStatic from 'serve-static';
 import { createServerHandler } from './create-server-handler';
 
-const resolve = (p: string) => pathResolve(import.meta.dirname, p);
+const RESOLVE = (p: string) => pathResolve(import.meta.dirname, p);
 
 export const serverEntryProduction = () => {
   const manifest = JSON.parse(
-    readFileSync(resolve('../client/.vite/ssr-manifest.json'), 'utf-8')
+    readFileSync(RESOLVE('../client/.vite/ssr-manifest.json'), 'utf-8')
   );
-  const template = readFileSync(resolve('../client/index.html'), 'utf-8');
+  const template = readFileSync(RESOLVE('../client/index.html'), 'utf-8');
   const serverHandler = createServerHandler({ manifest, template });
 
   const publicPath = pathJoin(import.meta.dirname, '../client/assets');

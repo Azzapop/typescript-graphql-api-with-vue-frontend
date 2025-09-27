@@ -1,41 +1,45 @@
 <script setup lang="ts">
 import AppLogo from '@app/components/AppLogo.vue';
 import InfoCard from '@app/components/InfoCard.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import Divider from 'primevue/divider';
 import NotFoundLink from './NotFoundLink.vue';
+
+const { t } = useNamespacedI18n('not-found-page');
+const { t: tLink } = useNamespacedI18n('not-found-link');
 </script>
 
 <template>
   <FloatingMenuCardLayout>
     <AppLogo class="not-found__logo" />
     <InfoCard
-      :preTitle="'404'"
-      title="Not Found"
-      subtitle="Requested resource is not available."
-      buttonLabel="Go to Dashboard"
+      :preTitle="t('pre-title')"
+      :title="t('title')"
+      :subtitle="t('subtitle')"
+      :buttonLabel="t('button-label')"
       buttonTo="/"
     >
       <div class="not-found__links">
         <NotFoundLink
           to="/"
           icon="pi pi-table"
-          title="Frequently Asked Questions"
-          subtext="Ultricies mi quis hendrerit dolor."
+          :title="tLink('faq-title')"
+          :subtext="tLink('faq-subtext')"
         />
         <Divider class="not-found__link-divider" />
         <NotFoundLink
           to="/"
           icon="pi pi-question-circle"
-          title="Solution Center"
-          subtext="Phasellus faucibus scelerisque eleifend."
+          :title="tLink('solution-title')"
+          :subtext="tLink('solution-subtext')"
         />
         <Divider class="not-found__link-divider" />
         <NotFoundLink
           to="/"
           icon="pi pi-unlock"
-          title="Permission Manager"
-          subtext="Accumsan in nisl nisi scelerisque"
+          :title="tLink('permission-title')"
+          :subtext="tLink('permission-subtext')"
         />
         <Divider class="not-found__link-divider" />
       </div>

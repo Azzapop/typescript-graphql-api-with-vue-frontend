@@ -8,6 +8,7 @@ import { createApolloClient } from '~modules/graphql/create-apollo-client';
 import App from './App.vue';
 import './assets/styles/index.scss';
 import { createVueRouter } from './create-vue-router';
+import { createAppI18n } from './i18n/create-app-i18n';
 
 export const createVueApp = (
   opts: { isServer: boolean },
@@ -39,5 +40,8 @@ export const createVueApp = (
     },
   });
 
-  return { app, router, store };
+  const i18n = createAppI18n();
+  app.use(i18n);
+
+  return { app, router, store, i18n };
 };

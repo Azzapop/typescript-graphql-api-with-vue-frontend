@@ -1,0 +1,13 @@
+{
+  "app-configurator": {
+    "primary": "Primary",
+    "surface": "Surface",
+    "presets": "Presets",
+    "menu-mode": "Menu Mode",
+    "static": "Static",
+    "overlay": "Overlay"
+  },
+  "language-switcher": {
+    "language": "Language"
+  }
+}

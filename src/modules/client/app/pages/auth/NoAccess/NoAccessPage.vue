@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import InfoCard from '@app/components/InfoCard.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import NoAccessImage from './NoAccessImage.vue';
+
+const { t } = useNamespacedI18n('no-access-page');
 </script>
 
 <template>
   <FloatingMenuCardLayout>
     <InfoCard
-      title="Access Denied"
-      subtitle="You do not have the necessary permisions. Please contact admins."
+      :title="t('title')"
+      :subtitle="t('subtitle')"
       icon="pi pi-lock"
       severity="warn"
-      buttonLabel="Go to Dashboard"
+      :buttonLabel="t('button-label')"
       buttonTo="/"
     >
       <NoAccessImage />

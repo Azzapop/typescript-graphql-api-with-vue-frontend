@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
 import AppConfigurator from '../components/AppConfigurator.vue';
+import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { useLayout } from '../composables/layout';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+const { t } = useNamespacedI18n('app-topbar');
 
 const topbarAppConfiguratorPopover = useTemplateRef<
   InstanceType<typeof Popover>
@@ -13,6 +16,14 @@ const topbarAppConfiguratorPopover = useTemplateRef<
 const toggleAppConfigurator = (e: Event) => {
   assert(topbarAppConfiguratorPopover.value);
   topbarAppConfiguratorPopover.value.toggle(e);
+};
+
+const topbarLanguageSwitcherPopover = useTemplateRef<
+  InstanceType<typeof Popover>
+>('topbar-language-switcher-popover');
+const toggleLanguageSwitcher = (e: Event) => {
+  assert(topbarLanguageSwitcherPopover.value);
+  topbarLanguageSwitcherPopover.value.toggle(e);
 };
 </script>
 
@@ -91,6 +102,18 @@ const toggleAppConfigurator = (e: Event) => {
             <AppConfigurator />
           </Popover>
         </div>
+        <div class="layout-topbar__language-switcher-container">
+          <button
+            @click="toggleLanguageSwitcher"
+            type="button"
+            class="layout-topbar__action layout-topbar__action--highlight"
+          >
+            <i class="pi pi-language layout-topbar__action-icon"></i>
+          </button>
+          <Popover ref="topbar-language-switcher-popover">
+            <LanguageSwitcher />
+          </Popover>
+        </div>
       </div>
 
       <button
@@ -117,9 +140,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-calendar layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Calendar</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('calendar') }}
+            </span>
           </button>
           <button
             type="button"
@@ -128,9 +151,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-inbox layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Messages</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('messages') }}
+            </span>
           </button>
           <button
             type="button"
@@ -139,9 +162,9 @@ const toggleAppConfigurator = (e: Event) => {
             <i
               class="pi pi-user layout-topbar__action-icon layout-topbar__menu-icon"
             ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label"
-              >Profile</span
-            >
+            <span class="layout-topbar__action-label layout-topbar__menu-label">
+              {{ t('profile') }}
+            </span>
           </button>
         </div>
       </div>
@@ -210,6 +233,10 @@ const toggleAppConfigurator = (e: Event) => {
   }
 
   &__app-configurator-container {
+    position: relative;
+  }
+
+  &__language-switcher-container {
     position: relative;
   }
 

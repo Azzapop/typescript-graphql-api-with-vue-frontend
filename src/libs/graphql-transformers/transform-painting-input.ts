@@ -4,7 +4,7 @@ import { GqlPaintingInputSchema } from '~libs/graphql-validators';
 import { logger } from '~libs/logger';
 import { PaintingCreateInputSchema } from '~libs/prisma-validators/zod';
 
-const GqlToPrisma = GqlPaintingInputSchema()
+const GQL_TO_PRISMA = GqlPaintingInputSchema()
   .transform(
     ({ title, painterId, techniqueId, date }): Prisma.PaintingCreateInput => ({
       title,
@@ -18,7 +18,7 @@ const GqlToPrisma = GqlPaintingInputSchema()
 export const transformPaintingInput = (
   input: GqlPaintingInput
 ): Prisma.PaintingCreateInput | null => {
-  const result = GqlToPrisma.safeParse(input);
+  const result = GQL_TO_PRISMA.safeParse(input);
 
   if (result.success) {
     return result.data;

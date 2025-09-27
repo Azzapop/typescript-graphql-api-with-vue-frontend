@@ -1,0 +1,105 @@
+{
+  "error-page": {
+    "title": "Error Ocurrido",
+    "subtitle": "El recurso solicitado no está disponible.",
+    "button-label": "Ir al Panel"
+  },
+  "login-form": {
+    "email": "Correo electrónico",
+    "email-placeholder": "Dirección de correo electrónico",
+    "password": "Contraseña",
+    "password-placeholder": "Contraseña",
+    "remember-me": "Recordarme",
+    "forgot-password": "¿Olvidaste tu contraseña?",
+    "sign-in": "Iniciar sesión"
+  },
+  "login-page": {
+    "welcome": "¡Bienvenido a PrimeLand!",
+    "sign-in-to-continue": "Inicia sesión para continuar"
+  },
+  "not-found-page": {
+    "pre-title": "404",
+    "title": "No Encontrado",
+    "subtitle": "El recurso solicitado no está disponible.",
+    "button-label": "Ir al Panel"
+  },
+  "not-found-link": {
+    "faq-title": "Preguntas Frecuentes",
+    "faq-subtext": "Ultricies mi quis hendrerit dolor.",
+    "solution-title": "Centro de Soluciones",
+    "solution-subtext": "Phasellus faucibus scelerisque eleifend.",
+    "permission-title": "Administrador de Permisos",
+    "permission-subtext": "Accumsan in nisl nisi scelerisque"
+  },
+  "no-access-page": {
+    "title": "Acceso Denegado",
+    "subtitle": "No tienes los permisos necesarios. Por favor contacta a los administradores.",
+    "button-label": "Ir al Panel"
+  },
+  "app-menu": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "ui-components": "Componentes UI",
+    "form-layout": "Diseño de Formulario",
+    "input": "Entrada",
+    "button": "Botón",
+    "table": "Tabla",
+    "list": "Lista",
+    "tree": "Árbol",
+    "panel": "Panel",
+    "overlay": "Superposición",
+    "media": "Medios",
+    "menu": "Menú",
+    "message": "Mensaje",
+    "file": "Archivo",
+    "chart": "Gráfico",
+    "timeline": "Cronología",
+    "misc": "Miscelánea",
+    "pages": "Páginas",
+    "landing": "Aterrizaje",
+    "auth": "Autenticación",
+    "login": "Iniciar Sesión",
+    "error": "Error",
+    "access-denied": "Acceso Denegado",
+    "crud": "CRUD",
+    "not-found": "No Encontrado",
+    "empty": "Vacío",
+    "hierarchy": "Jerarquía",
+    "submenu-1": "Submenú 1",
+    "submenu-1-1": "Submenú 1.1",
+    "submenu-1-1-1": "Submenú 1.1.1",
+    "submenu-1-1-2": "Submenú 1.1.2",
+    "submenu-1-1-3": "Submenú 1.1.3",
+    "submenu-1-2": "Submenú 1.2",
+    "submenu-1-2-1": "Submenú 1.2.1",
+    "submenu-2": "Submenú 2",
+    "submenu-2-1": "Submenú 2.1",
+    "submenu-2-1-1": "Submenú 2.1.1",
+    "submenu-2-1-2": "Submenú 2.1.2",
+    "submenu-2-2": "Submenú 2.2",
+    "submenu-2-2-1": "Submenú 2.2.1",
+    "get-started": "Comenzar",
+    "documentation": "Documentación",
+    "view-source": "Ver Código"
+  },
+  "app-topbar": {
+    "calendar": "Calendario",
+    "messages": "Mensajes",
+    "profile": "Perfil"
+  },
+  "app-configurator": {
+    "primary": "Primario",
+    "surface": "Superficie",
+    "presets": "Preajustes",
+    "menu-mode": "Modo de Menú",
+    "static": "Estático",
+    "overlay": "Superposición"
+  },
+  "home-page": {
+    "home": "Inicio",
+    "submit": "Enviar"
+  },
+  "language-switcher": {
+    "language": "Idioma"
+  }
+}

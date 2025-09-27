@@ -1,152 +1,167 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import type { MenuItem } from 'primevue/menuitem';
-import { ref } from 'vue';
-import type { Ref } from 'vue';
+import { computed } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
+
+const { t } = useNamespacedI18n('app-menu');
 
 // First level: label
 // Second level: items
 // Third level: recursive items etc
-const model: Ref = ref<MenuItem[]>([
+// Make the model reactive to locale changes using computed
+const model = computed<MenuItem[]>(() => [
   {
-    label: 'Home',
-    items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }],
+    label: t('home'),
+    items: [{ label: t('dashboard'), icon: 'pi pi-fw pi-home', to: '/' }],
   },
   {
-    label: 'UI Components',
+    label: t('ui-components'),
     items: [
       {
-        label: 'Form Layout',
+        label: t('form-layout'),
         icon: 'pi pi-fw pi-id-card',
         to: '/uikit/formlayout',
       },
-      { label: 'Input', icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
       {
-        label: 'Button',
+        label: t('input'),
+        icon: 'pi pi-fw pi-check-square',
+        to: '/uikit/input',
+      },
+      {
+        label: t('button'),
         icon: 'pi pi-fw pi-mobile',
         to: '/uikit/button',
         class: 'rotated-icon',
       },
-      { label: 'Table', icon: 'pi pi-fw pi-table', to: '/uikit/table' },
-      { label: 'List', icon: 'pi pi-fw pi-list', to: '/uikit/list' },
-      { label: 'Tree', icon: 'pi pi-fw pi-share-alt', to: '/uikit/tree' },
-      { label: 'Panel', icon: 'pi pi-fw pi-tablet', to: '/uikit/panel' },
-      { label: 'Overlay', icon: 'pi pi-fw pi-clone', to: '/uikit/overlay' },
-      { label: 'Media', icon: 'pi pi-fw pi-image', to: '/uikit/media' },
-      { label: 'Menu', icon: 'pi pi-fw pi-bars', to: '/uikit/menu' },
-      { label: 'Message', icon: 'pi pi-fw pi-comment', to: '/uikit/message' },
-      { label: 'File', icon: 'pi pi-fw pi-file', to: '/uikit/file' },
-      { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', to: '/uikit/charts' },
+      { label: t('table'), icon: 'pi pi-fw pi-table', to: '/uikit/table' },
+      { label: t('list'), icon: 'pi pi-fw pi-list', to: '/uikit/list' },
+      { label: t('tree'), icon: 'pi pi-fw pi-share-alt', to: '/uikit/tree' },
+      { label: t('panel'), icon: 'pi pi-fw pi-tablet', to: '/uikit/panel' },
+      { label: t('overlay'), icon: 'pi pi-fw pi-clone', to: '/uikit/overlay' },
+      { label: t('media'), icon: 'pi pi-fw pi-image', to: '/uikit/media' },
+      { label: t('menu'), icon: 'pi pi-fw pi-bars', to: '/uikit/menu' },
       {
-        label: 'Timeline',
+        label: t('message'),
+        icon: 'pi pi-fw pi-comment',
+        to: '/uikit/message',
+      },
+      { label: t('file'), icon: 'pi pi-fw pi-file', to: '/uikit/file' },
+      { label: t('chart'), icon: 'pi pi-fw pi-chart-bar', to: '/uikit/charts' },
+      {
+        label: t('timeline'),
         icon: 'pi pi-fw pi-calendar',
         to: '/uikit/timeline',
       },
-      { label: 'Misc', icon: 'pi pi-fw pi-circle', to: '/uikit/misc' },
+      { label: t('misc'), icon: 'pi pi-fw pi-circle', to: '/uikit/misc' },
     ],
   },
   {
-    label: 'Pages',
+    label: t('pages'),
     icon: 'pi pi-fw pi-briefcase',
     to: '/pages',
     items: [
       {
-        label: 'Landing',
+        label: t('landing'),
         icon: 'pi pi-fw pi-globe',
         to: '/landing',
       },
       {
-        label: 'Auth',
+        label: t('auth'),
         icon: 'pi pi-fw pi-user',
         items: [
           {
-            label: 'Login',
+            label: t('login'),
             icon: 'pi pi-fw pi-sign-in',
             to: '/auth/login',
           },
           {
-            label: 'Error',
+            label: t('error'),
             icon: 'pi pi-fw pi-times-circle',
             to: '/auth/error',
           },
           {
-            label: 'Access Denied',
+            label: t('access-denied'),
             icon: 'pi pi-fw pi-lock',
             to: '/auth/access',
           },
         ],
       },
       {
-        label: 'Crud',
+        label: t('crud'),
         icon: 'pi pi-fw pi-pencil',
         to: '/pages/crud',
       },
       {
-        label: 'Not Found',
+        label: t('not-found'),
         icon: 'pi pi-fw pi-exclamation-circle',
         to: '/pages/notfound',
       },
       {
-        label: 'Empty',
+        label: t('empty'),
         icon: 'pi pi-fw pi-circle-off',
         to: '/pages/empty',
       },
     ],
   },
   {
-    label: 'Hierarchy',
+    label: t('hierarchy'),
     items: [
       {
-        label: 'Submenu 1',
+        label: t('submenu-1'),
         icon: 'pi pi-fw pi-bookmark',
         items: [
           {
-            label: 'Submenu 1.1',
+            label: t('submenu-1-1'),
             icon: 'pi pi-fw pi-bookmark',
             items: [
-              { label: 'Submenu 1.1.1', icon: 'pi pi-fw pi-bookmark' },
-              { label: 'Submenu 1.1.2', icon: 'pi pi-fw pi-bookmark' },
-              { label: 'Submenu 1.1.3', icon: 'pi pi-fw pi-bookmark' },
+              { label: t('submenu-1-1-1'), icon: 'pi pi-fw pi-bookmark' },
+              { label: t('submenu-1-1-2'), icon: 'pi pi-fw pi-bookmark' },
+              { label: t('submenu-1-1-3'), icon: 'pi pi-fw pi-bookmark' },
             ],
           },
           {
-            label: 'Submenu 1.2',
+            label: t('submenu-1-2'),
             icon: 'pi pi-fw pi-bookmark',
-            items: [{ label: 'Submenu 1.2.1', icon: 'pi pi-fw pi-bookmark' }],
+            items: [
+              { label: t('submenu-1-2-1'), icon: 'pi pi-fw pi-bookmark' },
+            ],
           },
         ],
       },
       {
-        label: 'Submenu 2',
+        label: t('submenu-2'),
         icon: 'pi pi-fw pi-bookmark',
         items: [
           {
-            label: 'Submenu 2.1',
+            label: t('submenu-2-1'),
             icon: 'pi pi-fw pi-bookmark',
             items: [
-              { label: 'Submenu 2.1.1', icon: 'pi pi-fw pi-bookmark' },
-              { label: 'Submenu 2.1.2', icon: 'pi pi-fw pi-bookmark' },
+              { label: t('submenu-2-1-1'), icon: 'pi pi-fw pi-bookmark' },
+              { label: t('submenu-2-1-2'), icon: 'pi pi-fw pi-bookmark' },
             ],
           },
           {
-            label: 'Submenu 2.2',
+            label: t('submenu-2-2'),
             icon: 'pi pi-fw pi-bookmark',
-            items: [{ label: 'Submenu 2.2.1', icon: 'pi pi-fw pi-bookmark' }],
+            items: [
+              { label: t('submenu-2-2-1'), icon: 'pi pi-fw pi-bookmark' },
+            ],
           },
         ],
       },
     ],
   },
   {
-    label: 'Get Started',
+    label: t('get-started'),
     items: [
       {
-        label: 'Documentation',
+        label: t('documentation'),
         icon: 'pi pi-fw pi-book',
         to: '/documentation',
       },
       {
-        label: 'View Source',
+        label: t('view-source'),
         icon: 'pi pi-fw pi-github',
         url: 'https://github.com/primefaces/sakai-vue',
         target: '_blank',

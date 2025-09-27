@@ -4,7 +4,7 @@ import { GqlPaintingSchema } from '~libs/graphql-validators';
 import { logger } from '~libs/logger';
 import { PaintingSchema } from '~libs/prisma-validators';
 
-const PrismaToGql = PaintingSchema.transform(
+const PRISMA_TO_GQL = PaintingSchema.transform(
   ({
     id,
     title,
@@ -23,7 +23,7 @@ const PrismaToGql = PaintingSchema.transform(
 export const transformPainting = (
   painting: Painting
 ): GqlResolversTypes['Painting'] | null => {
-  const result = PrismaToGql.safeParse(painting);
+  const result = PRISMA_TO_GQL.safeParse(painting);
 
   if (result.success) {
     return result.data;

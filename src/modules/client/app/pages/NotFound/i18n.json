@@ -1,0 +1,16 @@
+{
+  "not-found-page": {
+    "pre-title": "404",
+    "title": "Not Found",
+    "subtitle": "Requested resource is not available.",
+    "button-label": "Go to Dashboard"
+  },
+  "not-found-link": {
+    "faq-title": "Frequently Asked Questions",
+    "faq-subtext": "Ultricies mi quis hendrerit dolor.",
+    "solution-title": "Solution Center",
+    "solution-subtext": "Phasellus faucibus scelerisque eleifend.",
+    "permission-title": "Permission Manager",
+    "permission-subtext": "Accumsan in nisl nisi scelerisque"
+  }
+}
