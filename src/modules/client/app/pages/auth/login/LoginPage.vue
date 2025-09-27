@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import AppLogo from '@app/components/AppLogo.vue';
 import InfoCard from '@app/components/InfoCard.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import { ref } from 'vue';
 import LoginForm from './LoginForm.vue';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
-const { t } = useNamespacedI18n('login-page')
+const { t } = useNamespacedI18n('login-page');
 
 const email = ref('');
 const password = ref('');

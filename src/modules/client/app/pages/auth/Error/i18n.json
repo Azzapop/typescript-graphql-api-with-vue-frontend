@@ -1,7 +1,7 @@
 {
-    "error-page": {
-        "title": "Error Occurred",
-        "subtitle": "Requested resource is not available.",
-        "button-label": "Go to Dashboard"
-    }
+  "error-page": {
+    "title": "Error Occurred",
+    "subtitle": "Requested resource is not available.",
+    "button-label": "Go to Dashboard"
+  }
 }

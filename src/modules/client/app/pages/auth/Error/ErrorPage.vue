@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import InfoCard from '@app/components/InfoCard.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import ErrorImage from './ErrorImage.vue';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
-const { t } = useNamespacedI18n('error-page')
+const { t } = useNamespacedI18n('error-page');
 </script>
 
 <template>

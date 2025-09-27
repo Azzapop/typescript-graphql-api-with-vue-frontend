@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
 import AppConfigurator from '../components/AppConfigurator.vue';
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { useLayout } from '../composables/layout';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
 const { t } = useNamespacedI18n('app-topbar');

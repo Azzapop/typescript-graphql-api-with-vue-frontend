@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import AppLogo from '@app/components/AppLogo.vue';
 import InfoCard from '@app/components/InfoCard.vue';
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import Divider from 'primevue/divider';
 import NotFoundLink from './NotFoundLink.vue';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { t } = useNamespacedI18n('not-found-page');
 const { t: tLink } = useNamespacedI18n('not-found-link');

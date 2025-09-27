@@ -10,7 +10,7 @@ const password = defineModel<string>('password');
 const checked = defineModel<boolean>('checked');
 const onSubmit = defineModel<() => void>('submit');
 
-const { t } = useNamespacedI18n('login-form') 
+const { t } = useNamespacedI18n('login-form');
 </script>
 
 <template>
@@ -28,7 +28,9 @@ const { t } = useNamespacedI18n('login-form')
       />
     </div>
     <div class="login-form__field">
-      <label for="password" class="login-form__label">{{ t('password') }}</label>
+      <label for="password" class="login-form__label">{{
+        t('password')
+      }}</label>
       <Password
         id="password"
         v-model="password"
@@ -46,9 +48,9 @@ const { t } = useNamespacedI18n('login-form')
           binary
           class="login-form__checkbox"
         />
-        <label for="rememberme" class="login-form__checkbox-label"
-          >{{ t('remember-me') }}</label
-        >
+        <label for="rememberme" class="login-form__checkbox-label">{{
+          t('remember-me')
+        }}</label>
       </div>
       <span class="login-form__forgot">{{ t('forgot-password') }}</span>
     </div>

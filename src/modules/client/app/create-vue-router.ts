@@ -11,7 +11,7 @@ import ErrorPage from './pages/auth/Error/ErrorPage.vue';
 import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
 import LoginPage from './pages/auth/login/LoginPage.vue';
 
-const routes = [
+const ROUTES = [
   {
     path: '/',
     component: HomePage,
@@ -45,6 +45,6 @@ export const createVueRouter = (opts: { isServer: boolean }): Router => {
 
   return createRouter({
     history,
-    routes,
+    routes: ROUTES,
   });
 };

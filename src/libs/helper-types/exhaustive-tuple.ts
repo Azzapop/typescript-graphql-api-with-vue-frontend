@@ -3,9 +3,9 @@
 
 export type ExhaustiveTuple<
   T extends readonly string[],
-  Template extends { value: T[number] }
+  Template extends { value: T[number] },
 > = {
   [K in keyof T]: T[K] extends string
     ? Omit<Template, 'value'> & { value: T[K] }
-    : never
-}
+    : never;
+};

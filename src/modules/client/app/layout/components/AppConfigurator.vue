@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import { useAppConfigurator } from '../composables/app-configurator';
 import { useLayout } from '../composables/layout';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { layoutConfig, isDarkTheme } = useLayout();
 const { t } = useNamespacedI18n('app-configurator');
@@ -81,7 +81,9 @@ const {
         <SelectButton
           v-model="menuMode"
           @change="onMenuModeChange"
-          :options="menuModeOptions.map(opt => ({ ...opt, label: t(opt.value) }))"
+          :options="
+            menuModeOptions.map((opt) => ({ ...opt, label: t(opt.value) }))
+          "
           :allowEmpty="false"
           optionLabel="label"
           optionValue="value"

@@ -4,7 +4,7 @@ import { GqlTechniqueSchema } from '~libs/graphql-validators';
 import { logger } from '~libs/logger';
 import { TechniqueSchema } from '~libs/prisma-validators';
 
-const PrismaToGql = TechniqueSchema.transform(
+const PRISMA_TO_GQL = TechniqueSchema.transform(
   ({ id, name }): GqlResolversTypes['Technique'] => ({
     id,
     name,
@@ -14,7 +14,7 @@ const PrismaToGql = TechniqueSchema.transform(
 export const transformTechnique = (
   technique: Technique | null
 ): GqlResolversTypes['Technique'] | null => {
-  const result = PrismaToGql.safeParse(technique);
+  const result = PRISMA_TO_GQL.safeParse(technique);
   if (result.success) {
     return result.data;
   } else {

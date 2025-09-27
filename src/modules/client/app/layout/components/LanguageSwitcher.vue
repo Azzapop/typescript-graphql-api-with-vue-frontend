@@ -1,29 +1,33 @@
-// NOTE: There is a known issue with PrimeVue's Listbox hover state where the hover style can remain stuck on an option after selecting a locale and then hovering another option.
-// This occurs even when using the default template, and is likely a bug or limitation in the current PrimeVue version.
-// If PrimeVue updates or a workaround is found, this should be revisited.
+// NOTE: There is a known issue with PrimeVue's Listbox hover state where the
+hover style can remain stuck on an option after selecting a locale and then
+hovering another option. // This occurs even when using the default template,
+and is likely a bug or limitation in the current PrimeVue version. // If
+PrimeVue updates or a workaround is found, this should be revisited.
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import { loadLocaleMessages } from '@app/i18n/load-locale-messages';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Listbox from 'primevue/listbox';
-import type { Locale } from '~modules/client/app/i18n/supported-locales';
-import { loadLocaleMessages } from '@app/i18n/load-locale-messages';
+import { useI18n } from 'vue-i18n';
+import type { SupportedLocale } from '~modules/client/app/i18n/supported-locales';
 import { useSupportedLocaleOptions } from './composables/use-supported-locales';
 
-const { locale: currentLocale, setLocaleMessage } = useI18n({ useScope: 'global' });
+const { locale: currentLocale, setLocaleMessage } = useI18n({
+  useScope: 'global',
+});
 const { t } = useNamespacedI18n('language-switcher');
 
 const supportedLocalesOptions = useSupportedLocaleOptions();
 
-const changeLocale = async (event: { value: Locale }) => {
-  const newLocale = event.value;
+const changeLocale = async (event: { value: SupportedLocale }) => {
+  const { value: newLocale } = event;
 
-  if (!newLocale) return
-  if (currentLocale.value === newLocale) return
+  if (!newLocale) return;
+  if (currentLocale.value === newLocale) return;
 
-  await loadLocaleMessages(newLocale, setLocaleMessage)
-  currentLocale.value = newLocale
-}
+  await loadLocaleMessages(newLocale, setLocaleMessage);
+  currentLocale.value = newLocale;
+};
 </script>
 
 <template>
@@ -34,7 +38,7 @@ const changeLocale = async (event: { value: Locale }) => {
         <Listbox
           :modelValue="currentLocale"
           @change="changeLocale"
-          :options="supportedLocalesOptions"
+          :options="Array.from(supportedLocalesOptions)"
           :allowEmpty="false"
           optionLabel="label"
           optionValue="value"
@@ -44,7 +48,9 @@ const changeLocale = async (event: { value: Locale }) => {
           <template #option="{ option }">
             <div class="language-switcher__option">
               <span class="language-switcher__flag">{{ option.flag }}</span>
-              <span class="language-switcher__label-text">{{ option.label }}</span>
+              <span class="language-switcher__label-text">{{
+                option.label
+              }}</span>
             </div>
           </template>
         </Listbox>
@@ -96,4 +102,4 @@ const changeLocale = async (event: { value: Locale }) => {
   border: none;
   box-shadow: none;
 }
-</style> 
+</style>

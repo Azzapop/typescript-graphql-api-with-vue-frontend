@@ -1,23 +1,22 @@
 import { createI18n } from 'vue-i18n';
+import enAU from './locales/en-AU.json';
 import { type PreLoadedLocale } from './preloaded-locales';
-import en from './locales/en.json'
 
-type MessageSchema = typeof en
-
+type MessageSchema = typeof enAU;
 // Use constants to enforce type safety so we enforce the locale is one of the preloaded locales
-const defaultLocale: PreLoadedLocale = 'en-AU' as const;
-const fallbackLocale: PreLoadedLocale = 'en-AU';
+const DEFAULT_LOCALE: PreLoadedLocale = 'en-AU';
+const FALLBACK_LOCALE: PreLoadedLocale = 'en-AU';
 
 export const createAppI18n = () => {
-  const i18n = createI18n<[MessageSchema], PreLoadedLocale>(({
+  const i18n = createI18n<[MessageSchema], PreLoadedLocale>({
     legacy: false, // Enables the composition API
-    locale: defaultLocale,
-    fallbackLocale,
+    locale: DEFAULT_LOCALE,
+    fallbackLocale: FALLBACK_LOCALE,
     messages: {
-      'en-AU': en,
+      'en-AU': enAU,
     },
     globalInjection: true,
-  }))
+  });
 
-  return i18n
-}
+  return i18n;
+};

@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import type { MenuItem } from 'primevue/menuitem';
 import { computed } from 'vue';
 import AppMenuItem from './AppMenuItem.vue';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { t } = useNamespacedI18n('app-menu');
 
@@ -23,7 +23,11 @@ const model = computed<MenuItem[]>(() => [
         icon: 'pi pi-fw pi-id-card',
         to: '/uikit/formlayout',
       },
-      { label: t('input'), icon: 'pi pi-fw pi-check-square', to: '/uikit/input' },
+      {
+        label: t('input'),
+        icon: 'pi pi-fw pi-check-square',
+        to: '/uikit/input',
+      },
       {
         label: t('button'),
         icon: 'pi pi-fw pi-mobile',
@@ -37,7 +41,11 @@ const model = computed<MenuItem[]>(() => [
       { label: t('overlay'), icon: 'pi pi-fw pi-clone', to: '/uikit/overlay' },
       { label: t('media'), icon: 'pi pi-fw pi-image', to: '/uikit/media' },
       { label: t('menu'), icon: 'pi pi-fw pi-bars', to: '/uikit/menu' },
-      { label: t('message'), icon: 'pi pi-fw pi-comment', to: '/uikit/message' },
+      {
+        label: t('message'),
+        icon: 'pi pi-fw pi-comment',
+        to: '/uikit/message',
+      },
       { label: t('file'), icon: 'pi pi-fw pi-file', to: '/uikit/file' },
       { label: t('chart'), icon: 'pi pi-fw pi-chart-bar', to: '/uikit/charts' },
       {
@@ -115,7 +123,9 @@ const model = computed<MenuItem[]>(() => [
           {
             label: t('submenu-1-2'),
             icon: 'pi pi-fw pi-bookmark',
-            items: [{ label: t('submenu-1-2-1'), icon: 'pi pi-fw pi-bookmark' }],
+            items: [
+              { label: t('submenu-1-2-1'), icon: 'pi pi-fw pi-bookmark' },
+            ],
           },
         ],
       },
@@ -134,7 +144,9 @@ const model = computed<MenuItem[]>(() => [
           {
             label: t('submenu-2-2'),
             icon: 'pi pi-fw pi-bookmark',
-            items: [{ label: t('submenu-2-2-1'), icon: 'pi pi-fw pi-bookmark' }],
+            items: [
+              { label: t('submenu-2-2-1'), icon: 'pi pi-fw pi-bookmark' },
+            ],
           },
         ],
       },

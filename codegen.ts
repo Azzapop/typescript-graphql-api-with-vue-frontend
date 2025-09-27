@@ -1,7 +1,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
-const addEslintDisable = { add: { content: '/* eslint-disable */' } };
-const typesPrefix = { typesPrefix: 'Gql' };
+const ADD_ESLINT_DISABLE = { add: { content: '/* eslint-disable */' } };
+const TYPES_PREFIX = { typesPrefix: 'Gql' };
 
 const config: CodegenConfig = {
   schema: './src/modules/graphql/type-defs.graphql',
@@ -12,11 +12,11 @@ const config: CodegenConfig = {
   config: {
     avoidOptionals: true,
     enumsAsTypes: true,
-    ...typesPrefix,
+    ...TYPES_PREFIX,
   },
   generates: {
     'src/libs/graphql-types/index.ts': {
-      plugins: [addEslintDisable, 'typescript', 'typescript-resolvers'],
+      plugins: [ADD_ESLINT_DISABLE, 'typescript', 'typescript-resolvers'],
       config: {
         mappers: {
           Painter: 'Omit<GqlPainter, "techniques">',
@@ -25,7 +25,7 @@ const config: CodegenConfig = {
       },
     },
     'src/libs/graphql-validators/index.ts': {
-      plugins: [addEslintDisable, 'typescript-validation-schema'],
+      plugins: [ADD_ESLINT_DISABLE, 'typescript-validation-schema'],
       config: {
         schema: 'zod',
         importFrom: '~libs/graphql-types',
@@ -45,7 +45,7 @@ const config: CodegenConfig = {
         extension: '.gql.ts',
         baseTypesPath: '~~libs/graphql-types',
       },
-      plugins: [addEslintDisable, 'typescript-operations'],
+      plugins: [ADD_ESLINT_DISABLE, 'typescript-operations'],
       config: {
         onlyOperationTypes: true,
         withHooks: true,

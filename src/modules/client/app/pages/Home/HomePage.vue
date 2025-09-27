@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import AppLayout from '@app/layout/App/AppLayout.vue';
 import Button from 'primevue/button';
-import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 
 const { t } = useNamespacedI18n('home-page');
 </script>

@@ -1,1 +1,2 @@
-export { type ExhaustiveTuple } from './exhaustive-tuple';
+export * from './exhaustive-tuple';
+export * from './mutable';

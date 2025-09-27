@@ -2,11 +2,11 @@ import { fileURLToPath } from 'url';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __FILENAME = fileURLToPath(import.meta.url);
+const __DIRNAME = path.dirname(__FILENAME);
 
-const ROOT = path.resolve(__dirname, '../src/modules/client/app');
-const OUTPUT = path.join(ROOT, 'i18n/locales/en.json');
+const ROOT = path.resolve(__DIRNAME, '../src/modules/client/app');
+const OUTPUT = path.join(ROOT, 'i18n/locales/en-AU.json');
 const TARGET_FILENAME = 'i18n.json';
 
 function relativeToCwd(filePath: string) {

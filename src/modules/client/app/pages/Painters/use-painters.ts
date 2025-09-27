@@ -2,7 +2,7 @@ import { gql } from '@apollo/client/core';
 import { useQuery } from '@vue/apollo-composable';
 import type { GqlGetPaintersQuery } from './use-painters.gql';
 
-const getPaintersQuery = gql`
+const GET_PAINTERS_QUERY = gql`
   query GetPainters {
     painters {
       name
@@ -12,5 +12,5 @@ const getPaintersQuery = gql`
 `;
 
 export const usePainters = async () => {
-  return useQuery<GqlGetPaintersQuery>(getPaintersQuery);
+  return useQuery<GqlGetPaintersQuery>(GET_PAINTERS_QUERY);
 };
