@@ -1,0 +1,42 @@
+openapi: 3.1.0
+info:
+  title: Auth API
+  version: 1.0.0
+
+paths:
+  /login/local:
+    $ref: './paths/login-local.yaml'
+  /logout:
+    $ref: './paths/logout.yaml'
+  /refresh:
+    $ref: './paths/refresh.yaml'
+
+components:
+  schemas:
+    LoginRequest:
+      $ref: './components/schemas/LoginRequest.yaml'
+    User:
+      $ref: './components/schemas/User.yaml'
+    AuthorizationError:
+      $ref: './components/schemas/AuthorizationError.yaml'
+    ValidationError:
+      $ref: './components/schemas/ValidationError.yaml'
+    ServerError:
+      $ref: './components/schemas/ServerError.yaml'
+  headers:
+    SetAuthCookies:
+      $ref: './components/headers/SetAuthCookies.yaml'
+    ClearAuthCookies:
+      $ref: './components/headers/ClearAuthCookies.yaml'
+  securitySchemes:
+    accessToken:
+      $ref: './components/securitySchemes/accessToken.yaml'
+    refreshToken:
+      $ref: './components/securitySchemes/refreshToken.yaml'
+  responses:
+    BadRequest:
+      $ref: './components/responses/BadRequest.yaml'
+    Unauthorized:
+      $ref: './components/responses/Unauthorized.yaml'
+    InternalError:
+      $ref: './components/responses/InternalError.yaml'

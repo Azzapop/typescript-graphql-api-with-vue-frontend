@@ -1,0 +1,27 @@
+post:
+  summary: Login with local credentials
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../components/schemas/LoginRequest.yaml'
+  responses:
+    '200':
+      description: Login successful
+      headers:
+        Set-Cookie:
+          $ref: '../components/headers/SetAuthCookies.yaml'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '../components/schemas/User.yaml'
+    '400':
+      $ref: '../components/responses/BadRequest.yaml'
+    '401':
+      $ref: '../components/responses/Unauthorized.yaml'
+    '500':
+      $ref: '../components/responses/InternalError.yaml'

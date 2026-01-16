@@ -1,6 +1,6 @@
+import { prisma } from '~libs/domain-model/prisma';
 import { transformTechnique } from '~libs/graphql-transformers';
 import type { GqlPainterResolvers } from '~libs/graphql-types';
-import { prisma } from '~modules/prisma';
 
 export const techniques: GqlPainterResolvers['techniques'] = async (
   { id },

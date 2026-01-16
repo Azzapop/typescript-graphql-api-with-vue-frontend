@@ -7,12 +7,13 @@
 // TODO try this out
 // previewFeatures = ["prismaSchemaFolder"]
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
 generator zod {
   provider = "zod-prisma-types"
-  output = "../../libs/prisma-validators/zod"
+  output   = "../../prisma-validators/zod"
 }
 
 datasource db {
@@ -59,4 +60,35 @@ model PainterTechnique {
   technique   Technique @relation(fields: [techniqueId], references: [id])
   createdAt   DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+}
+
+// A user only needs 1 set of credentials, we dont enforce credentials at the db level
+// due to the fact they can have any combination of credentials they want. Instead we do 
+// this at run time to ensure the user has at least one.
+model User {
+  id               String            @id @default(cuid())
+  tokenVersion     String            @unique
+  email            String 
+  refreshTokens    RefreshToken[]
+  localCredentials LocalCredentials?
+  createdAt        DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime          @updatedAt @db.Timestamptz(6)
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model LocalCredentials {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  username       String   @unique
+  hashedPassword String
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime @db.Timestamptz(6)
 }

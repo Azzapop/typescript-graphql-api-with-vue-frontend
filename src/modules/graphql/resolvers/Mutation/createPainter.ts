@@ -1,3 +1,4 @@
+import { prisma } from '~libs/domain-model/prisma';
 import { GqlBadInputError, GqlBadParseError } from '~libs/graphql-errors';
 import {
   transformPainterInput,
@@ -5,7 +6,6 @@ import {
 } from '~libs/graphql-transformers';
 import type { GqlMutationResolvers } from '~libs/graphql-types';
 import { logger } from '~libs/logger';
-import { prisma } from '~modules/prisma';
 
 export const createPainter: GqlMutationResolvers['createPainter'] = async (
   _parent,

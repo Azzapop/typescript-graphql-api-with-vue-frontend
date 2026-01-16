@@ -25,15 +25,15 @@ const ROUTES = [
     component: NotFoundPage,
   },
   {
-    path: '/auth/access',
+    path: '/access',
     component: NoAccessPage,
   },
   {
-    path: '/auth/error',
+    path: '/error',
     component: ErrorPage,
   },
   {
-    path: '/auth/login',
+    path: '/login',
     component: LoginPage,
   },
 ];
