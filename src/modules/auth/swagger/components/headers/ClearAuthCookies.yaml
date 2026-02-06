@@ -1,0 +1,14 @@
+description: Clears authentication cookies
+schema:
+  type: array
+  prefixItems:
+    - type: string
+      title: access_token
+      description: Clears access token cookie
+      const: access_token=; HttpOnly; Secure; SameSite=Strict; Max-Age=0
+    - type: string
+      title: refresh_token
+      description: Clears refresh token cookie
+      const: refresh_token=; HttpOnly; Secure; SameSite=Strict; Max-Age=0
+  minItems: 2
+  maxItems: 2

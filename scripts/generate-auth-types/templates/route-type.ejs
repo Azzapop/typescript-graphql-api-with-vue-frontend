@@ -1,0 +1,110 @@
+<%
+const { route, utils, config } = it;
+const { _, pascalCase, require } = utils;
+const { query, payload, pathParams, headers } = route.request;
+
+const routeDocs = includeFile("@base/route-docs", { config, route, utils });
+// Use the path (moduleName) instead of routeName.usage
+const routeNamespace = pascalCase(route.routeName.usage);
+
+// Get all responses
+const responses = route.raw.responses || {};
+const responseEntries = Object.entries(responses);
+
+%>
+
+/**
+<%~ routeDocs.description %>
+
+<%~ routeDocs.lines %>
+
+*/
+export namespace <%~ routeNamespace %> {
+  export type RequestParams = <%~ (pathParams && pathParams.type) || '{}' %>;
+  export type RequestQuery = <%~ (query && query.type) || '{}' %>;
+  export type RequestBody = <%~ (payload && payload.type) || '{}' %>;
+  export type RequestHeaders = <%~ (headers && headers.type) || '{}' %>;
+
+  // Generate individual response types for each status code
+  <% responseEntries.forEach(([status, response]) => {
+    const statusNum = parseInt(status);
+    if (!isNaN(statusNum) && response.content && response.content['application/json']) {
+      const schema = response.content['application/json'].schema;
+      const typeName = `Response${status}`;
+      %>
+  export type <%~ typeName %> = <%~ utils.getInlineParseContent(schema) %>;
+  <% }
+  }); %>
+
+  // Individual typed response interfaces for each status
+  <% responseEntries.forEach(([status, response]) => {
+    const statusNum = parseInt(status);
+    if (!isNaN(statusNum) && response.content && response.content['application/json']) {
+      // Check for Set-Cookie headers
+      const setCookieHeader = response.headers && response.headers['Set-Cookie'];
+      const cookieNames = [];
+      let isClearingCookies = false;
+
+      if (setCookieHeader && setCookieHeader.schema) {
+        const schema = setCookieHeader.schema;
+        if (schema.prefixItems && Array.isArray(schema.prefixItems)) {
+          schema.prefixItems.forEach(item => {
+            if (item.title) {
+              cookieNames.push(item.title);
+              // Check if this is clearing cookies (Max-Age=0)
+              if (item.const && item.const.includes('Max-Age=0')) {
+                isClearingCookies = true;
+              }
+            }
+          });
+        }
+      }
+      %>
+  <% if (cookieNames.length > 0) { %>
+  type RequiredCookies<%~ status %> = <%~ cookieNames.map(name => `'${name}'`).join(' | ') %>;
+  type MissingCookies<%~ status %><Set extends string> = Exclude<RequiredCookies<%~ status %>, Set>;
+
+  export interface TypedResponse<%~ status %><SetCookies extends string = never> extends Omit<Response, 'json' | 'cookie' | 'clearCookie'> {
+    <% if (isClearingCookies) { %>
+    <% cookieNames.forEach(name => { %>
+    clearCookie(name: '<%~ name %>', options?: any): TypedResponse<%~ status %><SetCookies | '<%~ name %>'>;
+    <% }); %>
+    <% } else { %>
+    <% cookieNames.forEach(name => { %>
+    cookie(name: '<%~ name %>', value: string, options?: any): TypedResponse<%~ status %><SetCookies | '<%~ name %>'>;
+    <% }); %>
+    <% } %>
+    json(
+      body: [MissingCookies<%~ status %><SetCookies>] extends [never]
+        ? Response<%~ status %>
+        : { __error: 'Missing required cookies'; missing: MissingCookies<%~ status %><SetCookies> }
+    ): this;
+  }
+  <% } else { %>
+  export interface TypedResponse<%~ status %> extends Omit<Response, 'json' | 'cookie' | 'clearCookie'> {
+    json(body: Response<%~ status %>): this;
+  }
+  <% } %>
+  <% }
+  }); %>
+
+  // Main response interface with overloaded status method
+  export interface Responses extends Omit<Response, 'status' | 'json' | 'cookie' | 'clearCookie'> {
+    <% responseEntries.forEach(([status, response]) => {
+      const statusNum = parseInt(status);
+      if (!isNaN(statusNum) && response.content && response.content['application/json']) {
+        // Check if this status has required cookies
+        const setCookieHeader = response.headers && response.headers['Set-Cookie'];
+        const hasCookies = setCookieHeader && setCookieHeader.schema && setCookieHeader.schema.prefixItems;
+        %>
+    status(code: <%~ status %>): TypedResponse<%~ status %><% if (hasCookies) { %><><% } %>;
+    <% }
+    }); %>
+  }
+
+  export type Handler = (
+    req: Request<RequestParams, any, RequestBody, RequestQuery>,
+    res: Responses,
+    next: NextFunction
+  ) => Responses | Promise<Responses>;
+}

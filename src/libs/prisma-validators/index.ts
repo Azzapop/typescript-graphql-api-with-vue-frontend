@@ -14,4 +14,5 @@ export {
   PainterSchema,
   TechniqueSchema,
   PaintingSchema,
+  LocalCredentialsSchema,
 } from './zod';

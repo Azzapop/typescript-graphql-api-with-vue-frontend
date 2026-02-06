@@ -14,6 +14,7 @@ export const serverEntryDev = async () => {
 
   const inject = (expressServer: Express) => {
     expressServer.use(vite.middlewares);
+    // TODO client needs special auth middleware to validate auth token, then refresh token, if refresh is valid, issue new tokens, otherwise redirect to login page
     expressServer.use('*', serverHandler);
   };
 

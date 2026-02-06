@@ -11,7 +11,7 @@ export const entry = async (opts: { httpServer?: HttpServer }) => {
   await apolloServer.start();
 
   const apolloServerMiddleware = expressMiddleware(apolloServer, {
-    // TODO setup the context in a better way
+    // TODO implement gql auth middleware here
     context: async ({ req }) => ({ token: req.headers.token }),
   });
 

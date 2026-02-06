@@ -1,8 +1,8 @@
+import { prisma } from '~libs/domain-model/prisma';
 import { GqlNotFoundError } from '~libs/graphql-errors';
 import { transformPainting } from '~libs/graphql-transformers';
 import type { GqlQueryResolvers } from '~libs/graphql-types';
 import { logger } from '~libs/logger';
-import { prisma } from '~modules/prisma';
 
 export const painting: GqlQueryResolvers['painting'] = async (
   _parent,

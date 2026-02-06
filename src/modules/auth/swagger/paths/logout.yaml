@@ -1,0 +1,22 @@
+delete:
+  summary: Logout and clear session
+  security:
+    - accessToken: []
+  responses:
+    '200':
+      description: Logout successful
+      headers:
+        Set-Cookie:
+          $ref: '../components/headers/ClearAuthCookies.yaml'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '401':
+      $ref: '../components/responses/Unauthorized.yaml'
+    '500':
+      $ref: '../components/responses/InternalError.yaml'

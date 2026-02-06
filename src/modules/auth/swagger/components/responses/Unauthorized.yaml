@@ -1,0 +1,8 @@
+description: Authentication required or invalid credentials
+headers:
+  Set-Cookie:
+    $ref: '../headers/ClearAuthCookies.yaml'
+content:
+  application/json:
+    schema:
+      $ref: '../schemas/AuthorizationError.yaml'

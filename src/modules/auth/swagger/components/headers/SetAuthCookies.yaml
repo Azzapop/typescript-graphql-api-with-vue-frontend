@@ -1,0 +1,16 @@
+description: Sets authentication cookies
+schema:
+  type: array
+  prefixItems:
+    - type: string
+      title: access_token
+      description: JWT access token (httpOnly, secure, sameSite=strict, maxAge=15min)
+      examples:
+        - access_token=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=Strict; Max-Age=900
+    - type: string
+      title: refresh_token
+      description: Refresh token (httpOnly, secure, sameSite=strict, maxAge=7days)
+      examples:
+        - refresh_token=abc123...; HttpOnly; Secure; SameSite=Strict; Max-Age=604800
+  minItems: 2
+  maxItems: 2

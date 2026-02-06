@@ -2,6 +2,8 @@ import type { Express } from 'express';
 import express from 'express';
 import type { Server as HttpServer } from 'http';
 import http from 'http';
+import { logger } from '~libs/logger';
+import { entry as authEntry } from '~modules/auth/entry';
 import {
   serverEntryDev as clientServerEntryDev,
   serverEntryProduction as clientServerEntryProduction,
@@ -14,9 +16,12 @@ const configureExpressServer = async (
 ): Promise<void> => {
   const { httpServer } = opts;
 
+  const { inject: injectAuthApi } = await authEntry();
+  injectAuthApi(expressServer);
+
   // Configure graphql server for data
-  const { inject: injectGraphqlServer } = await graphqlEntry({ httpServer });
-  injectGraphqlServer(expressServer);
+  const { inject: injectGraphqlApi } = await graphqlEntry({ httpServer });
+  injectGraphqlApi(expressServer);
 
   /*
    *  Configure our client application with SSR
@@ -40,8 +45,9 @@ const configureExpressServer = async (
   // TODO move this out to a util function again
   // Error handler in case something goes wrong somewhere in our process
   expressServer.use((err, _req, res, _next) => {
-    console.log('this is an error');
-    console.log({ err });
+    logger.error('===== Error handler middleware =====');
+    logger.error(JSON.stringify({ err }));
+    logger.error('====================================');
     res.status(500).json({ e: 'error with the request' });
   });
 };

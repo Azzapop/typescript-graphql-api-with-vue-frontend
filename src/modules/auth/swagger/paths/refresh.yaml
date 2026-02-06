@@ -1,0 +1,21 @@
+post:
+  summary: Refresh tokens
+  security:
+    - refreshToken: []
+  responses:
+    '200':
+      description: Login successful
+      headers:
+        Set-Cookie:
+          $ref: '../components/headers/SetAuthCookies.yaml'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '../components/schemas/User.yaml'
+    '401':
+      $ref: '../components/responses/Unauthorized.yaml'
+    '500':
+      $ref: '../components/responses/InternalError.yaml'

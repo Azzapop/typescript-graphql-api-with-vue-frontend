@@ -1,0 +1,4 @@
+type: apiKey
+in: cookie
+name: access_token
+description: JWT access token

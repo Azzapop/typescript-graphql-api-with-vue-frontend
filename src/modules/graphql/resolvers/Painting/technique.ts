@@ -1,8 +1,8 @@
+import { prisma } from '~libs/domain-model/prisma';
 import { GqlBadParseError } from '~libs/graphql-errors';
 import { transformTechnique } from '~libs/graphql-transformers';
 import type { GqlPaintingResolvers } from '~libs/graphql-types';
 import { logger } from '~libs/logger';
-import { prisma } from '~modules/prisma';
 
 // TODO hide techniqueId in the schema?
 export const technique: GqlPaintingResolvers['technique'] = async (
