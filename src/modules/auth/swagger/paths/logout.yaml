@@ -1,5 +1,7 @@
 delete:
   summary: Logout and clear session
+  parameters:
+    - $ref: '../components/parameters/XTraceToken.yaml'
   security:
     - accessToken: []
   responses:
@@ -8,6 +10,8 @@ delete:
       headers:
         Set-Cookie:
           $ref: '../components/headers/ClearAuthCookies.yaml'
+        x-trace-token:
+          $ref: '../components/headers/XTraceToken.yaml'
       content:
         application/json:
           schema:

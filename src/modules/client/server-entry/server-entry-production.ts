@@ -4,6 +4,7 @@ import { static as expressStatic } from 'express';
 import { readFileSync } from 'node:fs';
 import { resolve as pathResolve, join as pathJoin } from 'path';
 import serveStatic from 'serve-static';
+import { traceExpressMiddleware as traceContext } from '~libs/trace-context';
 import { createServerHandler } from './create-server-handler';
 
 const RESOLVE = (p: string) => pathResolve(import.meta.dirname, p);
@@ -18,6 +19,7 @@ export const serverEntryProduction = () => {
   const publicPath = pathJoin(import.meta.dirname, '../client/assets');
 
   const inject = (expressServer: Express): void => {
+    expressServer.use(traceContext);
     // Compress requests that come through
     expressServer.use(compression());
 

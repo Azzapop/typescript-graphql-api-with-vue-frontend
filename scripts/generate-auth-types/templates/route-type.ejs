@@ -59,25 +59,56 @@ export namespace <%~ routeNamespace %> {
           });
         }
       }
+
+      // Check for other response headers (excluding Set-Cookie and x-trace-token)
+      // Note: x-trace-token is excluded because it's automatically set by traceExpressMiddleware
+      // and doesn't need to be manually set by route handlers
+      const responseHeaders = [];
+      if (response.headers) {
+        Object.entries(response.headers).forEach(([headerName, headerDef]) => {
+          if (headerName !== 'Set-Cookie' && headerName !== 'x-trace-token' && headerDef) {
+            // Handle both direct schema and resolved $ref (where schema props may be at top level)
+            const hasSchema = headerDef.schema || headerDef.type || headerDef.$ref;
+            if (hasSchema) {
+              responseHeaders.push({
+                name: headerName,
+                schema: headerDef.schema || headerDef,
+                required: headerDef.required !== false
+              });
+            }
+          }
+        });
+      }
+
+      const hasRequiredHeaders = responseHeaders.some(h => h.required);
+      const requiredHeaders = responseHeaders.filter(h => h.required);
       %>
+  <% if (cookieNames.length > 0 || requiredHeaders.length > 0) { %>
   <% if (cookieNames.length > 0) { %>
   type RequiredCookies<%~ status %> = <%~ cookieNames.map(name => `'${name}'`).join(' | ') %>;
-  type MissingCookies<%~ status %><Set extends string> = Exclude<RequiredCookies<%~ status %>, Set>;
+  <% } %>
+  <% if (requiredHeaders.length > 0) { %>
+  type RequiredHeaders<%~ status %> = <%~ requiredHeaders.map(h => `'${h.name}'`).join(' | ') %>;
+  <% } %>
+  type MissingItems<%~ status %><Set extends string> = Exclude<<%~ cookieNames.length > 0 ? `RequiredCookies${status}` : 'never' %> | <%~ requiredHeaders.length > 0 ? `RequiredHeaders${status}` : 'never' %>, Set>;
 
-  export interface TypedResponse<%~ status %><SetCookies extends string = never> extends Omit<Response, 'json' | 'cookie' | 'clearCookie'> {
+  export interface TypedResponse<%~ status %><SetItems extends string = never> extends Omit<Response, 'json' | 'cookie' | 'clearCookie' | 'setHeader'> {
     <% if (isClearingCookies) { %>
     <% cookieNames.forEach(name => { %>
-    clearCookie(name: '<%~ name %>', options?: any): TypedResponse<%~ status %><SetCookies | '<%~ name %>'>;
+    clearCookie(name: '<%~ name %>', options?: any): TypedResponse<%~ status %><SetItems | '<%~ name %>'>;
     <% }); %>
     <% } else { %>
     <% cookieNames.forEach(name => { %>
-    cookie(name: '<%~ name %>', value: string, options?: any): TypedResponse<%~ status %><SetCookies | '<%~ name %>'>;
+    cookie(name: '<%~ name %>', value: string, options?: any): TypedResponse<%~ status %><SetItems | '<%~ name %>'>;
     <% }); %>
     <% } %>
+    <% responseHeaders.forEach(header => { %>
+    setHeader(name: '<%~ header.name %>', value: string): TypedResponse<%~ status %><SetItems | '<%~ header.name %>'>;
+    <% }); %>
     json(
-      body: [MissingCookies<%~ status %><SetCookies>] extends [never]
+      body: [MissingItems<%~ status %><SetItems>] extends [never]
         ? Response<%~ status %>
-        : { __error: 'Missing required cookies'; missing: MissingCookies<%~ status %><SetCookies> }
+        : { __error: 'Missing required cookies or headers'; missing: MissingItems<%~ status %><SetItems> }
     ): this;
   }
   <% } else { %>
@@ -89,15 +120,20 @@ export namespace <%~ routeNamespace %> {
   }); %>
 
   // Main response interface with overloaded status method
-  export interface Responses extends Omit<Response, 'status' | 'json' | 'cookie' | 'clearCookie'> {
+  export interface Responses extends Omit<Response, 'status' | 'json' | 'cookie' | 'clearCookie' | 'setHeader'> {
     <% responseEntries.forEach(([status, response]) => {
       const statusNum = parseInt(status);
       if (!isNaN(statusNum) && response.content && response.content['application/json']) {
-        // Check if this status has required cookies
+        // Check if this status has required cookies or headers
         const setCookieHeader = response.headers && response.headers['Set-Cookie'];
         const hasCookies = setCookieHeader && setCookieHeader.schema && setCookieHeader.schema.prefixItems;
+        // x-trace-token excluded - automatically set by traceExpressMiddleware
+        const hasRequiredHeaders = response.headers && Object.entries(response.headers).some(([name, def]) =>
+          name !== 'Set-Cookie' && name !== 'x-trace-token' && def && (def.schema || def.type || def.$ref) && def.required !== false
+        );
+        const needsGeneric = hasCookies || hasRequiredHeaders;
         %>
-    status(code: <%~ status %>): TypedResponse<%~ status %><% if (hasCookies) { %><><% } %>;
+    status(code: <%~ status %>): TypedResponse<%~ status %><% if (needsGeneric) { %><><% } %>;
     <% }
     }); %>
   }

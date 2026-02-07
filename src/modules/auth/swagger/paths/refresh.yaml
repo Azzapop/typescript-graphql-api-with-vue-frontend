@@ -1,5 +1,7 @@
 post:
   summary: Refresh tokens
+  parameters:
+    - $ref: '../components/parameters/XTraceToken.yaml'
   security:
     - refreshToken: []
   responses:
@@ -8,6 +10,8 @@ post:
       headers:
         Set-Cookie:
           $ref: '../components/headers/SetAuthCookies.yaml'
+        x-trace-token:
+          $ref: '../components/headers/XTraceToken.yaml'
       content:
         application/json:
           schema:

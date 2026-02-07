@@ -2,6 +2,8 @@ description: Authentication required or invalid credentials
 headers:
   Set-Cookie:
     $ref: '../headers/ClearAuthCookies.yaml'
+  x-trace-token:
+    $ref: '../headers/XTraceToken.yaml'
 content:
   application/json:
     schema:

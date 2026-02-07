@@ -3,10 +3,16 @@ import type {
   NormalizedCacheObject,
   ApolloLink,
 } from '@apollo/client/core';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import {
+  ApolloClient,
+  InMemoryCache,
+  from as linkFrom,
+} from '@apollo/client/core';
 import { HttpLink } from '@apollo/client/core';
+import { setContext } from '@apollo/client/link/context';
 import { SchemaLink } from '@apollo/client/link/schema';
 import type { GraphQLSchema } from 'graphql';
+import { TRACE_TOKEN_HEADER, generateTraceToken } from '~libs/trace-token';
 
 const createLink = (opts: {
   isServer: boolean;
@@ -22,7 +28,18 @@ const createLink = (opts: {
     return new SchemaLink({ schema });
   }
 
-  return new HttpLink({ uri: '/graphql' });
+  const httpLink = new HttpLink({ uri: '/graphql' });
+
+  const traceLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        [TRACE_TOKEN_HEADER]: generateTraceToken(),
+      },
+    };
+  });
+
+  return linkFrom([traceLink, httpLink]);
 };
 
 const createConfig = (opts: {

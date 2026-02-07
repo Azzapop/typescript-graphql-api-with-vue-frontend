@@ -12,6 +12,9 @@ paths:
     $ref: './paths/refresh.yaml'
 
 components:
+  parameters:
+    XTraceToken:
+      $ref: './components/parameters/XTraceToken.yaml'
   schemas:
     LoginRequest:
       $ref: './components/schemas/LoginRequest.yaml'
@@ -24,6 +27,8 @@ components:
     ServerError:
       $ref: './components/schemas/ServerError.yaml'
   headers:
+    XTraceToken:
+      $ref: './components/headers/XTraceToken.yaml'
     SetAuthCookies:
       $ref: './components/headers/SetAuthCookies.yaml'
     ClearAuthCookies:
