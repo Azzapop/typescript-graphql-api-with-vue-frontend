@@ -1,5 +1,7 @@
 post:
   summary: Login with local credentials
+  parameters:
+    - $ref: '../components/parameters/XTraceToken.yaml'
   requestBody:
     required: true
     content:
@@ -12,6 +14,8 @@ post:
       headers:
         Set-Cookie:
           $ref: '../components/headers/SetAuthCookies.yaml'
+        x-trace-token:
+          $ref: '../components/headers/XTraceToken.yaml'
       content:
         application/json:
           schema:

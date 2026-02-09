@@ -1,4 +1,7 @@
 description: Invalid request body
+headers:
+  x-trace-token:
+    $ref: '../headers/XTraceToken.yaml'
 content:
   application/json:
     schema:

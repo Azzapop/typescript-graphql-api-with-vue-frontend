@@ -13,7 +13,6 @@
 - Prefix resolver types with Gql on generate
 - Only one / allowed per import
 - lint rule so that test imports '#' can't be in prod files
-- trace tokens
 - auth middleware for Gql
 - auth middleware for client
 - swagger validation middleware
@@ -26,6 +25,9 @@
 - setup individual apps to have their own express server, plugs into main one through /<identifier>
 - use operationId for the route types
 - split prisma schema into different modules
+- create for things that are saved, generate for things that are created on the fly
+- restructure logging
+- way to mark libs as server or client facing
 
 ### GraphQL Mappers
 

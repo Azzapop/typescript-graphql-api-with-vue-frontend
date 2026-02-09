@@ -3,13 +3,11 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import type { Server as HttpServer } from 'http';
 import { createSchema } from './create-schema';
 
-interface MyContext {
-  token?: string;
-}
+interface MyContext {}
 
 export const createApolloServer = (opts: {
   httpServer?: HttpServer;
-}): ApolloServer => {
+}): ApolloServer<MyContext> => {
   const { httpServer } = opts;
 
   const plugins = [];
