@@ -1,26 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Technique } from '@prisma/client';
-import { transformTechnique } from '../transform-technique';
-
-// Mock the logger to avoid console output and verify error logging
-vi.mock('~libs/logger', () => ({
-  logger: {
-    error: vi.fn(),
-    info: vi.fn(),
-    log: vi.fn(),
-  },
-}));
-
-// Import after mocking
+import { createTechnique } from '#test/prisma';
 import { logger } from '~libs/logger';
-
-const createValidTechnique = (overrides?: Partial<Technique>): Technique => ({
-  id: 'clh1234567890',
-  name: 'Oil Painting',
-  createdAt: new Date('2024-01-01'),
-  updatedAt: new Date('2024-01-01'),
-  ...overrides,
-});
+import { transformTechnique } from '../transform-technique';
 
 describe('transformTechnique', () => {
   beforeEach(() => {
@@ -29,18 +11,18 @@ describe('transformTechnique', () => {
 
   describe('with valid input', () => {
     it('transforms a prisma technique to graphql technique', () => {
-      const prismaTechnique = createValidTechnique();
+      const prismaTechnique = createTechnique();
 
       const result = transformTechnique(prismaTechnique);
 
       expect(result).toEqual({
-        id: 'clh1234567890',
-        name: 'Oil Painting',
+        id: prismaTechnique.id,
+        name: prismaTechnique.name,
       });
     });
 
     it('does not include prisma-only fields in output', () => {
-      const prismaTechnique = createValidTechnique();
+      const prismaTechnique = createTechnique();
 
       const result = transformTechnique(prismaTechnique);
 
@@ -49,7 +31,7 @@ describe('transformTechnique', () => {
     });
 
     it('does not log errors on success', () => {
-      const prismaTechnique = createValidTechnique();
+      const prismaTechnique = createTechnique();
 
       transformTechnique(prismaTechnique);
 
@@ -73,11 +55,8 @@ describe('transformTechnique', () => {
 
   describe('with invalid input', () => {
     it('returns null when id is missing', () => {
-      const invalidTechnique = {
-        name: 'Oil Painting',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as Technique;
+      const { id: _id, ...techniqueWithoutId } = createTechnique();
+      const invalidTechnique = techniqueWithoutId as Technique;
 
       const result = transformTechnique(invalidTechnique);
 
@@ -85,11 +64,8 @@ describe('transformTechnique', () => {
     });
 
     it('returns null when name is missing', () => {
-      const invalidTechnique = {
-        id: 'clh1234567890',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      } as Technique;
+      const { name: _name, ...techniqueWithoutName } = createTechnique();
+      const invalidTechnique = techniqueWithoutName as Technique;
 
       const result = transformTechnique(invalidTechnique);
 
@@ -97,7 +73,7 @@ describe('transformTechnique', () => {
     });
 
     it('logs error message on validation failure', () => {
-      const invalidTechnique = { id: 'test' } as Technique;
+      const invalidTechnique = { id: 'invalid-id' } as Technique;
 
       transformTechnique(invalidTechnique);
 
