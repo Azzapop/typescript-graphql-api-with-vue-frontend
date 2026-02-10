@@ -19,7 +19,8 @@ export const localMiddleware: Handler = (req, res, next) => {
         return next();
       }
 
-      return req.login(user, (loginErr) => {
+      // session: false because we use stateless JWT tokens, not sessions
+      return req.login(user, { session: false }, (loginErr) => {
         if (loginErr) {
           logger.info('Unable to log the user in to the application');
           // TODO log error here when safely redacting information
