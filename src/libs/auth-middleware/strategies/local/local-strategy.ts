@@ -13,7 +13,7 @@ const verifyLocalCredentialsCallback: VerifyFunction = async (
   const localCredentials = await LocalCredentialsStore.getWithUser(username);
 
   if (!localCredentials) {
-    logger.info('No user found with the specified credentials');
+    logger.request.info('No user found with the specified credentials');
     done(null, false);
     return;
   }
@@ -25,7 +25,7 @@ const verifyLocalCredentialsCallback: VerifyFunction = async (
 
   const correctPassword = await bcrypt.compare(password, hashedPassword);
   if (!correctPassword) {
-    logger.info('Specified password does not match given password.');
+    logger.request.info('Specified password does not match given password.');
     done(null, false);
     return;
   }

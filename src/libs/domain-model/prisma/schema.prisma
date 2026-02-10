@@ -21,56 +21,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Painter {
-  id                String             @id @default(cuid())
-  name              String
-  country           String
-  painterTechniques PainterTechnique[]
-  paintings         Painting[]
-  createdAt         DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt         DateTime           @updatedAt @db.Timestamptz(6)
-}
-
-model Painting {
-  id          String    @id @default(cuid())
-  painterId   String
-  painter     Painter   @relation(fields: [painterId], references: [id])
-  title       String
-  techniqueId String
-  technique   Technique @relation(fields: [techniqueId], references: [id])
-  date        DateTime  @db.Date
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
-}
-
-model Technique {
-  id                String             @id @default(cuid())
-  name              String
-  painterTechniques PainterTechnique[]
-  paintings         Painting[]
-  createdAt         DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt         DateTime           @updatedAt @db.Timestamptz(6)
-}
-
-model PainterTechnique {
-  id          String    @id @default(cuid())
-  painterId   String
-  painter     Painter   @relation(fields: [painterId], references: [id])
-  techniqueId String
-  technique   Technique @relation(fields: [techniqueId], references: [id])
-  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+model UserProfile {
+  id        String   @id @default(cuid())
+  email     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
 // A user only needs 1 set of credentials, we dont enforce credentials at the db level
-// due to the fact they can have any combination of credentials they want. Instead we do 
+// due to the fact they can have any combination of credentials they want. Instead we do
 // this at run time to ensure the user has at least one.
 model User {
   id               String            @id @default(cuid())
   tokenVersion     String            @unique
-  email            String 
   refreshTokens    RefreshToken[]
   localCredentials LocalCredentials?
+  profile          UserProfile?
   createdAt        DateTime          @default(now()) @db.Timestamptz(6)
   updatedAt        DateTime          @updatedAt @db.Timestamptz(6)
 }
@@ -90,5 +58,5 @@ model LocalCredentials {
   username       String   @unique
   hashedPassword String
   createdAt      DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(6)
 }
