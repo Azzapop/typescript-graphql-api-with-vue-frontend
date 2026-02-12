@@ -1,27 +1,10 @@
-import { RefreshTokenStore } from '~libs/domain-model';
+import { RefreshTokenStore, UserStore } from '~libs/domain-model';
 import { type Logout } from '~packages/auth-api-client';
 
 export const logout: Logout.LogoutDelete.Handler = (req, res) => {
-  if (!req.user) {
-    return res
-      .status(401)
-      .clearCookie('access_token')
-      .clearCookie('refresh_token')
-      .json({
-        code: 'UNAUTHORIZED',
-        message: 'No authorized user, nothing to logout.',
-      });
-  }
-
-  // Clear refresh token family
-  const {
-    user: { id: userId },
-  } = req;
+  const { id: userId } = req.getUser();
+  // Rotate token version and clear refresh token family
+  UserStore.rotateTokenVersion(userId);
   RefreshTokenStore.clearTokenFamily(userId);
-
-  return res
-    .status(200)
-    .clearCookie('access_token')
-    .clearCookie('refresh_token')
-    .json({ success: true });
+  return res.status(200).json({ success: true });
 };

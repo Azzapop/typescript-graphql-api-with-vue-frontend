@@ -1,7 +1,8 @@
 import { jwtVerify } from 'jose';
-import { REFRESH_SECRET } from './const';
+import type { Result } from '~libs/result';
+import { REFRESH_SECRET } from './refresh-tokens-const';
 
-interface RefreshTokenPayload {
+export interface RefreshTokenPayload {
   sub: string;
   tokenVersion: string;
   refreshTokenId: string;
@@ -9,14 +10,14 @@ interface RefreshTokenPayload {
 
 export const verifyRefreshToken = async (
   token: string
-): Promise<RefreshTokenPayload | null> => {
+): Promise<Result<RefreshTokenPayload>> => {
   try {
     const { payload } = await jwtVerify<RefreshTokenPayload>(
       token,
       REFRESH_SECRET
     );
-    return payload;
+    return { success: true, data: payload };
   } catch {
-    return null;
+    return { success: false, error: 'INVALID' };
   }
 };

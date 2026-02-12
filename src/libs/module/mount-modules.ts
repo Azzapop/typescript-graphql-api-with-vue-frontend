@@ -1,6 +1,6 @@
 import type { Express } from 'express';
 import { logger } from '~libs/logger';
-import type { Module } from './types';
+import type { Module } from './module-types';
 
 export const mountModules = (server: Express, modules: Module[]): void => {
   const paths = modules.map((m) => m.path);
@@ -16,6 +16,6 @@ export const mountModules = (server: Express, modules: Module[]): void => {
   for (const module of modules) {
     const router = module.createRouter();
     server.use(module.path, router);
-    logger.system.info(`Mounted module at ${module.path}`);
+    logger.info(`Mounted module at ${module.path}`);
   }
 };

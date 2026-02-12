@@ -1,2 +1,2 @@
 export { accessTokenStrategy } from './access-token-strategy';
-export { accessTokenMiddleware } from './access-token-middleware';
+export { authenticateAccessToken } from './authenticate-access-token';

@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { User } from '../../models';
 import { parsePrismaError, prisma } from '../../prisma';
-import type { Result } from '../../types';
+import type { Result } from '~libs/result';
 
 const SALT_ROUNDS = 10;
 
@@ -19,10 +19,10 @@ export const createWithLocalCredentials = async (
 ): Promise<Result<User, CreateWithLocalCredentialsError>> => {
   const { username, password } = input;
 
-  logger.request.info(`Creating user with username "${username}"`);
+  logger.info(`Creating user with username "${username}"`);
 
   const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-  const tokenVersion = randomUUID();
+  const tokenVersion = generateTokenVersion();
 
   try {
     const data = await prisma.user.create({
@@ -36,7 +36,7 @@ export const createWithLocalCredentials = async (
         },
       },
     });
-    logger.request.info(`User created with id "${data.id}"`);
+    logger.info(`User created with id "${data.id}"`);
     return { success: true, data };
   } catch (e) {
     const error = parsePrismaError(e);
@@ -45,11 +45,11 @@ export const createWithLocalCredentials = async (
       error.code === 'UNIQUE_CONSTRAINT' &&
       error.fields.includes('username')
     ) {
-      logger.request.info(`Username "${username}" already exists`);
+      logger.info(`Username "${username}" already exists`);
       return { success: false, error: 'USERNAME_EXISTS' };
     }
 
-    logger.request.error(`Failed to create user: ${e}`);
+    logger.error(`Failed to create user: ${e}`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

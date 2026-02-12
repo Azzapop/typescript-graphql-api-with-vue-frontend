@@ -1,6 +1,6 @@
 import { SignJWT } from 'jose';
 import type { User, RefreshToken } from '~libs/domain-model';
-import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from './const';
+import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from './refresh-tokens-const';
 
 export const signRefreshToken = async (
   user: User,

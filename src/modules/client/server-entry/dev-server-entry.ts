@@ -1,15 +1,18 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'path';
+import { initAuth, authenticate } from '~libs/auth-middleware';
 import type { ModuleContext } from '~libs/module';
 import { createModule } from '~libs/module';
-import { traceExpressMiddleware as traceContext } from '~libs/trace-context';
 import { createViteServer } from '~libs/vite';
+import { isPublicRoute } from '../app/is-public-route';
+import { BASE_PATH } from '../app/routes';
 import { createServerHandler } from './create-server-handler';
 
 export const devServerEntry = (context: ModuleContext = {}) =>
   createModule(
     {
-      path: '/app',
+      path: BASE_PATH,
+      appName: 'client',
       configure: async (router) => {
         const vite = await createViteServer();
         const resolvedPath = resolve(
@@ -19,9 +22,15 @@ export const devServerEntry = (context: ModuleContext = {}) =>
         const template = readFileSync(resolvedPath, 'utf-8');
         const serverHandler = createServerHandler({ vite, template });
 
-        router.use(traceContext);
         router.use(vite.middlewares);
-        // TODO client needs special auth middleware to validate auth token, then refresh token, if refresh is valid, issue new tokens, otherwise redirect to login page
+        router.use(initAuth());
+        router.use(
+          authenticate('client-credentials', {
+            onFailure: 'redirect',
+            isPublicRoute,
+            loginPath: '/login',
+          })
+        );
         router.use('*', serverHandler);
       },
     },

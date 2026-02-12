@@ -3,7 +3,7 @@ delete:
   parameters:
     - $ref: '../components/parameters/XTraceToken.yaml'
   security:
-    - accessToken: []
+    - refreshToken: []
   responses:
     '200':
       description: Logout successful

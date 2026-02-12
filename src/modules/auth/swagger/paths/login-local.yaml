@@ -2,6 +2,8 @@ post:
   summary: Login with local credentials
   parameters:
     - $ref: '../components/parameters/XTraceToken.yaml'
+  security:
+    - basicAuth: []
   requestBody:
     required: true
     content:

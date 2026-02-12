@@ -1,2 +1,2 @@
 export { refreshTokenStrategy } from './refresh-token-strategy';
-export { refreshTokenMiddleware } from './refresh-token-middleware';
+export { authenticateRefreshToken } from './authenticate-refresh-token';

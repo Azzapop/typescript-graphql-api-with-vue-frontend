@@ -36,4 +36,7 @@ const createUser = async () => {
   logger.info(`  Username: ${username}`);
 };
 
-runWithTrace({ traceToken: generateTraceToken() }, createUser);
+runWithTrace(
+  { appName: 'create-user-script', traceToken: generateTraceToken() },
+  createUser
+);

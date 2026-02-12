@@ -1,3 +1,4 @@
+// TODO possibly incorrectly named
 // TODO Gt rid of 'noir' palette to fix all the conditionals
 export type ColorPalette = {
   name: string;

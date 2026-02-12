@@ -1,25 +1,19 @@
 import type { VerifyCallback } from 'passport-custom';
 import { Strategy as CustomStrategy } from 'passport-custom';
-import { accessTokens } from '~libs/auth-tokens';
-import { UserStore } from '~libs/domain-model';
+import { validateAccessToken } from './validate-access-token';
 
 const verifyAccessTokenCallback: VerifyCallback = async (req, done) => {
   const {
     cookies: { access_token: accessToken },
   } = req;
 
-  const payload = await accessTokens.verifyAccessToken(accessToken);
-  if (!payload) {
-    // Invalid token
-    done(null, false);
-    return;
+  if (!accessToken) {
+    return done(null, false);
   }
 
-  const { sub: userId, tokenVersion } = payload;
-  const user = await UserStore.getById(userId);
-  if (!user || user.tokenVersion !== tokenVersion) {
-    // No user, or user's tokens have been revoked
-    done(null, false);
+  const user = await validateAccessToken(accessToken);
+  if (!user) {
+    return done(null, false);
   }
 
   done(null, user);

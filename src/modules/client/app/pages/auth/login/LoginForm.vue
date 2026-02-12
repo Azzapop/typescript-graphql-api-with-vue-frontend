@@ -5,26 +5,34 @@ import Checkbox from 'primevue/checkbox';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 
-const email = defineModel<string>('email');
+const username = defineModel<string>('username');
 const password = defineModel<string>('password');
 const checked = defineModel<boolean>('checked');
-const onSubmit = defineModel<() => void>('submit');
+const loading = defineModel<boolean>('loading');
+const error = defineModel<string | null>('error');
+
+const emit = defineEmits<{
+  submit: [];
+}>();
 
 const { t } = useNamespacedI18n('login-form');
 </script>
 
 <template>
-  <form
-    class="login-form"
-    @submit.prevent="typeof onSubmit === 'function' && onSubmit()"
-  >
+  <form class="login-form" @submit.prevent="emit('submit')">
+    <div v-if="error" class="login-form__error">
+      {{ error }}
+    </div>
     <div class="login-form__field">
-      <label for="email" class="login-form__label">{{ t('email') }}</label>
+      <label for="username" class="login-form__label">{{
+        t('username')
+      }}</label>
       <InputText
-        id="email"
-        v-model="email"
-        :placeholder="t('email-placeholder')"
+        id="username"
+        v-model="username"
+        :placeholder="t('username-placeholder')"
         class="login-form__input"
+        :disabled="loading"
       />
     </div>
     <div class="login-form__field">
@@ -38,6 +46,7 @@ const { t } = useNamespacedI18n('login-form');
         :toggleMask="true"
         :feedback="false"
         class="login-form__input"
+        :disabled="loading"
       />
     </div>
     <div class="login-form__options">
@@ -47,6 +56,7 @@ const { t } = useNamespacedI18n('login-form');
           id="rememberme"
           binary
           class="login-form__checkbox"
+          :disabled="loading"
         />
         <label for="rememberme" class="login-form__checkbox-label">{{
           t('remember-me')
@@ -54,7 +64,12 @@ const { t } = useNamespacedI18n('login-form');
       </div>
       <span class="login-form__forgot">{{ t('forgot-password') }}</span>
     </div>
-    <Button :label="t('sign-in')" class="login-form__button" type="submit" />
+    <Button
+      :label="t('sign-in')"
+      class="login-form__button"
+      type="submit"
+      :loading="loading"
+    />
   </form>
 </template>
 
@@ -65,6 +80,15 @@ const { t } = useNamespacedI18n('login-form');
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  &__error {
+    padding: 0.75rem 1rem;
+    background-color: var(--red-100);
+    border: 1px solid var(--red-300);
+    border-radius: var(--border-radius);
+    color: var(--red-700);
+    font-size: 0.9rem;
+  }
 
   &__field {
     display: flex;
