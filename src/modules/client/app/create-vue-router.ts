@@ -6,7 +6,7 @@ import {
 } from 'vue-router';
 import HomePage from './pages/Home/HomePage.vue';
 import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
-import PaintersPage from './pages/Painters/PaintersPage.vue';
+import UserProfilePage from './pages/UserProfile/UserProfilePage.vue';
 import ErrorPage from './pages/auth/Error/ErrorPage.vue';
 import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
 import LoginPage from './pages/auth/login/LoginPage.vue';
@@ -17,8 +17,8 @@ const ROUTES = [
     component: HomePage,
   },
   {
-    path: '/painters',
-    component: PaintersPage,
+    path: '/profile',
+    component: UserProfilePage,
   },
   {
     path: '/pages/notfound',
@@ -38,10 +38,14 @@ const ROUTES = [
   },
 ];
 
+const BASE_PATH = '/app';
+
 export const createVueRouter = (opts: { isServer: boolean }): Router => {
   const { isServer } = opts;
 
-  const history = isServer ? createMemoryHistory() : createWebHistory();
+  const history = isServer
+    ? createMemoryHistory(BASE_PATH)
+    : createWebHistory(BASE_PATH);
 
   return createRouter({
     history,

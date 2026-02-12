@@ -10,7 +10,7 @@ export const createViteServer = async (
   const { root = process.cwd(), hmrPort } = opts;
 
   return await createServer({
-    base: '/',
+    base: '/app',
     root,
     logLevel: 'error', // TODO config this
     server: {

@@ -12,17 +12,18 @@ export const createServerHandler = (opts: {
 
   const handler: RequestHandler = async (req, res) => {
     try {
-      const { originalUrl: url } = req;
+      const { originalUrl } = req;
+      const routePath = originalUrl.replace('/app', '') || '/';
 
       let template = baseTemplate;
       if (vite) {
         // Only relevant for dev. Apply Vite HTML transforms. This injects the Vite
         // HMR client, and also applies HTML transforms from Vite plugins, e.g. global
         // preambles from @vitejs/plugin-vue
-        template = await vite.transformIndexHtml(url, baseTemplate);
+        template = await vite.transformIndexHtml(originalUrl, baseTemplate);
       }
 
-      const html = await renderHtml({ template, url, manifest });
+      const html = await renderHtml({ template, url: routePath, manifest });
 
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (e) {

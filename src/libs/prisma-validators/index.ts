@@ -9,10 +9,4 @@
  *
  * TODO maybe make a PR to the library to generate the types on a flag?
  */
-export {
-  PainterCreateInputSchema,
-  PainterSchema,
-  TechniqueSchema,
-  PaintingSchema,
-  LocalCredentialsSchema,
-} from './zod';
+export { LocalCredentialsSchema, UserProfileSchema } from './zod';

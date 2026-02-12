@@ -1,9 +1,7 @@
-import { error } from './error';
-import { info } from './info';
-import { log } from './log';
+import { request } from './request';
+import { system } from './system';
 
 export const logger = {
-  error,
-  info,
-  log,
+  request,
+  system,
 };

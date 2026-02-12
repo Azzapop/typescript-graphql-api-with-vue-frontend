@@ -1,9 +1,12 @@
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import type { Server as HttpServer } from 'http';
+import type { User } from '~libs/domain-model';
 import { createSchema } from './create-schema';
 
-interface MyContext {}
+interface MyContext {
+  user: User;
+}
 
 export const createApolloServer = (opts: {
   httpServer?: HttpServer;

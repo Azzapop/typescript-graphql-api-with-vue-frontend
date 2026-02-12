@@ -1,32 +1,39 @@
 import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
 import { json } from 'express';
-import type { Express } from 'express';
-import type { Server as HttpServer } from 'http';
+import { authenticate } from '~libs/auth-middleware';
+import type { ModuleContext } from '~libs/module';
+import { createModule } from '~libs/module';
 import { traceExpressMiddleware as traceContext } from '~libs/trace-context';
 import { createApolloServer } from './create-apollo-server';
 
-export const entry = async (opts: { httpServer?: HttpServer }) => {
-  const apolloServer = createApolloServer(opts);
+export const entry = (context: ModuleContext = {}) =>
+  createModule(
+    {
+      path: '/graphql',
+      configure: async (router, { httpServer }) => {
+        const apolloServer = createApolloServer({ httpServer });
 
-  await apolloServer.start();
+        await apolloServer.start();
 
-  const apolloServerMiddleware = expressMiddleware(apolloServer, {
-    // TODO implement gql auth middleware here
-    context: async ({ req: _req }) => {
-      return {};
+        const apolloServerMiddleware = expressMiddleware(apolloServer, {
+          context: async ({ req }) => {
+            const { user } = req;
+            if (!user) {
+              throw new Error(
+                'Creating Gql context without user, something wrong with Authentication.'
+              );
+            }
+            return { user };
+          },
+        });
+
+        router.use(traceContext);
+        router.use(cors());
+        router.use(json());
+        router.use(authenticate('access-token'));
+        router.use(apolloServerMiddleware);
+      },
     },
-  });
-
-  const inject = (expressServer: Express): void => {
-    expressServer.use(
-      '/graphql',
-      traceContext,
-      cors(),
-      json(),
-      apolloServerMiddleware
-    );
-  };
-
-  return { inject };
-};
+    context
+  );

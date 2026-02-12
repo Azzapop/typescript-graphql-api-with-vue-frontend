@@ -1,63 +1,32 @@
-import type { Express } from 'express';
 import express from 'express';
-import type { Server as HttpServer } from 'http';
 import http from 'http';
 import { logger } from '~libs/logger';
-import { entry as authEntry } from '~modules/auth/entry';
-import {
-  serverEntryDev as clientServerEntryDev,
-  serverEntryProduction as clientServerEntryProduction,
-} from '~modules/client';
+import { mountModules } from '~libs/module';
+import { entry as authEntry } from '~modules/auth';
+import { entry as clientEntry } from '~modules/client';
 import { entry as graphqlEntry } from '~modules/graphql';
 
-const configureExpressServer = async (
-  expressServer: Express,
-  opts: { httpServer?: HttpServer }
-): Promise<void> => {
-  const { httpServer } = opts;
+export const server = async () => {
+  const expressServer = express();
+  const httpServer = http.createServer(expressServer);
 
-  const { inject: injectAuthApi } = await authEntry();
-  injectAuthApi(expressServer);
+  const modules = await Promise.all([
+    authEntry(),
+    graphqlEntry({ httpServer }),
+    clientEntry(),
+  ]);
 
-  // Configure graphql server for data
-  const { inject: injectGraphqlApi } = await graphqlEntry({ httpServer });
-  injectGraphqlApi(expressServer);
-
-  /*
-   *  Configure our client application with SSR
-   *
-   *  For production we serve our pre-compiled static assets direct from the dist directory.
-   *  For all other environments we allow the vite dev server to serve our assets for us.
-   *
-   *  TODO Change to dynamic imports here so that we can tree shake either path out. Will need
-   *  to use vite.ssrLoadModule for dev and inject it into the entry point
-   */
-  if (process.env.NODE_ENV === 'production') {
-    const { inject: injectClientEntryProduction } =
-      clientServerEntryProduction();
-    injectClientEntryProduction(expressServer);
-  } else {
-    const { inject: injectClientEntryDev } = await clientServerEntryDev();
-    injectClientEntryDev(expressServer);
-  }
+  mountModules(expressServer, modules);
 
   // @ts-expect-error implicit any types
   // TODO move this out to a util function again
   // Error handler in case something goes wrong somewhere in our process
   expressServer.use((err, _req, res, _next) => {
-    logger.error('===== Error handler middleware =====');
-    logger.error(JSON.stringify({ err }));
-    logger.error('====================================');
+    logger.request.error('===== Error handler middleware =====');
+    logger.request.error(JSON.stringify({ err }));
+    logger.request.error('====================================');
     res.status(500).json({ e: 'error with the request' });
   });
-};
-
-export const server = async () => {
-  const expressServer = express();
-
-  const httpServer = http.createServer(expressServer);
-
-  configureExpressServer(expressServer, { httpServer });
 
   return httpServer;
 };

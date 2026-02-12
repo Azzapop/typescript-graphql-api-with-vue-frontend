@@ -6,6 +6,7 @@ import graphqlLoader from 'vite-plugin-graphql-loader';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
+  base: '/app',
   plugins: [
     tsconfigPaths({ loose: true }),
     vue(),

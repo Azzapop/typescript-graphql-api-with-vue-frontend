@@ -17,12 +17,6 @@ const config: CodegenConfig = {
   generates: {
     'src/libs/graphql-types/index.ts': {
       plugins: [ADD_ESLINT_DISABLE, 'typescript', 'typescript-resolvers'],
-      config: {
-        mappers: {
-          Painter: 'Omit<GqlPainter, "techniques">',
-          Painting: 'Omit<GqlPainting, "painter" | "technique">',
-        },
-      },
     },
     'src/libs/graphql-validators/index.ts': {
       plugins: [ADD_ESLINT_DISABLE, 'typescript-validation-schema'],
@@ -33,10 +27,6 @@ const config: CodegenConfig = {
         // TODO switch back to `const` when issue resolved
         // https://github.com/Code-Hex/graphql-codegen-typescript-validation-schema/issues/528
         validationSchemaExportType: 'function',
-        mappers: {
-          Painter: 'Omit<GqlPainter, "techniques">',
-          Painting: 'Omit<GqlPainting, "painter" | "technique">',
-        },
       },
     },
     'src/modules/client/': {
