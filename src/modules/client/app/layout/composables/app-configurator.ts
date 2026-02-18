@@ -1,10 +1,10 @@
 import { updatePreset, updateSurfacePalette, $t } from '@primevue/themes';
 import { ref } from 'vue';
 import { colorPalettes } from './color-palettes';
+import type { ColorPalette } from './composables-types';
 import { useLayout } from './layout';
 import { presets } from './presets';
 import { surfacePalletes } from './surface-palettes';
-import type { ColorPalette } from './types';
 
 export const useAppConfigurator = () => {
   const { layoutConfig, setPrimary, setSurface, setPreset, setMenuMode } =

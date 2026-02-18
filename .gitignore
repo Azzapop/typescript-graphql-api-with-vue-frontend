@@ -11,3 +11,4 @@ src/libs/prisma-validators/zod
 *.gql.ts
 src/packages/auth-api-client
 swagger.yaml
+logs

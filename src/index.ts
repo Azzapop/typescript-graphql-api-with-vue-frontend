@@ -1,9 +1,7 @@
-import dotenv from 'dotenv';
 import { server } from './server';
+import { serverConfig } from './server-config';
 
-dotenv.config();
-
-const port = process.env.PORT || 3000;
+const port = serverConfig('PORT');
 
 (async () => {
   const httpServer = await server();

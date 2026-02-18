@@ -5,8 +5,8 @@
     "button-label": "Zum Dashboard"
   },
   "login-form": {
-    "email": "E-Mail",
-    "email-placeholder": "E-Mail-Adresse",
+    "username": "Benutzername",
+    "username-placeholder": "Benutzername eingeben",
     "password": "Passwort",
     "password-placeholder": "Passwort",
     "remember-me": "Angemeldet bleiben",
@@ -81,6 +81,10 @@
     "get-started": "Erste Schritte",
     "documentation": "Dokumentation",
     "view-source": "Quellcode Anzeigen"
+  },
+  "account-menu": {
+    "profile": "Profil",
+    "logout": "Abmelden"
   },
   "app-topbar": {
     "calendar": "Kalender",

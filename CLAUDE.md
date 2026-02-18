@@ -112,6 +112,31 @@ const PRISMA_TO_GQL = UserProfileSchema.transform(
 );
 ```
 
+### API Clients
+
+Always use generated API clients instead of `fetch` for making API requests:
+
+```typescript
+// Frontend - use the auth-api-client
+import { HttpClient, LoginClient } from '~packages/auth-api-client';
+
+const httpClient = new HttpClient({ baseURL: '/auth', withCredentials: true });
+const loginClient = new LoginClient(httpClient);
+
+const response = await loginClient.localCreate({
+  username: 'user',
+  password: 'pass',
+});
+```
+
+Benefits:
+- Type-safe requests and responses
+- Automatic error handling
+- Consistent API usage across the codebase
+- Generated from Swagger/OpenAPI specs
+
+API clients are located in `src/packages/<api-name>-client/` and are auto-generated.
+
 ### Logging
 
 Use the logger from `~libs/logger`:
@@ -184,6 +209,7 @@ Do not edit directly - these are regenerated:
 - `src/libs/graphql-validators/index.ts` - Run `npm run graphql:types`
 - `src/libs/prisma-validators/zod/` - Run `npx prisma generate`
 - `src/modules/client/**/*.gql.ts` - Run `npm run graphql:types`
+- `src/packages/*-client/` - API clients generated from Swagger/OpenAPI specs
 
 ## Environment Variables
 
@@ -207,16 +233,33 @@ SEED_PASSWORD=password    # For db:create-user script
 
 Exceptions:
 - `index.ts` - re-exports combined values from the directory
-- `const.ts` - contains constant values for the directory
-- `types.ts` - contains types for the directory
+- `<directory-name>-types.ts` - contains types for the directory
+- `<directory-name>-const.ts` - contains constant values for the directory
+- `<directory-name>-config.ts` - contains config for the directory
 
 ```
 stores/user/
 ├── index.ts                        # export { createUser } from './create-user'
-├── types.ts                        # type CreateUserInput = { ... }
-├── const.ts                        # const SALT_ROUNDS = 10
+├── user-types.ts                   # type CreateUserInput = { ... }
+├── user-const.ts                   # const SALT_ROUNDS = 10
 ├── create-user.ts                  # export const createUser = ...
 └── get-by-id.ts                    # export const getById = ...
+```
+
+```
+libs/auth-tokens/
+├── index.ts                        # export { authTokensConfig } from './auth-tokens-config'
+├── auth-tokens-config.ts           # export const authTokensConfig = createConfig(...)
+├── access-tokens/
+│   ├── index.ts
+│   ├── access-tokens-const.ts      # export const ACCESS_SECRET = ...
+│   ├── sign-access-token.ts
+│   └── verify-access-token.ts
+└── refresh-tokens/
+    ├── index.ts
+    ├── refresh-tokens-const.ts     # export const REFRESH_SECRET = ...
+    ├── sign-refresh-token.ts
+    └── verify-refresh-token.ts
 ```
 
 ### Function Typing

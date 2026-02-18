@@ -1,28 +1,42 @@
 import type { Handler } from 'express';
 import type { Strategy } from 'passport';
-import { accessTokenStrategy, accessTokenMiddleware } from './access-token';
-import { localStrategy, localMiddleware } from './local';
-import { refreshTokenStrategy, refreshTokenMiddleware } from './refresh-token';
+import { accessTokenStrategy, authenticateAccessToken } from './access-token';
+import {
+  clientCredentialsStrategy,
+  authenticateClientCredentials,
+} from './client-credentials';
+import {
+  localCredentialsStrategy,
+  authenticateLocalCredentials,
+} from './local-credentials';
+import {
+  refreshTokenStrategy,
+  authenticateRefreshToken,
+} from './refresh-token';
 
 type StrategyObj = {
   strategy: Strategy;
-  middleware: Handler;
+  middleware: () => Handler;
 };
 
 // TODO enforce kebab type keys
 type StrategyRegister = Record<string, StrategyObj>;
 
 export const registry = {
-  local: {
-    strategy: localStrategy,
-    middleware: localMiddleware,
+  'local-credentials': {
+    strategy: localCredentialsStrategy,
+    middleware: authenticateLocalCredentials,
   },
   'access-token': {
     strategy: accessTokenStrategy,
-    middleware: accessTokenMiddleware,
+    middleware: authenticateAccessToken,
   },
   'refresh-token': {
     strategy: refreshTokenStrategy,
-    middleware: refreshTokenMiddleware,
+    middleware: authenticateRefreshToken,
+  },
+  'client-credentials': {
+    strategy: clientCredentialsStrategy,
+    middleware: authenticateClientCredentials,
   },
 } as const satisfies StrategyRegister;

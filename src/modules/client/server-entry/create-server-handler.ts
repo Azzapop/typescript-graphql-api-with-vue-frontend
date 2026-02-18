@@ -12,8 +12,9 @@ export const createServerHandler = (opts: {
 
   const handler: RequestHandler = async (req, res) => {
     try {
-      const { originalUrl } = req;
-      const routePath = originalUrl.replace('/app', '') || '/';
+      const { originalUrl, user } = req;
+      // Extract path from originalUrl (remove query string)
+      const routePath = originalUrl.split('?')[0] ?? '/';
 
       let template = baseTemplate;
       if (vite) {
@@ -23,7 +24,15 @@ export const createServerHandler = (opts: {
         template = await vite.transformIndexHtml(originalUrl, baseTemplate);
       }
 
-      const html = await renderHtml({ template, url: routePath, manifest });
+      // Public routes (login, error pages, etc.) don't require authentication,
+      // so user may be null even on successful requests
+      const userId = user?.id ?? null;
+      const html = await renderHtml({
+        template,
+        url: routePath,
+        manifest,
+        userId,
+      });
 
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
     } catch (e) {

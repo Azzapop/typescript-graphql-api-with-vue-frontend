@@ -9,5 +9,9 @@
   },
   "language-switcher": {
     "language": "Language"
+  },
+  "account-menu": {
+    "profile": "Profile",
+    "logout": "Logout"
   }
 }

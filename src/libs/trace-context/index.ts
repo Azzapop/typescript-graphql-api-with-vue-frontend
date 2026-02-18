@@ -1,3 +1,3 @@
 export { getTraceContext } from './get-trace-context';
-export { traceExpressMiddleware } from './trace-express-middleware';
+export { trace } from './trace';
 export { runWithTrace } from './run-with-trace';

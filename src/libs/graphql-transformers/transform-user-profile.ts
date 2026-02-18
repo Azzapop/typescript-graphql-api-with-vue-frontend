@@ -17,8 +17,8 @@ export const transformUserProfile = (
   if (result.success) {
     return result.data;
   } else {
-    logger.request.error('Failed to transform user profile.');
-    logger.request.error(result.error.message);
+    logger.error('Failed to transform user profile.');
+    logger.error(result.error.message);
     return null;
   }
 };

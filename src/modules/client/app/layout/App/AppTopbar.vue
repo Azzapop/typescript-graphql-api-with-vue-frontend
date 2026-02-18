@@ -3,6 +3,7 @@ import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';
+import AccountMenu from '../components/AccountMenu.vue';
 import AppConfigurator from '../components/AppConfigurator.vue';
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { useLayout } from '../composables/layout';
@@ -24,6 +25,14 @@ const topbarLanguageSwitcherPopover = useTemplateRef<
 const toggleLanguageSwitcher = (e: Event) => {
   assert(topbarLanguageSwitcherPopover.value);
   topbarLanguageSwitcherPopover.value.toggle(e);
+};
+
+const topbarAccountMenuPopover = useTemplateRef<InstanceType<typeof Popover>>(
+  'topbar-account-menu-popover'
+);
+const toggleAccountMenu = (e: Event) => {
+  assert(topbarAccountMenuPopover.value);
+  topbarAccountMenuPopover.value.toggle(e);
 };
 </script>
 
@@ -114,6 +123,18 @@ const toggleLanguageSwitcher = (e: Event) => {
             <LanguageSwitcher />
           </Popover>
         </div>
+        <div class="layout-topbar__account-menu-container">
+          <button
+            @click="toggleAccountMenu"
+            type="button"
+            class="layout-topbar__action"
+          >
+            <i class="pi pi-user layout-topbar__action-icon"></i>
+          </button>
+          <Popover ref="topbar-account-menu-popover">
+            <AccountMenu />
+          </Popover>
+        </div>
       </div>
 
       <button
@@ -153,17 +174,6 @@ const toggleLanguageSwitcher = (e: Event) => {
             ></i>
             <span class="layout-topbar__action-label layout-topbar__menu-label">
               {{ t('messages') }}
-            </span>
-          </button>
-          <button
-            type="button"
-            class="layout-topbar__action layout-topbar__menu-item"
-          >
-            <i
-              class="pi pi-user layout-topbar__action-icon layout-topbar__menu-icon"
-            ></i>
-            <span class="layout-topbar__action-label layout-topbar__menu-label">
-              {{ t('profile') }}
             </span>
           </button>
         </div>
@@ -237,6 +247,10 @@ const toggleLanguageSwitcher = (e: Event) => {
   }
 
   &__language-switcher-container {
+    position: relative;
+  }
+
+  &__account-menu-container {
     position: relative;
   }
 

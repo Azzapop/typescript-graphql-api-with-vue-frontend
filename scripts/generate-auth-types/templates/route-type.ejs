@@ -45,11 +45,14 @@ export namespace <%~ routeNamespace %> {
       const cookieNames = [];
       let isClearingCookies = false;
 
+      // Token cookies are handled by middleware, so exclude them from required cookies
+      const TOKEN_COOKIES = ['access_token', 'refresh_token'];
+
       if (setCookieHeader && setCookieHeader.schema) {
         const schema = setCookieHeader.schema;
         if (schema.prefixItems && Array.isArray(schema.prefixItems)) {
           schema.prefixItems.forEach(item => {
-            if (item.title) {
+            if (item.title && !TOKEN_COOKIES.includes(item.title)) {
               cookieNames.push(item.title);
               // Check if this is clearing cookies (Max-Age=0)
               if (item.const && item.const.includes('Max-Age=0')) {
@@ -125,8 +128,15 @@ export namespace <%~ routeNamespace %> {
       const statusNum = parseInt(status);
       if (!isNaN(statusNum) && response.content && response.content['application/json']) {
         // Check if this status has required cookies or headers
+        // Token cookies are handled by middleware, so exclude them
+        const TOKEN_COOKIES_CHECK = ['access_token', 'refresh_token'];
         const setCookieHeader = response.headers && response.headers['Set-Cookie'];
-        const hasCookies = setCookieHeader && setCookieHeader.schema && setCookieHeader.schema.prefixItems;
+        let hasCookies = false;
+        if (setCookieHeader && setCookieHeader.schema && setCookieHeader.schema.prefixItems) {
+          hasCookies = setCookieHeader.schema.prefixItems.some(item =>
+            item.title && !TOKEN_COOKIES_CHECK.includes(item.title)
+          );
+        }
         // x-trace-token excluded - automatically set by traceExpressMiddleware
         const hasRequiredHeaders = response.headers && Object.entries(response.headers).some(([name, def]) =>
           name !== 'Set-Cookie' && name !== 'x-trace-token' && def && (def.schema || def.type || def.$ref) && def.required !== false
@@ -139,7 +149,7 @@ export namespace <%~ routeNamespace %> {
   }
 
   export type Handler = (
-    req: Request<RequestParams, any, RequestBody, RequestQuery>,
+    req: Omit<Request<RequestParams, any, RequestBody, RequestQuery>, 'user'>,
     res: Responses,
     next: NextFunction
   ) => Responses | Promise<Responses>;

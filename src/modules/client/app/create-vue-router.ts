@@ -4,41 +4,8 @@ import {
   createWebHistory,
   createMemoryHistory,
 } from 'vue-router';
-import HomePage from './pages/Home/HomePage.vue';
-import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
-import UserProfilePage from './pages/UserProfile/UserProfilePage.vue';
-import ErrorPage from './pages/auth/Error/ErrorPage.vue';
-import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
-import LoginPage from './pages/auth/login/LoginPage.vue';
-
-const ROUTES = [
-  {
-    path: '/',
-    component: HomePage,
-  },
-  {
-    path: '/profile',
-    component: UserProfilePage,
-  },
-  {
-    path: '/pages/notfound',
-    component: NotFoundPage,
-  },
-  {
-    path: '/access',
-    component: NoAccessPage,
-  },
-  {
-    path: '/error',
-    component: ErrorPage,
-  },
-  {
-    path: '/login',
-    component: LoginPage,
-  },
-];
-
-const BASE_PATH = '/app';
+import { authGuard } from './guards/auth-guard';
+import { ROUTES, BASE_PATH } from './routes';
 
 export const createVueRouter = (opts: { isServer: boolean }): Router => {
   const { isServer } = opts;
@@ -47,8 +14,15 @@ export const createVueRouter = (opts: { isServer: boolean }): Router => {
     ? createMemoryHistory(BASE_PATH)
     : createWebHistory(BASE_PATH);
 
-  return createRouter({
+  const router = createRouter({
     history,
     routes: ROUTES,
   });
+
+  // Register auth guard on client-side only
+  if (!isServer) {
+    router.beforeEach(authGuard);
+  }
+
+  return router;
 };

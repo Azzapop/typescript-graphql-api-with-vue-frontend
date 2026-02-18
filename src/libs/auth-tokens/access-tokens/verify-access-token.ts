@@ -1,21 +1,22 @@
 import { jwtVerify } from 'jose';
-import { ACCESS_SECRET } from './const';
+import type { Result } from '~libs/result';
+import { ACCESS_SECRET } from './access-tokens-const';
 
-interface AccessTokenPayload {
+export interface AccessTokenPayload {
   sub: string;
   tokenVersion: string;
 }
 
 export const verifyAccessToken = async (
   token: string
-): Promise<AccessTokenPayload | null> => {
+): Promise<Result<AccessTokenPayload>> => {
   try {
     const { payload } = await jwtVerify<AccessTokenPayload>(
       token,
       ACCESS_SECRET
     );
-    return payload;
+    return { success: true, data: payload };
   } catch {
-    return null;
+    return { success: false, error: 'INVALID' };
   }
 };

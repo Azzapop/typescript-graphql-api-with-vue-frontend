@@ -1,3 +1,4 @@
+import { clientConfig } from './client-config';
 import { devServerEntry } from './server-entry/dev-server-entry';
 import { productionServerEntry } from './server-entry/production-server-entry';
 
@@ -10,6 +11,6 @@ import { productionServerEntry } from './server-entry/production-server-entry';
  *  TODO Change to dynamic imports here so that we can tree shake either path out. Will need
  *  to use vite.ssrLoadModule for dev and inject it into the entry point
  */
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = clientConfig('NODE_ENV') === 'production';
 
 export const entry = isProduction ? productionServerEntry : devServerEntry;

@@ -2,6 +2,7 @@ import type { ApolloClient, NormalizedCacheObject } from '@apollo/client';
 import { renderToString } from 'vue/server-renderer';
 import { createSchema, createApolloClient } from '~modules/graphql';
 import { createVueApp } from '../../app';
+import { useAuthStore } from '../../app/stores/auth-store';
 import { renderPreloadLinks } from './render-preload-links';
 import { renderStoreData } from './render-store-data';
 
@@ -24,13 +25,18 @@ export const renderHtml = async (opts: {
   template: string;
   url: string;
   manifest?: Record<string, string[]>;
+  userId: string | null;
 }) => {
-  const { template, url, manifest } = opts;
+  const { template, url, manifest, userId } = opts;
 
   const { app, router, store } = createVueApp(
     { isServer: true },
     { apolloClient: useApolloClient() }
   );
+
+  // Initialize auth store with user from server-side authentication
+  const authStore = useAuthStore(store);
+  authStore.setUser(userId);
 
   await router.push(url);
   await router.isReady();

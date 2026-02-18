@@ -45,6 +45,10 @@
     "documentation": "Documentation",
     "view-source": "View Source"
   },
+  "account-menu": {
+    "profile": "Profile",
+    "logout": "Logout"
+  },
   "app-topbar": {
     "calendar": "Calendar",
     "messages": "Messages",
@@ -85,8 +89,8 @@
     "button-label": "Go to Dashboard"
   },
   "login-form": {
-    "email": "Email",
-    "email-placeholder": "Email address",
+    "username": "Username",
+    "username-placeholder": "Username",
     "password": "Password",
     "password-placeholder": "Password",
     "remember-me": "Remember me",

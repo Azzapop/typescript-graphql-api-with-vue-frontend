@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Button from 'primevue/button';
 import Popover from 'primevue/popover';
 import { useTemplateRef } from 'vue';
 import { assert } from '~libs/client-utils';

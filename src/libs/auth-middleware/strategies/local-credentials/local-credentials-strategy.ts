@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
-import type { VerifyFunction } from 'passport-local';
+import type { VerifyFunctionWithRequest } from 'passport-local';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { LocalCredentialsStore } from '~libs/domain-model';
 import { logger } from '~libs/logger';
 
 // passport-local calls the callback function type a different name
-const verifyLocalCredentialsCallback: VerifyFunction = async (
+const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
+  req,
   username,
   password,
   done
@@ -13,7 +14,7 @@ const verifyLocalCredentialsCallback: VerifyFunction = async (
   const localCredentials = await LocalCredentialsStore.getWithUser(username);
 
   if (!localCredentials) {
-    logger.request.info('No user found with the specified credentials');
+    logger.info('No user found with the specified credentials');
     done(null, false);
     return;
   }
@@ -25,12 +26,16 @@ const verifyLocalCredentialsCallback: VerifyFunction = async (
 
   const correctPassword = await bcrypt.compare(password, hashedPassword);
   if (!correctPassword) {
-    logger.request.info('Specified password does not match given password.');
+    logger.info('Specified password does not match given password.');
     done(null, false);
     return;
   }
 
+  req.issueNewTokens = true;
   done(null, user);
 };
 
-export const localStrategy = new LocalStrategy(verifyLocalCredentialsCallback);
+export const localCredentialsStrategy = new LocalStrategy(
+  { passReqToCallback: true },
+  verifyLocalCredentialsCallback
+);

@@ -1,7 +1,2 @@
-import { request } from './request';
-import { system } from './system';
-
-export const logger = {
-  request,
-  system,
-};
+export { isViteRequest } from './is-vite-request';
+export { logger } from './logger';

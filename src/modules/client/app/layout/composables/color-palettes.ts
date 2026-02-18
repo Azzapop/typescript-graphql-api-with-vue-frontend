@@ -1,4 +1,4 @@
-import type { ColorPalette } from './types';
+import type { ColorPalette } from './composables-types';
 
 export const colorPalettes: ColorPalette[] = [
   { name: 'noir', palette: {} },

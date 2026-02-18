@@ -22,9 +22,9 @@ export const server = async () => {
   // TODO move this out to a util function again
   // Error handler in case something goes wrong somewhere in our process
   expressServer.use((err, _req, res, _next) => {
-    logger.request.error('===== Error handler middleware =====');
-    logger.request.error(JSON.stringify({ err }));
-    logger.request.error('====================================');
+    logger.error('===== Error handler middleware =====');
+    logger.error(JSON.stringify({ err }));
+    logger.error('====================================');
     res.status(500).json({ e: 'error with the request' });
   });
 
