@@ -1,41 +1,26 @@
 <script setup lang="ts">
 import AppLayout from '@app/layout/App/AppLayout.vue';
-import { defineStore } from 'pinia';
-import { ref, onServerPrefetch, onMounted } from 'vue';
 import { useUserProfile } from './use-user-profile';
-import type { GqlMeQuery } from './use-user-profile.gql';
 
-const useProfileStore = defineStore('userProfile', () => {
-  const profile = ref<GqlMeQuery['me'] | null>(null);
-
-  const loadProfile = async () => {
-    const query = await useUserProfile();
-    query.onResult((result) => {
-      profile.value = result.data?.me ?? null;
-    });
-  };
-
-  return { profile, loadProfile };
-});
-
-const store = useProfileStore();
-
-onServerPrefetch(async () => {
-  await store.loadProfile();
-});
-
-onMounted(async () => {
-  if (store.profile === null) {
-    await store.loadProfile();
-  }
-});
+const { result, loading, error } = useUserProfile();
 </script>
 
 <template>
   <AppLayout>
-    <div v-if="store.profile">
-      <h1>My Profile</h1>
-      <p>Email: {{ store.profile.email }}</p>
+    <div class="user-profile">
+      <h1>User Profile</h1>
+      <div v-if="loading">Loading...</div>
+      <div v-else-if="error">Error: {{ error.message }}</div>
+      <div v-else-if="result">
+        <p><strong>ID:</strong> {{ result.me.id }}</p>
+        <p><strong>Email:</strong> {{ result.me.email }}</p>
+      </div>
     </div>
   </AppLayout>
 </template>
+
+<style lang="scss">
+.user-profile {
+  padding: 2rem;
+}
+</style>

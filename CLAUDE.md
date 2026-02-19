@@ -102,6 +102,32 @@ try {
 - Return types from `models/`, not Prisma types directly
 - Use `Result` type for operations that can fail
 
+### GraphQL Context
+
+GraphQL **always requires authentication**. The `GraphQLContext` type enforces a required `user` field:
+
+```typescript
+// src/modules/graphql/graphql-context.ts
+export type GraphQLContext = {
+  user: User; // Required - GraphQL is auth-only
+};
+```
+
+Key points:
+- All GraphQL resolvers have access to `context.user` (never null/undefined)
+- The GraphQL endpoint requires `access-token` authentication before reaching resolvers
+- Public routes (login, error pages) should not make GraphQL queries
+- SSR passes proper context when authenticated, empty object when not
+
+```typescript
+// Resolver example - user is always present when context has user
+export const me: GqlQueryResolvers['me'] = async (_parent, _args, context) => {
+  // context.user is guaranteed to exist when GraphQL queries are executed
+  const profile = await UserProfileStore.getByUserId(context.user.id);
+  // ...
+};
+```
+
 ### GraphQL Transformers
 
 Transform Prisma types to GraphQL types with validation:
@@ -281,6 +307,89 @@ const getUser = async (id: string): Promise<User> => {
 const getUser = async (id: string) => {
   return prisma.user.findUnique({ where: { id } });
 };
+```
+
+### TypeScript
+
+- Never use `as` type assertions — use type guards instead:
+
+```typescript
+// NOT allowed
+const code = value as string;
+
+// Correct
+const code = typeof value === 'string' ? value : undefined;
+```
+
+### CSS and Styling
+
+**BEM Methodology**
+
+- Always use BEM (Block Element Modifier) methodology for CSS class names
+- Never style HTML elements directly - always apply classes following BEM pattern
+
+```vue
+<!-- NOT allowed: Direct element styling -->
+<template>
+  <div class="user-card">
+    <h1>Title</h1>
+    <p>Description</p>
+    <code>example</code>
+  </div>
+</template>
+
+<style>
+.user-card {
+  p { margin-bottom: 1rem; }
+  code { background: gray; }
+}
+</style>
+
+<!-- Correct: BEM classes -->
+<template>
+  <div class="user-card">
+    <h1 class="user-card__title">Title</h1>
+    <p class="user-card__text">Description</p>
+    <code class="user-card__code">example</code>
+  </div>
+</template>
+
+<style>
+.user-card {
+  &__title { margin-top: 0; }
+  &__text { margin-bottom: 1rem; }
+  &__code { background: gray; }
+}
+</style>
+```
+
+**CSS Variables**
+
+- Never use PrimeVue CSS variables directly (`--p-*`)
+- Define custom CSS variables in `src/modules/client/app/assets/styles/layout/variables/`
+  - `_common.scss` - Variables for both light and dark themes
+  - `_light.scss` - Light theme specific overrides
+  - `_dark.scss` - Dark theme specific overrides
+- Components should only reference custom variables
+
+```scss
+// NOT allowed: Direct PrimeVue variables in components
+.my-component {
+  color: var(--p-primary-color);
+  background: var(--p-surface-100);
+}
+
+// Correct: Custom variables
+.my-component {
+  color: var(--primary-color);
+  background: var(--surface-100);
+}
+
+// In _common.scss - map PrimeVue to custom variables
+:root {
+  --primary-color: var(--p-primary-color);
+  --surface-100: var(--p-surface-100);
+}
 ```
 
 ### Other

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import AppLogo from '@app/components/AppLogo.vue';
 import InfoCard from '@app/components/InfoCard.vue';
+import { useMessages } from '@app/components/Messages';
+import AppMessages from '@app/components/Messages/AppMessages.vue';
 import { useNamespacedI18n } from '@app/i18n/use-namespaced-i18n';
 import FloatingMenuCardLayout from '@app/layout/FloatingMenuCardLayout.vue';
 import { useAuthStore } from '@app/stores/auth-store';
@@ -21,29 +23,11 @@ const username = ref('');
 const password = ref('');
 const checked = ref(false);
 const loading = ref(false);
-const error = ref<string | null>(null);
 
-const getErrorMessage = (e: unknown): string => {
-  if (e instanceof Error) {
-    return e.message;
-  }
-  if (
-    e &&
-    typeof e === 'object' &&
-    'error' in e &&
-    e.error &&
-    typeof e.error === 'object' &&
-    'message' in e.error &&
-    typeof e.error.message === 'string'
-  ) {
-    return e.error.message;
-  }
-  return 'An unexpected error occurred';
-};
+const { messages, addMessage, clearMessages, removeMessage } = useMessages();
 
-// TODO does a composable make sense here?
 const onSubmit = async () => {
-  error.value = null;
+  clearMessages();
   loading.value = true;
 
   try {
@@ -52,18 +36,16 @@ const onSubmit = async () => {
       password: password.value,
     });
 
-    // Update auth store with user ID
     authStore.setUser(response.data.user?.id ?? null);
 
-    // Redirect to returnUrl or home
     const {
       query: { returnUrl: queryReturnUrl },
     } = route;
     const returnUrl =
       typeof queryReturnUrl === 'string' ? queryReturnUrl : { name: 'home' };
     await router.push(returnUrl);
-  } catch (e: unknown) {
-    error.value = getErrorMessage(e);
+  } catch {
+    addMessage({ severity: 'error', content: t('login-error') });
   } finally {
     loading.value = false;
   }
@@ -76,12 +58,12 @@ const onSubmit = async () => {
       <template #icon>
         <AppLogo class="login-page__logo" />
       </template>
+      <AppMessages :messages="messages" @close="removeMessage" />
       <LoginForm
         v-model:username="username"
         v-model:password="password"
         v-model:checked="checked"
         v-model:loading="loading"
-        v-model:error="error"
         @submit="onSubmit"
       />
     </InfoCard>

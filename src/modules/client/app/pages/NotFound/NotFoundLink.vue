@@ -29,9 +29,9 @@ defineProps<{
   &__icon-box {
     height: 3.5rem;
     width: 3.5rem;
-    border-radius: var(--p-content-border-radius);
-    border-color: var(--p-primary-color);
-    color: var(--p-primary-color);
+    border-radius: var(--content-border-radius);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
     border-width: 2px;
     justify-content: center;
     align-items: center;

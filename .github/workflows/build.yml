@@ -44,5 +44,7 @@ jobs:
       - run: npm run format:check
       - run: npm run db:migrate
       - run: npm run graphql:types
+      - run: npm run auth:swagger:bundle
+      - run: npm run auth:types
       - run: npm test
       - run: npm run build

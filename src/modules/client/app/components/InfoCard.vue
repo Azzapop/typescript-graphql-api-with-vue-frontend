@@ -83,13 +83,13 @@ const { isDarkTheme } = useLayout();
   }
 
   &--dark .info-card__inner {
-    background-color: var(--p-surface-900);
+    background-color: var(--surface-900);
   }
 
   &__inner {
     border-radius: 53px;
     padding: 5rem 2rem;
-    background-color: var(--p-surface-0);
+    background-color: var(--surface-0);
     align-items: center;
     flex-direction: column;
     width: 100%;
@@ -110,7 +110,7 @@ const { isDarkTheme } = useLayout();
   &__icon-container {
     width: 3.2rem;
     height: 3.2rem;
-    border-color: var(--p-primary-color);
+    border-color: var(--primary-color);
     border-width: 2px;
     border-radius: 9999px;
     justify-content: center;
@@ -125,7 +125,7 @@ const { isDarkTheme } = useLayout();
   }
 
   &__icon {
-    color: var(--p-primary-color);
+    color: var(--primary-color);
     font-size: 1.5rem !important;
     line-height: 2rem !important;
   }
@@ -137,7 +137,7 @@ const { isDarkTheme } = useLayout();
   }
 
   &__pre-title {
-    color: var(--p-primary-color);
+    color: var(--primary-color);
     font-weight: 700;
     font-size: 1.875rem;
     line-height: 2.25rem;
@@ -154,7 +154,7 @@ const { isDarkTheme } = useLayout();
     }
   }
   &__subtitle {
-    color: var(--p-text-muted-color);
+    color: var(--text-color-secondary);
     margin-bottom: 2rem;
   }
   &__button {

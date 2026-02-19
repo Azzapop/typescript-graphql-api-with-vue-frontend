@@ -11,6 +11,4 @@ const ME_QUERY = gql`
   }
 `;
 
-export const useUserProfile = async () => {
-  return useQuery<GqlMeQuery>(ME_QUERY);
-};
+export const useUserProfile = () => useQuery<GqlMeQuery>(ME_QUERY);

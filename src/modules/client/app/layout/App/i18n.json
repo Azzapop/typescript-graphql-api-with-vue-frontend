@@ -2,6 +2,10 @@
   "app-menu": {
     "home": "Home",
     "dashboard": "Dashboard",
+    "error-testing": "Error Testing",
+    "network-error": "Network Error Test",
+    "graphql-error": "GraphQL Error Test",
+    "graphql-ssr-error": "GraphQL SSR Error Test",
     "ui-components": "UI Components",
     "form-layout": "Form Layout",
     "input": "Input",

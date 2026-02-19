@@ -23,7 +23,7 @@
   border-top: 1px solid var(--surface-border);
 
   &__link {
-    color: var(--p-primary-color);
+    color: var(--primary-color);
     font-weight: 700;
 
     &:hover {

@@ -8,9 +8,11 @@ export const me: GqlQueryResolvers['me'] = async (_parent, _args, context) => {
   if (!profile) {
     throw new GqlNotFoundError();
   }
+
   const result = transformUserProfile(profile);
   if (!result) {
     throw new GqlBadParseError();
   }
+
   return result;
 };

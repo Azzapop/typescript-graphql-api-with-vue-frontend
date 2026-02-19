@@ -17,6 +17,10 @@ const config: CodegenConfig = {
   generates: {
     'src/libs/graphql-types/index.ts': {
       plugins: [ADD_ESLINT_DISABLE, 'typescript', 'typescript-resolvers'],
+      config: {
+        contextType: '~modules/graphql/graphql-context#GraphQLContext',
+        useIndexSignature: true,
+      },
     },
     'src/libs/graphql-validators/index.ts': {
       plugins: [ADD_ESLINT_DISABLE, 'typescript-validation-schema'],

@@ -1,10 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
+import ErrorPage from './pages/ErrorPage/ErrorPage.vue';
+import GraphQLErrorTestPage from './pages/GraphQLErrorTest/GraphQLErrorTestPage.vue';
+import GraphQLSSRErrorTestPage from './pages/GraphQLSSRErrorTest/GraphQLSSRErrorTestPage.vue';
 import HomePage from './pages/Home/HomePage.vue';
+import NetworkErrorTestPage from './pages/NetworkErrorTest/NetworkErrorTestPage.vue';
 import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
 import UserProfilePage from './pages/UserProfile/UserProfilePage.vue';
-import ErrorPage from './pages/auth/Error/ErrorPage.vue';
-import LoginPage from './pages/auth/Login/LoginPage.vue';
 import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
+import LoginPage from './pages/auth/login/LoginPage.vue';
 
 export const ROUTES = [
   {
@@ -16,6 +19,21 @@ export const ROUTES = [
     name: 'user-profile',
     path: '/user-profile',
     component: UserProfilePage,
+  },
+  {
+    name: 'network-error-test',
+    path: '/error-testing/network',
+    component: NetworkErrorTestPage,
+  },
+  {
+    name: 'graphql-error-test',
+    path: '/error-testing/graphql',
+    component: GraphQLErrorTestPage,
+  },
+  {
+    name: 'graphql-ssr-error-test',
+    path: '/error-testing/graphql-ssr',
+    component: GraphQLSSRErrorTestPage,
   },
   {
     name: 'not-found',
