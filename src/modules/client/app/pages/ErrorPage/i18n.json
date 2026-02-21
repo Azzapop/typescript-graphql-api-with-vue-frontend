@@ -1,0 +1,8 @@
+{
+  "error-page": {
+    "title": "Something went wrong",
+    "subtitle": "An unexpected error occurred. Please try again.",
+    "button-label": "Go to Home",
+    "trace-token-label": "Reference ID"
+  }
+}

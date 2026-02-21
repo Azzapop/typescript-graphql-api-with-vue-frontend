@@ -5,4 +5,5 @@ type UserProfile {
 
 type Query {
   me: UserProfile!
+  testError: String!
 }

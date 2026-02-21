@@ -16,6 +16,26 @@ const model = computed<MenuItem[]>(() => [
     items: [{ label: t('dashboard'), icon: 'pi pi-fw pi-home', to: '/' }],
   },
   {
+    label: t('error-testing'),
+    items: [
+      {
+        label: t('network-error'),
+        icon: 'pi pi-fw pi-wifi',
+        to: '/error-testing/network',
+      },
+      {
+        label: t('graphql-error'),
+        icon: 'pi pi-fw pi-database',
+        to: '/error-testing/graphql',
+      },
+      {
+        label: t('graphql-ssr-error'),
+        icon: 'pi pi-fw pi-server',
+        to: '/error-testing/graphql-ssr',
+      },
+    ],
+  },
+  {
     label: t('ui-components'),
     items: [
       {

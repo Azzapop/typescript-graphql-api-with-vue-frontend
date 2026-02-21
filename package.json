@@ -20,6 +20,7 @@
     "db:migrate": "prisma migrate dev --schema=./src/libs/domain-model/prisma/schema.prisma",
     "db:create-user": "vite-node scripts/create-user.ts",
     "auth:types": "vite-node scripts/generate-auth-types/generate-types.ts",
+    "i18n:merge": "vite-node scripts/merge-i18n.ts",
     "auth:swagger:validate": "swagger-cli validate ./src/modules/auth/swagger/index.yaml",
     "auth:swagger:bundle": "swagger-cli bundle -o ./src/modules/auth/swagger.yaml -t yaml -r ./src/modules/auth/swagger/index.yaml"
   },

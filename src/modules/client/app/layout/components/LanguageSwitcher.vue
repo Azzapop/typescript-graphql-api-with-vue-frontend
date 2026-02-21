@@ -70,7 +70,7 @@ const changeLocale = async (event: { value: SupportedLocale }) => {
   }
 
   &__label {
-    color: var(--p-text-muted-color);
+    color: var(--text-color-secondary);
     font-weight: 600;
     font-size: 0.875rem;
     line-height: 1.25rem;

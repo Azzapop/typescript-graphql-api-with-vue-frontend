@@ -10,6 +10,7 @@
   },
   "login-page": {
     "welcome": "Welcome to PrimeLand!",
-    "sign-in-to-continue": "Sign in to continue"
+    "sign-in-to-continue": "Sign in to continue",
+    "login-error": "Invalid username or password. Please try again."
   }
 }

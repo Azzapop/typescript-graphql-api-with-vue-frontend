@@ -2,6 +2,10 @@
   "app-menu": {
     "home": "Home",
     "dashboard": "Dashboard",
+    "error-testing": "Error Testing",
+    "network-error": "Network Error Test",
+    "graphql-error": "GraphQL Error Test",
+    "graphql-ssr-error": "GraphQL SSR Error Test",
     "ui-components": "UI Components",
     "form-layout": "Form Layout",
     "input": "Input",
@@ -45,10 +49,6 @@
     "documentation": "Documentation",
     "view-source": "View Source"
   },
-  "account-menu": {
-    "profile": "Profile",
-    "logout": "Logout"
-  },
   "app-topbar": {
     "calendar": "Calendar",
     "messages": "Messages",
@@ -64,6 +64,16 @@
   },
   "language-switcher": {
     "language": "Language"
+  },
+  "account-menu": {
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "error-page": {
+    "title": "Something went wrong",
+    "subtitle": "An unexpected error occurred. Please try again.",
+    "button-label": "Go to Home",
+    "trace-token-label": "Reference ID"
   },
   "home-page": {
     "home": "Home",
@@ -83,11 +93,6 @@
     "permission-title": "Permission Manager",
     "permission-subtext": "Accumsan in nisl nisi scelerisque"
   },
-  "error-page": {
-    "title": "Error Occurred",
-    "subtitle": "Requested resource is not available.",
-    "button-label": "Go to Dashboard"
-  },
   "login-form": {
     "username": "Username",
     "username-placeholder": "Username",
@@ -99,7 +104,8 @@
   },
   "login-page": {
     "welcome": "Welcome to PrimeLand!",
-    "sign-in-to-continue": "Sign in to continue"
+    "sign-in-to-continue": "Sign in to continue",
+    "login-error": "Invalid username or password. Please try again."
   },
   "no-access-page": {
     "title": "Access Denied",

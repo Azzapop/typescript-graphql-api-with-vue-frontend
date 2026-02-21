@@ -97,7 +97,6 @@ const isOutsideClicked = (event: MouseEvent) => {
     </div>
     <div class="layout-wrapper__mask animate-fadein" :class="maskClass"></div>
   </div>
-  <Toast />
 </template>
 
 <style lang="scss">

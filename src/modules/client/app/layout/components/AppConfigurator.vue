@@ -103,7 +103,7 @@ const {
   }
 
   &__label {
-    color: var(--p-text-muted-color);
+    color: var(--text-color-secondary);
     font-weight: 600;
     font-size: 0.875rem;
     line-height: 1.25rem;
@@ -128,7 +128,7 @@ const {
     height: 1.25rem;
 
     &--outline-primary {
-      outline-color: var(--p-primary-color);
+      outline-color: var(--primary-color);
     }
   }
 

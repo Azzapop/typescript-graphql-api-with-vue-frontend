@@ -37,6 +37,10 @@
 - const for token cookies names
 - honestly just clean up the whole script for generate auth types
 - better auth lib and handling for the client
+- browser entry over server entry
+- gitignore i18n compiled files
+- Split public and private clients to make auth handling neater, this will also tidy up the hydration handling
+- fix load order so css is loaded first
 
 ### GraphQL Mappers
 
