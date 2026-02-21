@@ -11,11 +11,6 @@ generator client {
   binaryTargets = ["native", "darwin-arm64"]
 }
 
-generator zod {
-  provider = "zod-prisma-types"
-  output   = "../../prisma-validators/zod"
-}
-
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")

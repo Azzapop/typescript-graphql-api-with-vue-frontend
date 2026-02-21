@@ -22,17 +22,6 @@ const config: CodegenConfig = {
         useIndexSignature: true,
       },
     },
-    'src/libs/graphql-validators/index.ts': {
-      plugins: [ADD_ESLINT_DISABLE, 'typescript-validation-schema'],
-      config: {
-        schema: 'zod',
-        importFrom: '~libs/graphql-types',
-        withObjectType: true,
-        // TODO switch back to `const` when issue resolved
-        // https://github.com/Code-Hex/graphql-codegen-typescript-validation-schema/issues/528
-        validationSchemaExportType: 'function',
-      },
-    },
     'src/modules/client/': {
       preset: 'near-operation-file',
       presetConfig: {
