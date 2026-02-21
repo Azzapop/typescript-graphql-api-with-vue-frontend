@@ -6,8 +6,6 @@ dist
 
 # Auto generated files
 src/libs/graphql-types/index.ts
-src/libs/graphql-validators/index.ts
-src/libs/prisma-validators/zod
 *.gql.ts
 src/packages/auth-api-client
 swagger.yaml
