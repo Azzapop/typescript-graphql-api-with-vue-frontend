@@ -57,20 +57,20 @@ Integration tests verify that **multiple units work together correctly** with **
 
 ## File Naming and Organization
 
-**Convention**: Integration tests use `*.integration.test.ts` naming
+**Convention**: Integration tests use `*.int.test.ts` naming
 
 ```
 src/libs/domain-model/stores/user/
 ├── __tests__/
-│   ├── create-with-local-credentials.test.ts           # Unit test (if pure logic exists)
-│   └── create-with-local-credentials.integration.test.ts  # Integration test with DB
+│   ├── create-with-local-credentials.test.ts      # Unit test (if pure logic exists)
+│   └── create-with-local-credentials.int.test.ts  # Integration test with DB
 ├── create-with-local-credentials.ts
 └── index.ts
 ```
 
 **Separation**:
 - Unit tests: `*.test.ts` - Run by default with `npm test` or `npm run test:unit`
-- Integration tests: `*.integration.test.ts` - Run with `npm run test:integration`
+- Integration tests: `*.int.test.ts` - Run with `npm run test:integration`
 
 **Benefits**:
 - Clear distinction between test types
@@ -110,25 +110,90 @@ JWT_REFRESH_SECRET="test-refresh-secret"
 NODE_ENV="test"
 ```
 
-**Test Database Management**:
+**Test Database Management** (for parallel execution):
+
+**Approach**: Use unique test data per test to enable parallel execution
+
 ```typescript
 // test/integration/database.ts
 import { PrismaClient } from '~libs/domain-model/prisma';
+import { randomBytes } from 'crypto';
 
 const prisma = new PrismaClient();
 
-export const cleanDatabase = async () => {
-  // Delete in order to respect foreign key constraints
-  await prisma.refreshToken.deleteMany();
-  await prisma.localCredentials.deleteMany();
-  await prisma.userProfile.deleteMany();
-  await prisma.user.deleteMany();
+/**
+ * Generate unique test prefix for parallel test isolation
+ * Each test gets a unique prefix to avoid data collisions
+ */
+export const createTestPrefix = (): string => {
+  return `test_${randomBytes(8).toString('hex')}`;
+};
+
+/**
+ * Cleanup test data by prefix
+ * Call this in afterEach to clean up data created by the test
+ */
+export const cleanupTestData = async (prefix: string) => {
+  // Delete data created by this specific test (match by username/email prefix)
+  await prisma.refreshToken.deleteMany({
+    where: {
+      user: {
+        username: { startsWith: prefix },
+      },
+    },
+  });
+  await prisma.localCredentials.deleteMany({
+    where: {
+      user: {
+        username: { startsWith: prefix },
+      },
+    },
+  });
+  await prisma.userProfile.deleteMany({
+    where: {
+      user: {
+        username: { startsWith: prefix },
+      },
+    },
+  });
+  await prisma.user.deleteMany({
+    where: {
+      username: { startsWith: prefix },
+    },
+  });
 };
 
 export const disconnectDatabase = async () => {
   await prisma.$disconnect();
 };
 ```
+
+**Alternative Approach**: Transaction-based isolation (Prisma supports this)
+
+```typescript
+// test/integration/database.ts
+import { PrismaClient } from '~libs/domain-model/prisma';
+
+export const createTestTransaction = async () => {
+  const prisma = new PrismaClient();
+
+  return prisma.$transaction(
+    async (tx) => {
+      // Test code runs here with tx instead of prisma
+      // Transaction is automatically rolled back after test
+      return tx;
+    },
+    {
+      maxWait: 30000,
+      timeout: 30000,
+    }
+  );
+};
+```
+
+**Recommended**: Use unique test prefixes for simplicity and better debugging.
+Transaction-based isolation can be complex with async operations and may require
+wrapping the entire test suite.
 
 **Vitest Integration Config** (`vitest.integration.config.ts`):
 ```typescript
@@ -138,7 +203,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: ['src/**/*.integration.test.ts'],
+    include: ['src/**/*.int.test.ts'],
     testTimeout: 30000,  // Longer for DB operations
     hookTimeout: 30000,
   },
@@ -147,39 +212,69 @@ export default defineConfig({
 
 ### 2. Data Seeding and Cleanup
 
-**Approach**: Clean database before each test, use factories for test data
+**Approach**: Use unique test prefixes to enable parallel test execution
 
 **Test Pattern**:
 ```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { cleanDatabase } from '#test/integration/database';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { createTestPrefix, cleanupTestData } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
 
 describe('UserStore.createWithLocalCredentials (integration)', () => {
-  beforeEach(async () => {
-    await cleanDatabase();  // Fresh state for each test
+  let testPrefix: string;
+
+  beforeEach(() => {
+    testPrefix = createTestPrefix();  // Unique prefix for this test
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);  // Clean up this test's data
   });
 
   it('creates user and credentials in transaction', async () => {
     const result = await UserStore.createWithLocalCredentials({
-      username: 'testuser',
-      email: 'test@example.com',
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
       password: 'password123',
     });
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.username).toBe('testuser');
+      expect(result.data.username).toBe(`${testPrefix}_testuser`);
     }
+  });
+
+  it('returns USERNAME_EXISTS for duplicate username', async () => {
+    // First creation
+    await UserStore.createWithLocalCredentials({
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test1@example.com`,
+      password: 'password123',
+    });
+
+    // Duplicate creation
+    const result = await UserStore.createWithLocalCredentials({
+      username: `${testPrefix}_testuser`,  // Same username
+      email: `${testPrefix}_test2@example.com`,
+      password: 'password123',
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: 'USERNAME_EXISTS',
+    });
   });
 });
 ```
 
-**Why Not Transaction Rollback?**
-- Simpler to understand (explicit cleanup)
-- Works with all test scenarios
-- No transaction nesting issues
-- Clear database state between tests
+**Why This Approach?**
+- ✅ **Parallel execution** - Each test uses unique prefixes, no conflicts
+- ✅ **Isolation** - Tests don't interfere with each other
+- ✅ **Debugging** - Easy to identify test data in database
+- ✅ **Cleanup** - Explicit cleanup per test, no global state
+- ✅ **Simple** - No complex transaction management
+
+**Alternative: Vitest's `pool: 'forks'`** for process isolation (slower but complete isolation)
 
 ### 3. Prisma Testing Patterns
 
@@ -188,11 +283,21 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
 **Testing CRUD Operations**:
 ```typescript
 describe('UserStore.getById (integration)', () => {
+  let testPrefix: string;
+
+  beforeEach(() => {
+    testPrefix = createTestPrefix();
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);
+  });
+
   it('returns user when found', async () => {
     // Arrange: Create test data
     const createResult = await UserStore.createWithLocalCredentials({
-      username: 'testuser',
-      email: 'test@example.com',
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
       password: 'password123',
     });
     const userId = createResult.data.id;
@@ -205,7 +310,7 @@ describe('UserStore.getById (integration)', () => {
       success: true,
       data: expect.objectContaining({
         id: userId,
-        username: 'testuser',
+        username: `${testPrefix}_testuser`,
       }),
     });
   });
@@ -226,15 +331,15 @@ describe('UserStore.getById (integration)', () => {
 it('returns USERNAME_EXISTS when username is taken', async () => {
   // Arrange: Create first user
   await UserStore.createWithLocalCredentials({
-    username: 'testuser',
-    email: 'test1@example.com',
+    username: `${testPrefix}_testuser`,
+    email: `${testPrefix}_test1@example.com`,
     password: 'password123',
   });
 
   // Act: Try to create duplicate username
   const result = await UserStore.createWithLocalCredentials({
-    username: 'testuser',  // Same username
-    email: 'test2@example.com',  // Different email
+    username: `${testPrefix}_testuser`,  // Same username
+    email: `${testPrefix}_test2@example.com`,  // Different email
     password: 'password123',
   });
 
@@ -257,51 +362,64 @@ it('rolls back both user and credentials on failure', async () => {
 
 ### 4. GraphQL Resolver Testing
 
-**Strategy**: Test resolvers with real database and authenticated context
+**Strategy**: Test GraphQL through HTTP endpoint using supertest (same as REST endpoints)
 
-**Test Setup**:
+**Why supertest for GraphQL?**
+- ✅ Consistent with REST API testing approach
+- ✅ Tests the full HTTP stack (middleware, authentication, etc.)
+- ✅ No need for additional libraries
+- ✅ Tests exactly how clients will call GraphQL
+
+**Alternative Libraries** (if needed):
+- `@apollo/server`'s `executeOperation()` - Unit tests for resolvers (skips HTTP layer)
+- `graphql-request` - Lightweight client (but supertest is simpler)
+
+**Recommended**: Use **supertest** for integration tests to test the complete HTTP flow
+
+**Testing Queries** (with supertest):
 ```typescript
-// test/integration/apollo.ts
-import { ApolloServer } from '@apollo/server';
-import { typeDefs } from '~modules/graphql/type-defs';
-import { resolvers } from '~modules/graphql/resolvers';
-
-export const createTestApolloServer = () => {
-  return new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
-};
-```
-
-**Testing Queries**:
-```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { createTestApolloServer } from '#test/integration/apollo';
-import { cleanDatabase } from '#test/integration/database';
+import request from 'supertest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { createTestApp } from '#test/integration/app';
+import { createTestPrefix, cleanupTestData } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
-import type { GraphQLContext } from '~modules/graphql/graphql-context';
 
 describe('GraphQL me query (integration)', () => {
-  let apolloServer: ApolloServer;
-  let testUser: User;
+  let app: Express;
+  let testPrefix: string;
+  let accessToken: string;
 
   beforeEach(async () => {
-    await cleanDatabase();
-    apolloServer = createTestApolloServer();
+    testPrefix = createTestPrefix();
+    app = await createTestApp();
 
     // Create test user
-    const result = await UserStore.createWithLocalCredentials({
-      username: 'testuser',
-      email: 'test@example.com',
+    const userResult = await UserStore.createWithLocalCredentials({
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
       password: 'password123',
     });
-    testUser = result.data;
+
+    // Login to get access token
+    const loginResponse = await request(app)
+      .post('/auth/login/local')
+      .send({
+        username: `${testPrefix}_testuser`,
+        password: 'password123',
+      });
+
+    accessToken = loginResponse.body.accessToken;
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);
   });
 
   it('returns current user profile when authenticated', async () => {
-    const response = await apolloServer.executeOperation(
-      {
+    const response = await request(app)
+      .post('/graphql')
+      .set('Cookie', [`access-token=${accessToken}`])
+      .send({
         query: `
           query {
             me {
@@ -311,20 +429,22 @@ describe('GraphQL me query (integration)', () => {
             }
           }
         `,
-      },
-      {
-        contextValue: { user: testUser } as GraphQLContext,
-      }
-    );
+      })
+      .expect(200);
 
-    expect(response.body.kind).toBe('single');
-    if (response.body.kind === 'single') {
-      expect(response.body.singleResult.data?.me).toMatchObject({
-        id: testUser.id,
-        username: 'testuser',
-        email: 'test@example.com',
-      });
-    }
+    expect(response.body.data.me).toMatchObject({
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
+    });
+  });
+
+  it('returns error when not authenticated', async () => {
+    const response = await request(app)
+      .post('/graphql')
+      .send({
+        query: `query { me { id username } }`,
+      })
+      .expect(401);
   });
 });
 ```
@@ -332,8 +452,10 @@ describe('GraphQL me query (integration)', () => {
 **Testing Mutations**:
 ```typescript
 it('creates resource with valid input', async () => {
-  const response = await apolloServer.executeOperation(
-    {
+  const response = await request(app)
+    .post('/graphql')
+    .set('Cookie', [`access-token=${accessToken}`])
+    .send({
       query: `
         mutation CreateSomething($input: CreateInput!) {
           createSomething(input: $input) {
@@ -345,22 +467,28 @@ it('creates resource with valid input', async () => {
       variables: {
         input: { name: 'Test Resource' },
       },
-    },
-    {
-      contextValue: { user: testUser },
-    }
-  );
+    })
+    .expect(200);
 
-  expect(response.body.kind).toBe('single');
-  // Verify data in database
+  expect(response.body.data.createSomething).toMatchObject({
+    name: 'Test Resource',
+  });
+
+  // Verify data was actually created in database
+  const created = await prisma.something.findFirst({
+    where: { name: 'Test Resource' },
+  });
+  expect(created).toBeDefined();
 });
 ```
 
 **Testing GraphQL Errors**:
 ```typescript
 it('returns NOT_FOUND error for non-existent resource', async () => {
-  const response = await apolloServer.executeOperation(
-    {
+  const response = await request(app)
+    .post('/graphql')
+    .set('Cookie', [`access-token=${accessToken}`])
+    .send({
       query: `
         query GetUser($id: ID!) {
           user(id: $id) {
@@ -370,15 +498,11 @@ it('returns NOT_FOUND error for non-existent resource', async () => {
         }
       `,
       variables: { id: 'non-existent-id' },
-    },
-    { contextValue: { user: testUser } }
-  );
+    })
+    .expect(200);  // GraphQL returns 200 with errors in body
 
-  expect(response.body.kind).toBe('single');
-  if (response.body.kind === 'single') {
-    expect(response.body.singleResult.errors).toBeDefined();
-    expect(response.body.singleResult.errors?.[0].extensions?.code).toBe('NOT_FOUND');
-  }
+  expect(response.body.errors).toBeDefined();
+  expect(response.body.errors[0].extensions.code).toBe('NOT_FOUND');
 });
 ```
 
@@ -412,31 +536,36 @@ export const createTestApp = async () => {
 **Testing Login Flow**:
 ```typescript
 import request from 'supertest';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createTestApp } from '#test/integration/app';
-import { cleanDatabase } from '#test/integration/database';
+import { createTestPrefix, cleanupTestData } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
 
 describe('POST /auth/login/local (integration)', () => {
   let app: Express;
+  let testPrefix: string;
 
   beforeEach(async () => {
-    await cleanDatabase();
+    testPrefix = createTestPrefix();
     app = await createTestApp();
 
     // Create test user
     await UserStore.createWithLocalCredentials({
-      username: 'testuser',
-      email: 'test@example.com',
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
       password: 'password123',
     });
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);
   });
 
   it('returns tokens with valid credentials', async () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: 'testuser',
+        username: `${testPrefix}_testuser`,
         password: 'password123',
       })
       .expect(200)
@@ -457,7 +586,7 @@ describe('POST /auth/login/local (integration)', () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: 'testuser',
+        username: `${testPrefix}_testuser`,
         password: 'wrongpassword',
       })
       .expect(401);
@@ -471,7 +600,7 @@ describe('POST /auth/login/local (integration)', () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: 'nonexistent',
+        username: `${testPrefix}_nonexistent`,
         password: 'password123',
       })
       .expect(401);
@@ -486,11 +615,32 @@ describe('POST /auth/login/local (integration)', () => {
 **Testing Token Refresh**:
 ```typescript
 describe('POST /auth/refresh (integration)', () => {
+  let app: Express;
+  let testPrefix: string;
+
+  beforeEach(async () => {
+    testPrefix = createTestPrefix();
+    app = await createTestApp();
+
+    await UserStore.createWithLocalCredentials({
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
+      password: 'password123',
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);
+  });
+
   it('issues new tokens with valid refresh token', async () => {
     // Login to get initial tokens
     const loginResponse = await request(app)
       .post('/auth/login/local')
-      .send({ username: 'testuser', password: 'password123' });
+      .send({
+        username: `${testPrefix}_testuser`,
+        password: 'password123',
+      });
 
     const refreshToken = loginResponse.body.refreshToken;
 
@@ -513,7 +663,10 @@ describe('POST /auth/refresh (integration)', () => {
     // Get initial tokens
     const loginResponse = await request(app)
       .post('/auth/login/local')
-      .send({ username: 'testuser', password: 'password123' });
+      .send({
+        username: `${testPrefix}_testuser`,
+        password: 'password123',
+      });
 
     const refreshToken = loginResponse.body.refreshToken;
 
@@ -535,11 +688,32 @@ describe('POST /auth/refresh (integration)', () => {
 **Testing Authentication Middleware**:
 ```typescript
 describe('Access token authentication (integration)', () => {
+  let app: Express;
+  let testPrefix: string;
+
+  beforeEach(async () => {
+    testPrefix = createTestPrefix();
+    app = await createTestApp();
+
+    await UserStore.createWithLocalCredentials({
+      username: `${testPrefix}_testuser`,
+      email: `${testPrefix}_test@example.com`,
+      password: 'password123',
+    });
+  });
+
+  afterEach(async () => {
+    await cleanupTestData(testPrefix);
+  });
+
   it('allows access with valid access token', async () => {
     // Login to get access token
     const loginResponse = await request(app)
       .post('/auth/login/local')
-      .send({ username: 'testuser', password: 'password123' });
+      .send({
+        username: `${testPrefix}_testuser`,
+        password: 'password123',
+      });
 
     const accessToken = loginResponse.body.accessToken;
 
@@ -553,7 +727,7 @@ describe('Access token authentication (integration)', () => {
       .expect(200);
 
     expect(response.body.data.me).toMatchObject({
-      username: 'testuser',
+      username: `${testPrefix}_testuser`,
     });
   });
 
@@ -580,7 +754,7 @@ describe('Access token authentication (integration)', () => {
 - CI/CD optimization
 
 ### 7. Test Organization
-- File naming conventions (`*.integration.test.ts`)
+- File naming conventions (`*.int.test.ts`)
 - Directory structure (`__tests__` directories)
 - Shared test utilities
 - Test data factories
@@ -638,19 +812,6 @@ export const createTestApp = async (): Promise<Express> => {
 };
 ```
 
-### `test/integration/apollo.ts`
-```typescript
-import { ApolloServer } from '@apollo/server';
-import { typeDefs } from '~modules/graphql/type-defs';
-import { resolvers } from '~modules/graphql/resolvers';
-
-export const createTestApolloServer = () => {
-  return new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
-};
-```
 
 ### `test/integration/auth.ts`
 ```typescript
@@ -673,23 +834,23 @@ export const createTestTokens = async (user: User) => {
 ### Core Testing
 - ✅ **Vitest** - Test framework (v2.1.9, shared with unit tests)
 - ✅ **Vitest Integration Config** - Separate config for integration tests (30s timeouts)
-- 🔲 **supertest** - HTTP request testing library (needs installation)
+- 🔲 **supertest** - HTTP request testing library for both REST and GraphQL (needs installation: `npm install --save-dev supertest @types/supertest`)
 - 🔲 **PostgreSQL** - Test database (Docker container recommended)
 
 ### Database Management
 - ✅ **Prisma** - ORM (real client, no mocking)
 - ✅ **Prisma Migrate** - Schema management
-- 🔲 **Docker** - Isolated test database container
+- 🔲 **Docker** - Isolated test database container (optional, recommended for CI)
 
-### GraphQL Testing
-- ✅ **Apollo Server** - GraphQL server (already in dependencies)
-- ✅ **@apollo/client** - GraphQL client (already in dependencies)
+### HTTP/GraphQL Testing
+- 🔲 **supertest** - Tests both REST endpoints and GraphQL (POST to /graphql)
+- ✅ **Express** - Already in dependencies, used by test app setup
 
 ### Utilities
 - ✅ Test data factories (user-factory.ts, refresh-token-factory.ts)
-- 🔲 Database cleanup utilities (to be created)
-- 🔲 Test app setup utilities (to be created)
-- 🔲 Test Apollo server setup (to be created)
+- 🔲 Database utilities (createTestPrefix, cleanupTestData)
+- 🔲 Test app setup (createTestApp for Express with all modules)
+- 🔲 Auth helpers (createTestTokens for generating JWT tokens)
 
 ---
 
