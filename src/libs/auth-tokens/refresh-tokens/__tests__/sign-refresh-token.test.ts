@@ -2,21 +2,12 @@ import { createTestRefreshToken } from '#test/factories/refresh-token-factory';
 import { createTestUser } from '#test/factories/user-factory';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from '../refresh-tokens-const';
 import { signRefreshToken } from '../sign-refresh-token';
-
-// Mock the constants to avoid environment variable validation
-vi.mock('../refresh-tokens-const', () => ({
-  REFRESH_SECRET: new TextEncoder().encode('test-refresh-secret-key'),
-  REFRESH_TTL_TIMESPAN: '7d',
-  REFRESH_TTL_SECONDS: 7 * 24 * 60 * 60 * 1000,
-}));
 
 vi.mock('jose', () => ({
   SignJWT: vi.fn(),
 }));
-
-const REFRESH_SECRET = new TextEncoder().encode('test-refresh-secret-key');
-const REFRESH_TTL_TIMESPAN = '7d';
 
 describe('signRefreshToken', () => {
   const mockSign = vi.fn();

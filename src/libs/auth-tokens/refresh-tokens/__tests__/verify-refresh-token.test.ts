@@ -1,19 +1,11 @@
 import { jwtVerify } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { REFRESH_SECRET } from '../refresh-tokens-const';
 import { verifyRefreshToken } from '../verify-refresh-token';
-
-// Mock the constants to avoid environment variable validation
-vi.mock('../refresh-tokens-const', () => ({
-  REFRESH_SECRET: new TextEncoder().encode('test-refresh-secret-key'),
-  REFRESH_TTL_TIMESPAN: '7d',
-  REFRESH_TTL_SECONDS: 7 * 24 * 60 * 60 * 1000,
-}));
 
 vi.mock('jose', () => ({
   jwtVerify: vi.fn(),
 }));
-
-const REFRESH_SECRET = new TextEncoder().encode('test-refresh-secret-key');
 
 describe('verifyRefreshToken', () => {
   beforeEach(() => {
