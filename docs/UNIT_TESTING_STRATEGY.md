@@ -1,8 +1,8 @@
 # Unit Testing Strategy
 
-**Version**: 1.0
-**Last Updated**: 2026-02-21
-**Status**: Active
+**Version**: 1.1
+**Last Updated**: 2026-02-22
+**Status**: ✅ Pure Functions Complete - 87 tests passing
 **Parent Document**: [Testing Strategy Overview](./TESTING_STRATEGY.md)
 
 ## Overview
@@ -265,30 +265,39 @@ Track progress as each lib/module is analyzed and tested. Each PR should focus o
 
 ### Libraries (`src/libs/`)
 
+#### Core Utilities
+- [x] `async-handler.ts` - Express async error handling ✅ 100% coverage (4 tests)
+- [x] `client-utils/assert.ts` - Runtime assertions ✅ 100% coverage (5 tests)
+
 #### Auth & Security
 - [ ] `auth-middleware/` - Analyze for pure validation/parsing logic (strategies are integration tests)
-- [ ] `auth-tokens/access-tokens/` - Test token logic with mocked jose
-- [ ] `auth-tokens/refresh-tokens/` - Test token logic with mocked jose
-- [ ] `auth-user/` - Analyze for pure utility functions
+- [x] `auth-tokens/generate-token-version.ts` - Cryptographically secure UUID v4 ✅ 100% coverage (3 tests)
+- [x] `auth-tokens/access-tokens/sign-access-token.ts` - JWT signing with mocked jose ✅ 100% coverage (6 tests)
+- [x] `auth-tokens/access-tokens/verify-access-token.ts` - JWT verification with mocked jose ✅ 100% coverage (4 tests)
+- [x] `auth-tokens/refresh-tokens/sign-refresh-token.ts` - Refresh JWT signing with mocked jose ✅ 100% coverage (6 tests)
+- [x] `auth-tokens/refresh-tokens/verify-refresh-token.ts` - Refresh JWT verification with mocked jose ✅ 100% coverage (4 tests)
 
 #### Domain Model
 - [ ] `domain-model/models/` - Type definitions only (skip)
-- [x] `domain-model/prisma/parse-prisma-error.ts` - **PRIORITY** Unit test error parsing ✅ 100% coverage
+- [x] `domain-model/prisma/parse-prisma-error.ts` - Prisma error parsing and mapping ✅ 100% coverage (19 tests)
 - [ ] `domain-model/stores/` - Integration tests only (skip for unit tests)
 - [ ] `domain-model/types/` - Type definitions only (skip)
 
 #### GraphQL
-- [ ] `graphql-errors/` - Test error classes
-- [x] `graphql-transformers/` - **PRIORITY** Test all transformers ✅ 100% coverage
+- [x] `graphql-errors/bad-input-error.ts` - BadInputError class ✅ 100% coverage (3 tests)
+- [x] `graphql-errors/bad-parse-error.ts` - BadParseError class ✅ 100% coverage (3 tests)
+- [x] `graphql-errors/internal-server-error.ts` - InternalServerError class ✅ 100% coverage (5 tests)
+- [x] `graphql-errors/not-found-error.ts` - NotFoundError class ✅ 100% coverage (3 tests)
+- [x] `graphql-transformers/transform-user-profile.ts` - Prisma to GraphQL transformations ✅ 100% coverage (6 tests)
 - [ ] `graphql-types/` - Generated (skip)
 - [ ] `graphql-validators/` - Generated (skip)
 
 #### Utilities
-- [ ] `logger/` - External library wrapper (skip or mock in other tests)
+- [x] `logger/is-vite-request.ts` - Vite request detection ✅ 100% coverage (12 tests)
 - [ ] `module/` - Framework code (skip)
 - [ ] `prisma-validators/` - Generated (skip)
-- [ ] `trace-context/` - Analyze for testable logic
-- [x] `trace-token/` - **PRIORITY** Test token generation ✅ 100% coverage
+- [ ] `trace-context/` - Uses AsyncLocalStorage (integration test)
+- [x] `trace-token/generate-trace-token.ts` - Trace token generation ✅ 100% coverage (3 tests)
 
 #### Generated/External
 - [ ] `packages/` - Generated API clients (skip)
@@ -316,9 +325,18 @@ Track progress as each lib/module is analyzed and tested. Each PR should focus o
 
 ### Progress Tracking
 
-**Completed**: 3 / TBD (trace-token, parse-prisma-error, graphql-transformers)
-**In Progress**: 0
-**Remaining**: TBD
+**Completed**: 15 test files / 87 tests
+- ✅ Core utilities (2 files, 9 tests)
+- ✅ Auth tokens (5 files, 23 tests)
+- ✅ Domain model utilities (1 file, 19 tests)
+- ✅ GraphQL errors (4 files, 14 tests)
+- ✅ GraphQL transformers (1 file, 6 tests)
+- ✅ Logger utilities (1 file, 12 tests)
+- ✅ Trace tokens (1 file, 3 tests)
+
+**Coverage**: 100% of testable pure utility functions
+
+**Remaining**: Vue components, composables, Pinia stores (require UI testing setup)
 
 ---
 

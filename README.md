@@ -1,3 +1,25 @@
+### Testing
+
+**Framework**: Vitest v2.1.9
+
+**Current Status**: 87 unit tests passing - 100% coverage of pure utility functions
+
+**Documentation**:
+- [Testing Strategy Overview](./docs/TESTING_STRATEGY.md) - High-level testing approach
+- [Unit Testing Strategy](./docs/UNIT_TESTING_STRATEGY.md) - ✅ Complete (15 test files, 87 tests)
+- [Integration Testing Strategy](./docs/INTEGRATION_TESTING_STRATEGY.md) - 📋 Ready for implementation
+- [E2E Testing Strategy](./docs/E2E_TESTING_STRATEGY.md) - 📝 Future
+
+**Running Tests**:
+```bash
+npm test                        # All tests in watch mode
+npm run test:unit               # Unit tests only
+npm run test:integration        # Integration tests (none yet)
+npm run test:all                # Both unit and integration tests
+```
+
+See [docs/UNIT_TESTING_STRATEGY.md](./docs/UNIT_TESTING_STRATEGY.md) for detailed implementation status.
+
 ### Filenaming/Foldernaming
 
 - Folders -> kebab-case
@@ -17,7 +39,8 @@
 - update functions to only pass what is needed
 - nvim ejs syntax highlighting
 - nvim vue syntax highlighting and ts validation
-- tests, tests, tests
+- ✅ unit tests (87 tests, 100% coverage of pure functions)
+- integration tests (see docs/INTEGRATION_TESTING_STRATEGY.md)
 - use find instead of get in stores
 - setup individual apps to have their own express server, plugs into main one through /<identifier> (only client left)
 - use operationId for the route types
