@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { Prisma } from '@prisma/client';
+import { describe, it, expect } from 'vitest';
 import { parsePrismaError } from '../parse-prisma-error';
 
 describe('parsePrismaError', () => {
