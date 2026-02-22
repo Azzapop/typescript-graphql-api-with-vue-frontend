@@ -3,6 +3,7 @@ node_modules
 .env
 coverage
 dist
+.claude
 
 # Auto generated files
 src/libs/graphql-types/index.ts
