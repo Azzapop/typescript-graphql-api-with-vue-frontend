@@ -110,152 +110,197 @@ JWT_REFRESH_SECRET="test-refresh-secret"
 NODE_ENV="test"
 ```
 
-**Test Database Management** (for parallel execution):
+**Test Database Management** (Schema-based isolation for parallel execution):
 
-**Approach**: Use unique test data per test to enable parallel execution
+**Approach**: Each Vitest worker gets its own PostgreSQL schema for complete isolation
+
+**How it works:**
+- One PostgreSQL database, multiple schemas (like namespaces)
+- Each worker creates its own schema: `test_worker_1`, `test_worker_2`, etc.
+- Migrations run once per schema when worker starts
+- Tests within a worker clean data between tests
+- Workers are completely isolated from each other
 
 ```typescript
 // test/integration/database.ts
-import { PrismaClient } from '~libs/domain-model/prisma';
-import { randomBytes } from 'crypto';
-
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
 
 /**
- * Generate unique test prefix for parallel test isolation
- * Each test gets a unique prefix to avoid data collisions
+ * Get unique schema name for this worker
  */
-export const createTestPrefix = (): string => {
-  return `test_${randomBytes(8).toString('hex')}`;
+const getWorkerSchema = (): string => {
+  const workerId = process.env.VITEST_POOL_ID || '1';
+  return `test_worker_${workerId}`;
 };
 
 /**
- * Cleanup test data by prefix
- * Call this in afterEach to clean up data created by the test
+ * Create Prisma client configured for worker's schema
  */
-export const cleanupTestData = async (prefix: string) => {
-  // Delete data created by this specific test (match by username/email prefix)
-  await prisma.refreshToken.deleteMany({
-    where: {
-      user: {
-        username: { startsWith: prefix },
+export const createTestPrismaClient = async () => {
+  const schema = getWorkerSchema();
+
+  // Create schema if it doesn't exist
+  const tempPrisma = new PrismaClient();
+  await tempPrisma.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
+  await tempPrisma.$disconnect();
+
+  // Create client with schema in connection URL
+  const prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: `${process.env.DATABASE_URL}?schema=${schema}`,
       },
     },
   });
-  await prisma.localCredentials.deleteMany({
-    where: {
-      user: {
-        username: { startsWith: prefix },
-      },
-    },
-  });
-  await prisma.userProfile.deleteMany({
-    where: {
-      user: {
-        username: { startsWith: prefix },
-      },
-    },
-  });
-  await prisma.user.deleteMany({
-    where: {
-      username: { startsWith: prefix },
-    },
-  });
+
+  return { prisma, schema };
 };
 
-export const disconnectDatabase = async () => {
+/**
+ * Run Prisma migrations on worker's schema
+ * Called once when worker starts (global setup)
+ */
+export const setupWorkerDatabase = async () => {
+  const schema = getWorkerSchema();
+
+  // Set schema in environment for migration
+  const originalUrl = process.env.DATABASE_URL;
+  process.env.DATABASE_URL = `${originalUrl}?schema=${schema}`;
+
+  // Run Prisma migrations
+  execSync(
+    'npx prisma migrate deploy --schema=./src/libs/domain-model/prisma/schema.prisma',
+    { stdio: 'inherit' }
+  );
+
+  // Restore original URL
+  process.env.DATABASE_URL = originalUrl;
+};
+
+/**
+ * Clean all data in worker's schema
+ * Called in beforeEach to reset state between tests
+ */
+export const cleanWorkerDatabase = async (prisma: PrismaClient) => {
+  // Delete in order to respect foreign key constraints
+  await prisma.refreshToken.deleteMany();
+  await prisma.localCredentials.deleteMany();
+  await prisma.userProfile.deleteMany();
+  await prisma.user.deleteMany();
+};
+
+/**
+ * Drop worker's schema
+ * Called once when worker shuts down (global teardown)
+ */
+export const teardownWorkerDatabase = async () => {
+  const schema = getWorkerSchema();
+  const prisma = new PrismaClient();
+  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
   await prisma.$disconnect();
 };
 ```
 
-**Alternative Approach**: Transaction-based isolation (Prisma supports this)
-
-```typescript
-// test/integration/database.ts
-import { PrismaClient } from '~libs/domain-model/prisma';
-
-export const createTestTransaction = async () => {
-  const prisma = new PrismaClient();
-
-  return prisma.$transaction(
-    async (tx) => {
-      // Test code runs here with tx instead of prisma
-      // Transaction is automatically rolled back after test
-      return tx;
-    },
-    {
-      maxWait: 30000,
-      timeout: 30000,
-    }
-  );
-};
-```
-
-**Recommended**: Use unique test prefixes for simplicity and better debugging.
-Transaction-based isolation can be complex with async operations and may require
-wrapping the entire test suite.
-
 **Vitest Integration Config** (`vitest.integration.config.ts`):
 ```typescript
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
+  plugins: [tsconfigPaths({ loose: true })],
   test: {
     globals: true,
     environment: 'node',
     include: ['src/**/*.int.test.ts'],
-    testTimeout: 30000,  // Longer for DB operations
+
+    // Enable parallel execution with multiple workers
+    pool: 'threads',
+    poolOptions: {
+      threads: {
+        minThreads: 1,
+        maxThreads: 4,  // 4 workers = 4 database schemas
+      },
+    },
+
+    // Global setup/teardown runs once per worker
+    globalSetup: './test/integration/global-setup.ts',
+
+    testTimeout: 30000,
     hookTimeout: 30000,
   },
 });
 ```
 
+**Global Setup** (`test/integration/global-setup.ts`):
+```typescript
+import { setupWorkerDatabase, teardownWorkerDatabase } from './database';
+
+export async function setup() {
+  console.log(`Setting up schema for worker ${process.env.VITEST_POOL_ID}`);
+  await setupWorkerDatabase();
+}
+
+export async function teardown() {
+  console.log(`Tearing down schema for worker ${process.env.VITEST_POOL_ID}`);
+  await teardownWorkerDatabase();
+}
+```
+
 ### 2. Data Seeding and Cleanup
 
-**Approach**: Use unique test prefixes to enable parallel test execution
+**Approach**: Schema-based isolation with simple cleanup between tests
 
 **Test Pattern**:
 ```typescript
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createTestPrefix, cleanupTestData } from '#test/integration/database';
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
+import { createTestPrismaClient, cleanWorkerDatabase } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
+import type { PrismaClient } from '@prisma/client';
 
 describe('UserStore.createWithLocalCredentials (integration)', () => {
-  let testPrefix: string;
+  let prisma: PrismaClient;
 
-  beforeEach(() => {
-    testPrefix = createTestPrefix();  // Unique prefix for this test
+  beforeAll(async () => {
+    // Get Prisma client for this worker's schema
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);  // Clean up this test's data
+  beforeEach(async () => {
+    // Clean all data in worker schema before each test
+    await cleanWorkerDatabase(prisma);
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('creates user and credentials in transaction', async () => {
     const result = await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
 
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.username).toBe(`${testPrefix}_testuser`);
+      expect(result.data.username).toBe('testuser');
     }
   });
 
   it('returns USERNAME_EXISTS for duplicate username', async () => {
     // First creation
     await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test1@example.com`,
+      username: 'testuser',
+      email: 'test1@example.com',
       password: 'password123',
     });
 
     // Duplicate creation
     const result = await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,  // Same username
-      email: `${testPrefix}_test2@example.com`,
+      username: 'testuser',  // Same username
+      email: 'test2@example.com',
       password: 'password123',
     });
 
@@ -268,13 +313,19 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
 ```
 
 **Why This Approach?**
-- ✅ **Parallel execution** - Each test uses unique prefixes, no conflicts
-- ✅ **Isolation** - Tests don't interfere with each other
-- ✅ **Debugging** - Easy to identify test data in database
-- ✅ **Cleanup** - Explicit cleanup per test, no global state
-- ✅ **Simple** - No complex transaction management
+- ✅ **True parallel execution** - Each worker completely isolated in separate schema
+- ✅ **Simple test code** - No unique prefixes, clean usernames/emails
+- ✅ **Fast** - Tests run in parallel across multiple workers
+- ✅ **One database** - Multiple schemas, not multiple databases
+- ✅ **Complete isolation** - Workers cannot interfere with each other
+- ✅ **Easy debugging** - Can inspect data in specific worker schema
 
-**Alternative: Vitest's `pool: 'forks'`** for process isolation (slower but complete isolation)
+**How Parallel Execution Works:**
+- Vitest creates 4 workers (configurable via `maxThreads`)
+- Each worker gets schema: `test_worker_1`, `test_worker_2`, etc.
+- Migrations run once per worker on startup
+- Tests within same worker run sequentially, cleaning DB between each
+- Tests across different workers run in parallel with no conflicts
 
 ### 3. Prisma Testing Patterns
 
@@ -283,21 +334,26 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
 **Testing CRUD Operations**:
 ```typescript
 describe('UserStore.getById (integration)', () => {
-  let testPrefix: string;
+  let prisma: PrismaClient;
 
-  beforeEach(() => {
-    testPrefix = createTestPrefix();
+  beforeAll(async () => {
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);
+  beforeEach(async () => {
+    await cleanWorkerDatabase(prisma);
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('returns user when found', async () => {
     // Arrange: Create test data
     const createResult = await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
     const userId = createResult.data.id;
@@ -310,7 +366,7 @@ describe('UserStore.getById (integration)', () => {
       success: true,
       data: expect.objectContaining({
         id: userId,
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
       }),
     });
   });
@@ -331,15 +387,15 @@ describe('UserStore.getById (integration)', () => {
 it('returns USERNAME_EXISTS when username is taken', async () => {
   // Arrange: Create first user
   await UserStore.createWithLocalCredentials({
-    username: `${testPrefix}_testuser`,
-    email: `${testPrefix}_test1@example.com`,
+    username: 'testuser',
+    email: 'test1@example.com',
     password: 'password123',
   });
 
   // Act: Try to create duplicate username
   const result = await UserStore.createWithLocalCredentials({
-    username: `${testPrefix}_testuser`,  // Same username
-    email: `${testPrefix}_test2@example.com`,  // Different email
+    username: 'testuser',  // Same username
+    email: 'test2@example.com',  // Different email
     password: 'password123',
   });
 
@@ -379,24 +435,31 @@ it('rolls back both user and credentials on failure', async () => {
 **Testing Queries** (with supertest):
 ```typescript
 import request from 'supertest';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { createTestApp } from '#test/integration/app';
-import { createTestPrefix, cleanupTestData } from '#test/integration/database';
+import { createTestPrismaClient, cleanWorkerDatabase } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
+import type { PrismaClient } from '@prisma/client';
+import type { Express } from 'express';
 
 describe('GraphQL me query (integration)', () => {
   let app: Express;
-  let testPrefix: string;
+  let prisma: PrismaClient;
   let accessToken: string;
 
-  beforeEach(async () => {
-    testPrefix = createTestPrefix();
+  beforeAll(async () => {
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
     app = await createTestApp();
+  });
+
+  beforeEach(async () => {
+    await cleanWorkerDatabase(prisma);
 
     // Create test user
-    const userResult = await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+    await UserStore.createWithLocalCredentials({
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
 
@@ -404,15 +467,15 @@ describe('GraphQL me query (integration)', () => {
     const loginResponse = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'password123',
       });
 
     accessToken = loginResponse.body.accessToken;
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('returns current user profile when authenticated', async () => {
@@ -433,8 +496,8 @@ describe('GraphQL me query (integration)', () => {
       .expect(200);
 
     expect(response.body.data.me).toMatchObject({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
     });
   });
 
@@ -536,36 +599,43 @@ export const createTestApp = async () => {
 **Testing Login Flow**:
 ```typescript
 import request from 'supertest';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
 import { createTestApp } from '#test/integration/app';
-import { createTestPrefix, cleanupTestData } from '#test/integration/database';
+import { createTestPrismaClient, cleanWorkerDatabase } from '#test/integration/database';
 import { UserStore } from '~libs/domain-model/stores/user';
+import type { PrismaClient } from '@prisma/client';
+import type { Express } from 'express';
 
 describe('POST /auth/login/local (integration)', () => {
   let app: Express;
-  let testPrefix: string;
+  let prisma: PrismaClient;
+
+  beforeAll(async () => {
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
+    app = await createTestApp();
+  });
 
   beforeEach(async () => {
-    testPrefix = createTestPrefix();
-    app = await createTestApp();
+    await cleanWorkerDatabase(prisma);
 
     // Create test user
     await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('returns tokens with valid credentials', async () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'password123',
       })
       .expect(200)
@@ -586,7 +656,7 @@ describe('POST /auth/login/local (integration)', () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'wrongpassword',
       })
       .expect(401);
@@ -600,7 +670,7 @@ describe('POST /auth/login/local (integration)', () => {
     const response = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_nonexistent`,
+        username: 'nonexistent',
         password: 'password123',
       })
       .expect(401);
@@ -616,21 +686,26 @@ describe('POST /auth/login/local (integration)', () => {
 ```typescript
 describe('POST /auth/refresh (integration)', () => {
   let app: Express;
-  let testPrefix: string;
+  let prisma: PrismaClient;
+
+  beforeAll(async () => {
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
+    app = await createTestApp();
+  });
 
   beforeEach(async () => {
-    testPrefix = createTestPrefix();
-    app = await createTestApp();
+    await cleanWorkerDatabase(prisma);
 
     await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('issues new tokens with valid refresh token', async () => {
@@ -638,7 +713,7 @@ describe('POST /auth/refresh (integration)', () => {
     const loginResponse = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'password123',
       });
 
@@ -664,7 +739,7 @@ describe('POST /auth/refresh (integration)', () => {
     const loginResponse = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'password123',
       });
 
@@ -689,21 +764,26 @@ describe('POST /auth/refresh (integration)', () => {
 ```typescript
 describe('Access token authentication (integration)', () => {
   let app: Express;
-  let testPrefix: string;
+  let prisma: PrismaClient;
+
+  beforeAll(async () => {
+    const { prisma: workerPrisma } = await createTestPrismaClient();
+    prisma = workerPrisma;
+    app = await createTestApp();
+  });
 
   beforeEach(async () => {
-    testPrefix = createTestPrefix();
-    app = await createTestApp();
+    await cleanWorkerDatabase(prisma);
 
     await UserStore.createWithLocalCredentials({
-      username: `${testPrefix}_testuser`,
-      email: `${testPrefix}_test@example.com`,
+      username: 'testuser',
+      email: 'test@example.com',
       password: 'password123',
     });
   });
 
-  afterEach(async () => {
-    await cleanupTestData(testPrefix);
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   it('allows access with valid access token', async () => {
@@ -711,7 +791,7 @@ describe('Access token authentication (integration)', () => {
     const loginResponse = await request(app)
       .post('/auth/login/local')
       .send({
-        username: `${testPrefix}_testuser`,
+        username: 'testuser',
         password: 'password123',
       });
 
@@ -727,7 +807,7 @@ describe('Access token authentication (integration)', () => {
       .expect(200);
 
     expect(response.body.data.me).toMatchObject({
-      username: `${testPrefix}_testuser`,
+      username: 'testuser',
     });
   });
 
@@ -771,21 +851,27 @@ describe('Access token authentication (integration)', () => {
 Create these utilities in `test/integration/`:
 
 ### `test/integration/database.ts`
+
+See "Test Database Setup" section above for full implementation including:
+- `getWorkerSchema()` - Get schema name for current worker
+- `createTestPrismaClient()` - Create Prisma client for worker schema
+- `setupWorkerDatabase()` - Run migrations on worker schema (global setup)
+- `cleanWorkerDatabase(prisma)` - Delete all data in schema (beforeEach)
+- `teardownWorkerDatabase()` - Drop worker schema (global teardown)
+
+### `test/integration/global-setup.ts`
 ```typescript
-import { PrismaClient } from '~libs/domain-model/prisma';
+import { setupWorkerDatabase, teardownWorkerDatabase } from './database';
 
-const prisma = new PrismaClient();
+export async function setup() {
+  console.log(`Setting up schema for worker ${process.env.VITEST_POOL_ID}`);
+  await setupWorkerDatabase();
+}
 
-export const cleanDatabase = async () => {
-  await prisma.refreshToken.deleteMany();
-  await prisma.localCredentials.deleteMany();
-  await prisma.userProfile.deleteMany();
-  await prisma.user.deleteMany();
-};
-
-export const disconnectDatabase = async () => {
-  await prisma.$disconnect();
-};
+export async function teardown() {
+  console.log(`Tearing down schema for worker ${process.env.VITEST_POOL_ID}`);
+  await teardownWorkerDatabase();
+}
 ```
 
 ### `test/integration/app.ts`
@@ -848,9 +934,10 @@ export const createTestTokens = async (user: User) => {
 
 ### Utilities
 - ✅ Test data factories (user-factory.ts, refresh-token-factory.ts)
-- 🔲 Database utilities (createTestPrefix, cleanupTestData)
+- 🔲 Database utilities (createTestPrismaClient, cleanWorkerDatabase, setupWorkerDatabase)
+- 🔲 Global setup (test/integration/global-setup.ts for schema lifecycle)
 - 🔲 Test app setup (createTestApp for Express with all modules)
-- 🔲 Auth helpers (createTestTokens for generating JWT tokens)
+- 🔲 Auth helpers (optional - can just login via HTTP in tests)
 
 ---
 

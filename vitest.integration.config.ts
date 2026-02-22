@@ -12,7 +12,17 @@ export default defineConfig({
 
     exclude: ['**/node_modules/**', '**/dist/**'],
 
+    // Enable parallel execution with multiple workers
     pool: 'threads',
+    poolOptions: {
+      threads: {
+        minThreads: 1,
+        maxThreads: 4, // 4 workers = 4 database schemas
+      },
+    },
+
+    // Global setup/teardown runs once per worker
+    globalSetup: './test/integration/global-setup.ts',
 
     // Integration tests may need longer timeouts
     testTimeout: 30000,
