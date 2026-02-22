@@ -13,7 +13,7 @@ export default defineConfig({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/*.integration.test.ts',
+      '**/*.int.test.ts',
       '**/*.e2e.test.ts',
       '**/*.gql.ts',
     ],
