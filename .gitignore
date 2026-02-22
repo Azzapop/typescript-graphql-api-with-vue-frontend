@@ -5,6 +5,9 @@ coverage
 dist
 .claude
 
+# Build artifacts
+vite.config.ts.timestamp-*
+
 # Auto generated files
 src/libs/graphql-types/index.ts
 *.gql.ts
