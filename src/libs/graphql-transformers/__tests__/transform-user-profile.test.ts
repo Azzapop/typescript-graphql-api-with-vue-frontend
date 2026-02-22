@@ -1,5 +1,6 @@
 import { createTestUserProfile } from '#test/factories';
 import { describe, it, expect } from 'vitest';
+import type { GqlUserProfile } from '~libs/graphql-types';
 import { transformUserProfile } from '../transform-user-profile';
 
 describe('transformUserProfile', () => {
@@ -10,7 +11,7 @@ describe('transformUserProfile', () => {
         email: 'test@example.com',
       });
 
-      const result = transformUserProfile(profile);
+      const result = transformUserProfile(profile) as GqlUserProfile;
 
       expect(result).toEqual({
         id: 'profile-123',
@@ -20,7 +21,7 @@ describe('transformUserProfile', () => {
 
     it('includes all required fields', () => {
       const profile = createTestUserProfile();
-      const result = transformUserProfile(profile);
+      const result = transformUserProfile(profile) as GqlUserProfile;
 
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('email');
@@ -30,38 +31,39 @@ describe('transformUserProfile', () => {
   describe('null and undefined handling', () => {
     it('converts null email to null', () => {
       const profile = createTestUserProfile({ email: null });
-      const result = transformUserProfile(profile);
+      const result = transformUserProfile(profile) as GqlUserProfile;
 
-      expect(result?.email).toBeNull();
+      expect(result.email).toBeNull();
     });
 
     it('converts undefined email to null', () => {
       const profile = createTestUserProfile({ email: null });
       // Simulate undefined by deleting the property
-      const profileWithUndefined = { ...profile, email: undefined };
-      const result = transformUserProfile(
-        profileWithUndefined as typeof profile
-      );
+      const profileWithUndefined = {
+        ...profile,
+        email: undefined as unknown as null,
+      };
+      const result = transformUserProfile(profileWithUndefined) as GqlUserProfile;
 
-      expect(result?.email).toBeNull();
+      expect(result.email).toBeNull();
     });
   });
 
   describe('edge cases', () => {
     it('handles empty string email', () => {
       const profile = createTestUserProfile({ email: '' });
-      const result = transformUserProfile(profile);
+      const result = transformUserProfile(profile) as GqlUserProfile;
 
       // Empty string should be preserved, not converted to null
-      expect(result?.email).toBe('');
+      expect(result.email).toBe('');
     });
 
     it('preserves email with special characters', () => {
       const email = 'test+tag@example.co.uk';
       const profile = createTestUserProfile({ email });
-      const result = transformUserProfile(profile);
+      const result = transformUserProfile(profile) as GqlUserProfile;
 
-      expect(result?.email).toBe(email);
+      expect(result.email).toBe(email);
     });
   });
 });
