@@ -12,17 +12,21 @@ export default defineConfig({
 
     exclude: ['**/node_modules/**', '**/dist/**'],
 
-    // Enable parallel execution with multiple workers
-    pool: 'threads',
+    // TODO: Re-enable parallel execution after refactoring Prisma client injection
+    // Currently using sequential execution due to module mocking limitations
+    // See docs/INTEGRATION_TESTING_STRATEGY.md for parallelization plan
+    pool: 'forks',
     poolOptions: {
-      threads: {
-        minThreads: 1,
-        maxThreads: 4, // 4 workers = 4 database schemas
+      forks: {
+        singleFork: true, // Run all tests in single process sequentially
       },
     },
 
     // Global setup/teardown runs once per worker
     globalSetup: './test/integration/global-setup.ts',
+
+    // Setup files run before each test file loads
+    setupFiles: ['./test/integration/setup-test-env.ts'],
 
     // Integration tests may need longer timeouts
     testTimeout: 30000,
