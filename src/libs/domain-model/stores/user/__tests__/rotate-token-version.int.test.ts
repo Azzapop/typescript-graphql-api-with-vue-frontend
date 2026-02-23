@@ -47,10 +47,12 @@ describe('UserStore.rotateTokenVersion (integration)', () => {
       expect(createResult.success).toBe(true);
       if (!createResult.success) return;
 
-      const originalTokenVersion = createResult.data.tokenVersion;
+      const {
+        data: { tokenVersion: originalTokenVersion, id },
+      } = createResult;
 
       // Rotate token version
-      await UserStore.rotateTokenVersion(createResult.data.id);
+      await UserStore.rotateTokenVersion(id);
 
       // Get updated user
       const updatedUser = await UserStore.getById(createResult.data.id);
@@ -95,7 +97,9 @@ describe('UserStore.rotateTokenVersion (integration)', () => {
       expect(createResult.success).toBe(true);
       if (!createResult.success) return;
 
-      const originalUpdatedAt = createResult.data.updatedAt;
+      const {
+        data: { updatedAt: originalUpdatedAt },
+      } = createResult;
 
       // Wait a bit to ensure timestamp difference
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -122,8 +126,9 @@ describe('UserStore.rotateTokenVersion (integration)', () => {
       expect(createResult.success).toBe(true);
       if (!createResult.success) return;
 
-      const originalId = createResult.data.id;
-      const originalCreatedAt = createResult.data.createdAt;
+      const {
+        data: { id: originalId, createdAt: originalCreatedAt },
+      } = createResult;
 
       // Rotate token version
       await UserStore.rotateTokenVersion(createResult.data.id);
@@ -165,9 +170,15 @@ describe('UserStore.rotateTokenVersion (integration)', () => {
       )
         return;
 
-      const user1OriginalVersion = user1Result.data.tokenVersion;
-      const user2OriginalVersion = user2Result.data.tokenVersion;
-      const user3OriginalVersion = user3Result.data.tokenVersion;
+      const {
+        data: { tokenVersion: user1OriginalVersion },
+      } = user1Result;
+      const {
+        data: { tokenVersion: user2OriginalVersion },
+      } = user2Result;
+      const {
+        data: { tokenVersion: user3OriginalVersion },
+      } = user3Result;
 
       // Rotate only user2's token version
       await UserStore.rotateTokenVersion(user2Result.data.id);

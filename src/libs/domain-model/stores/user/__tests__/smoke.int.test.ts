@@ -15,9 +15,9 @@ describe('Integration Test Infrastructure (smoke test)', () => {
 
   beforeAll(async () => {
     // Get Prisma client for this worker's schema
-    const result = await createTestPrismaClient();
-    prisma = result.prisma;
-    schema = result.schema;
+    const { prisma: workerPrisma, schema: workerSchema } = await createTestPrismaClient();
+    prisma = workerPrisma;
+    schema = workerSchema;
   });
 
   beforeEach(async () => {
