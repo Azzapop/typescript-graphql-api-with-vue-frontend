@@ -62,5 +62,7 @@ jobs:
           NODE_ENV="test"
           LOG_LEVEL="error"
           EOF
+      - name: Create logs directory
+        run: mkdir -p logs
       - run: npm run test:integration
       - run: npm run build
