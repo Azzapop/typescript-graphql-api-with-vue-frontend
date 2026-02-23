@@ -4,36 +4,37 @@ This directory contains utilities for running integration tests with real databa
 
 ## Architecture
 
-### Schema-Based Isolation
+### Schema-Based Isolation with Sequential Execution
 
-Each Vitest worker gets its own PostgreSQL schema for complete test isolation:
+Tests use a dedicated PostgreSQL schema (`test_schema`) with sequential execution:
 
-- Worker 1: `test_worker_1`
-- Worker 2: `test_worker_2`
-- Worker 3: `test_worker_3`
-- Worker 4: `test_worker_4`
+- **Single schema**: `test_schema`
+- **Sequential execution**: Tests run one at a time (single fork)
+- **Complete cleanup**: TRUNCATE CASCADE between each test
+- **Simple and reliable**: No race conditions or parallel complexity
 
 This enables:
-- True parallel test execution (4 workers by default)
-- Complete isolation between test files
-- No conflicts or race conditions
-- Easy debugging (can inspect specific worker schemas)
+- Complete isolation between tests
+- Predictable test execution order
+- Simple debugging
+- Fast enough for current test count (~10 seconds for 89 tests)
 
-### Worker Lifecycle
+### Test Lifecycle
 
 1. **Global Setup** (`global-setup.ts`):
-   - Runs once when worker starts
-   - Creates worker's schema
+   - Runs once before all tests
+   - Creates `test_schema` if it doesn't exist
    - Runs Prisma migrations
 
 2. **Test Execution**:
-   - Tests run sequentially within worker
-   - `beforeEach` cleans database between tests
-   - Each test starts with empty database
+   - Tests run sequentially (one at a time)
+   - `beforeEach` uses TRUNCATE CASCADE to reset all tables
+   - Each test starts with completely empty tables
+   - Auto-increment sequences are reset
 
 3. **Global Teardown** (`global-setup.ts`):
-   - Runs once when worker shuts down
-   - Drops worker's schema
+   - Runs once after all tests
+   - Drops `test_schema` completely
 
 ## Utilities
 
@@ -41,10 +42,29 @@ This enables:
 
 Database management utilities:
 
-- `createTestPrismaClient()` - Create Prisma client for worker's schema
-- `setupWorkerDatabase()` - Run migrations on worker's schema (global setup)
-- `cleanWorkerDatabase(prisma)` - Delete all data (beforeEach hook)
-- `teardownWorkerDatabase()` - Drop worker's schema (global teardown)
+- **`createTestPrismaClient()`** - Create Prisma client configured for test schema
+- **`setupWorkerDatabase()`** - Create schema and run migrations (global setup)
+- **`cleanWorkerDatabase(prisma)`** - TRUNCATE all tables with CASCADE (beforeEach)
+- **`teardownWorkerDatabase()`** - Drop test schema (global teardown)
+
+#### TRUNCATE CASCADE Cleanup
+
+Complete database cleanup between tests:
+
+```typescript
+export const cleanWorkerDatabase = async (prisma: PrismaClient): Promise<void> => {
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "RefreshToken" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "LocalCredentials" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "UserProfile" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "User" CASCADE');
+};
+```
+
+Benefits:
+- ⚡ Faster than DELETE for removing all rows
+- 🔄 Resets auto-increment sequences
+- 🔗 Automatic cascade handling
+- ✨ Complete cleanup ensures true isolation
 
 ### `app.ts`
 
@@ -75,6 +95,7 @@ describe('My Integration Test', () => {
   });
 
   beforeEach(async () => {
+    // Complete cleanup - TRUNCATE CASCADE resets everything
     await cleanWorkerDatabase(prisma);
   });
 
@@ -83,7 +104,7 @@ describe('My Integration Test', () => {
   });
 
   it('should test something', async () => {
-    // Test implementation
+    // Test implementation - starts with clean database
   });
 });
 ```
@@ -130,19 +151,39 @@ describe('API Integration Test', () => {
 ### Environment Variables (`.env.test`)
 
 ```bash
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/test_db"
+DATABASE_URL="postgresql://financial_planner_local@localhost:5432/test_financial_planner_local_db"
 JWT_ACCESS_SECRET="test-access-secret-min-32-chars-long-for-jwt"
 JWT_REFRESH_SECRET="test-refresh-secret-min-32-chars-long-for-jwt"
 NODE_ENV="test"
 LOG_LEVEL="error"
 ```
 
+**Note**: The `DATABASE_URL` is automatically appended with `?schema=test_schema` by the test configuration.
+
 ### Vitest Config (`vitest.integration.config.ts`)
 
-- Includes: `src/**/*.int.test.ts`
-- Workers: 4 parallel threads
-- Timeouts: 30 seconds
-- Global setup: `test/integration/global-setup.ts`
+```typescript
+export default defineConfig({
+  test: {
+    include: ['src/**/*.int.test.ts'],
+
+    // Sequential execution in single process
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,  // All tests in one process, one at a time
+      },
+    },
+
+    // Global setup/teardown runs once before/after all tests
+    globalSetup: './test/integration/global-setup.ts',
+
+    // Integration tests may need longer timeouts
+    testTimeout: 30000,
+    hookTimeout: 30000,
+  },
+});
+```
 
 ## Running Tests
 
@@ -163,47 +204,62 @@ npm run test:integration -- src/libs/domain-model/stores/user/__tests__/create.i
 ## Prerequisites
 
 1. PostgreSQL database running
-2. Test database created: `test_db`
+2. Test database created: `test_financial_planner_local_db`
 3. Database user with schema creation permissions
 4. `.env.test` configured with correct DATABASE_URL
 
 ## Debugging
 
-### View Worker Schemas
+### View Test Schema
 
 ```sql
 -- Connect to test database
-psql -d test_db
+psql -d test_financial_planner_local_db
 
 -- List all schemas
 \dn
 
--- View tables in worker schema
-\dt test_worker_1.*
+-- View tables in test schema
+\dt test_schema.*
 
--- Query data in worker schema
-SELECT * FROM test_worker_1."User";
+-- Query data in test schema
+SELECT * FROM test_schema."User";
 ```
 
-### Clean Up Orphaned Schemas
+### Clean Up Test Schema
 
-If tests are interrupted, schemas may not be cleaned up:
+If tests are interrupted, the schema may remain:
 
 ```sql
-DROP SCHEMA IF EXISTS test_worker_1 CASCADE;
-DROP SCHEMA IF EXISTS test_worker_2 CASCADE;
-DROP SCHEMA IF EXISTS test_worker_3 CASCADE;
-DROP SCHEMA IF EXISTS test_worker_4 CASCADE;
+DROP SCHEMA IF EXISTS test_schema CASCADE;
 ```
+
+Or run:
+```bash
+npm run test:integration
+```
+The global setup will recreate the schema automatically.
 
 ## Best Practices
 
-1. Always use `beforeEach` to clean database
-2. Always disconnect Prisma client in `afterAll`
-3. Use test factories for creating test data
-4. Keep tests focused and independent
-5. Test both success and error cases
-6. Verify database state after operations
+1. **Always use `beforeEach`** to clean database with `cleanWorkerDatabase()`
+2. **Always disconnect** Prisma client in `afterAll`
+3. **Use test factories** for creating test data consistently
+4. **Keep tests independent** - each test should work in isolation
+5. **Test both success and error cases** - comprehensive coverage
+6. **Verify database state** after operations to ensure data integrity
+7. **Don't rely on test order** - sequential ≠ dependencies
+
+## Future Improvements
+
+When test count grows significantly (>200 tests):
+
+1. **Enable parallel execution** by creating multiple schemas (test_worker_1, test_worker_2, etc.)
+2. **Update** `vitest.integration.config.ts` to remove `singleFork: true`
+3. **Modify** `database.ts` to use worker-specific schemas
+4. **Keep** TRUNCATE CASCADE approach for cleanup
+
+This will provide ~4x speedup with minimal code changes.
 
 ## Related Documentation
 
