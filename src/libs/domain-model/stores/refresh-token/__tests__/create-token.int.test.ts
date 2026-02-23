@@ -1,18 +1,9 @@
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-
-} from 'vitest';
-import type { PrismaClient } from '@prisma/client';
-import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
-
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as RefreshTokenStore from '../index';
 
@@ -26,7 +17,6 @@ describe('RefreshTokenStore.createToken (integration)', () => {
   beforeAll(async () => {
     const { prisma: workerPrisma } = await createTestPrismaClient();
     prisma = workerPrisma;
-
   });
 
   beforeEach(async () => {
@@ -199,9 +189,7 @@ describe('RefreshTokenStore.createToken (integration)', () => {
         updatedAt: new Date(),
       };
 
-      await expect(
-        RefreshTokenStore.createToken(fakeUser)
-      ).rejects.toThrow();
+      await expect(RefreshTokenStore.createToken(fakeUser)).rejects.toThrow();
     });
 
     it('should cascade delete when user is deleted', async () => {

@@ -1,18 +1,9 @@
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-
-} from 'vitest';
-import type { PrismaClient} from '@prisma/client';
-import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
-
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as RefreshTokenStore from '../index';
 
@@ -26,7 +17,6 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
   beforeAll(async () => {
     const { prisma: workerPrisma } = await createTestPrismaClient();
     prisma = workerPrisma;
-
   });
 
   beforeEach(async () => {
@@ -155,11 +145,7 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
       expect(user1Result.success).toBe(true);
       expect(user2Result.success).toBe(true);
       expect(user3Result.success).toBe(true);
-      if (
-        !user1Result.success ||
-        !user2Result.success ||
-        !user3Result.success
-      )
+      if (!user1Result.success || !user2Result.success || !user3Result.success)
         return;
 
       // Create tokens for each user

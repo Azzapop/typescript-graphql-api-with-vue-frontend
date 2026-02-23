@@ -1,9 +1,9 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { PrismaClient } from '@prisma/client';
 import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 /**
  * Smoke test to verify integration test infrastructure works
@@ -15,7 +15,8 @@ describe('Integration Test Infrastructure (smoke test)', () => {
 
   beforeAll(async () => {
     // Get Prisma client for this worker's schema
-    const { prisma: workerPrisma, schema: workerSchema } = await createTestPrismaClient();
+    const { prisma: workerPrisma, schema: workerSchema } =
+      await createTestPrismaClient();
     prisma = workerPrisma;
     schema = workerSchema;
   });

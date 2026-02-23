@@ -1,9 +1,9 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import type { PrismaClient } from '@prisma/client';
 import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../index';
 
 /**

@@ -1,18 +1,9 @@
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-
-} from 'vitest';
-import type { PrismaClient } from '@prisma/client';
-import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
-
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as UserProfileStore from '../index';
 
@@ -26,7 +17,6 @@ describe('UserProfileStore.getByUserId (integration)', () => {
   beforeAll(async () => {
     const { prisma: workerPrisma } = await createTestPrismaClient();
     prisma = workerPrisma;
-
   });
 
   beforeEach(async () => {
@@ -167,11 +157,7 @@ describe('UserProfileStore.getByUserId (integration)', () => {
       expect(user1Result.success).toBe(true);
       expect(user2Result.success).toBe(true);
       expect(user3Result.success).toBe(true);
-      if (
-        !user1Result.success ||
-        !user2Result.success ||
-        !user3Result.success
-      )
+      if (!user1Result.success || !user2Result.success || !user3Result.success)
         return;
 
       // Create profiles
@@ -450,11 +436,7 @@ describe('UserProfileStore.getByUserId (integration)', () => {
       expect(user1Result.success).toBe(true);
       expect(user2Result.success).toBe(true);
       expect(user3Result.success).toBe(true);
-      if (
-        !user1Result.success ||
-        !user2Result.success ||
-        !user3Result.success
-      )
+      if (!user1Result.success || !user2Result.success || !user3Result.success)
         return;
 
       // Create profiles with different email formats

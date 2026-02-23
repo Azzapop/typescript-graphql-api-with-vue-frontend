@@ -1,18 +1,9 @@
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-
-} from 'vitest';
-import type { PrismaClient } from '@prisma/client';
-import {
   cleanWorkerDatabase,
   createTestPrismaClient,
 } from '#test/integration/database';
-
+import type { PrismaClient } from '@prisma/client';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as RefreshTokenStore from '../index';
 
@@ -26,7 +17,6 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
   beforeAll(async () => {
     const { prisma: workerPrisma } = await createTestPrismaClient();
     prisma = workerPrisma;
-
   });
 
   beforeEach(async () => {
@@ -52,9 +42,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       const token = await RefreshTokenStore.createToken(userResult.data);
 
       // Find youngest
-      const youngest = await RefreshTokenStore.findYoungest(
-        userResult.data.id
-      );
+      const youngest = await RefreshTokenStore.findYoungest(userResult.data.id);
 
       expect(youngest).toEqual(token);
     });
@@ -81,9 +69,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       const token3 = await RefreshTokenStore.createToken(userResult.data);
 
       // Find youngest (should be token3)
-      const youngest = await RefreshTokenStore.findYoungest(
-        userResult.data.id
-      );
+      const youngest = await RefreshTokenStore.findYoungest(userResult.data.id);
 
       expect(youngest?.id).toBe(token3.id);
       expect(youngest?.createdAt.getTime()).toBeGreaterThanOrEqual(
@@ -138,9 +124,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       if (!userResult.success) return;
 
       // Find youngest (should be null)
-      const youngest = await RefreshTokenStore.findYoungest(
-        userResult.data.id
-      );
+      const youngest = await RefreshTokenStore.findYoungest(userResult.data.id);
 
       expect(youngest).toBeNull();
     });
@@ -312,9 +296,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       const token = await RefreshTokenStore.createToken(userResult.data);
 
       // Find youngest
-      const youngest = await RefreshTokenStore.findYoungest(
-        userResult.data.id
-      );
+      const youngest = await RefreshTokenStore.findYoungest(userResult.data.id);
 
       expect(youngest).toEqual(token);
       expect(youngest?.id).toBeDefined();
