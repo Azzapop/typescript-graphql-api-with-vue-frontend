@@ -14,6 +14,7 @@ env:
   DATABASE_URL: 'postgresql://build_user:${{secrets.db_password}}@localhost:5432/build_db'
   JWT_ACCESS_SECRET: 'test-access-secret-key-for-ci-builds-only'
   JWT_REFRESH_SECRET: 'test-refresh-secret-key-for-ci-builds-only'
+  LOG_LEVEL: 'error'
 
 jobs:
   build:
@@ -48,5 +49,20 @@ jobs:
       - run: npm run graphql:types
       - run: npm run auth:swagger:bundle
       - run: npm run auth:types
-      - run: npm test
+      - run: npm run test:unit
+      - name: Create test database for integration tests
+        run: |
+          PGPASSWORD=${{ secrets.db_password }} psql -h localhost -U build_user -d build_db -c "CREATE DATABASE test_build_db;"
+      - name: Create .env.test for integration tests
+        run: |
+          cat > .env.test << EOF
+          DATABASE_URL="postgresql://build_user:${{ secrets.db_password }}@localhost:5432/test_build_db"
+          JWT_ACCESS_SECRET="test-access-secret-key-for-ci-builds-only"
+          JWT_REFRESH_SECRET="test-refresh-secret-key-for-ci-builds-only"
+          NODE_ENV="test"
+          LOG_LEVEL="error"
+          EOF
+      - name: Create logs directory
+        run: mkdir -p logs
+      - run: npm run test:integration
       - run: npm run build
