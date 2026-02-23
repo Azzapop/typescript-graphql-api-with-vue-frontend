@@ -5,7 +5,7 @@ import {
   describe,
   expect,
   it,
-  vi,
+
 } from 'vitest';
 import type { PrismaClient } from '@prisma/client';
 import {
@@ -13,18 +13,6 @@ import {
   createTestPrismaClient,
 } from '#test/integration/database';
 
-// Mock the global Prisma client before importing stores
-vi.mock('~libs/domain-model/prisma', async () => {
-  const actual = await vi.importActual<
-    typeof import('~libs/domain-model/prisma')
-  >('~libs/domain-model/prisma');
-  return {
-    ...actual,
-    prisma: null, // Will be replaced in beforeAll with worker-specific client
-  };
-});
-
-// Import stores after mocking
 import * as UserStore from '../../user';
 import * as RefreshTokenStore from '../index';
 
@@ -39,13 +27,6 @@ describe('RefreshTokenStore.createToken (integration)', () => {
     const { prisma: workerPrisma } = await createTestPrismaClient();
     prisma = workerPrisma;
 
-    // Replace the mocked prisma with worker-specific client
-    const prismaModule = await import('~libs/domain-model/prisma');
-    Object.defineProperty(prismaModule, 'prisma', {
-      value: prisma,
-      writable: true,
-      configurable: true,
-    });
   });
 
   beforeEach(async () => {

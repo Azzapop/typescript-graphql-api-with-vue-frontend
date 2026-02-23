@@ -2,74 +2,85 @@ import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
 
 /**
- * Get unique schema name for this Vitest worker
- * Each worker gets its own isolated PostgreSQL schema
+ * Get test schema name
+ * All tests use a single schema since we run sequentially
  */
-const getWorkerSchema = (): string => {
-  const workerId = process.env.VITEST_POOL_ID || '1';
-  return `test_worker_${workerId}`;
+const getTestSchema = (): string => {
+  return 'test_schema';
 };
 
 /**
- * Create Prisma client configured for this worker's schema
+ * Create Prisma client for test database
+ * DATABASE_URL already has schema parameter set by setup-test-env.ts
  * Returns both the client and the schema name for reference
  */
 export const createTestPrismaClient = async (): Promise<{
   prisma: PrismaClient;
   schema: string;
 }> => {
-  const schema = getWorkerSchema();
+  const schema = getTestSchema();
 
-  // Create schema if it doesn't exist using temporary client
-  const tempPrisma = new PrismaClient();
-  await tempPrisma.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
-  await tempPrisma.$disconnect();
-
-  // Create client with schema in connection URL
-  const prisma = new PrismaClient({
+  // Create schema if it doesn't exist
+  // Use a temporary client without schema to access postgres default schema
+  const baseUrl = process.env.DATABASE_URL?.split('?')[0];
+  const tempPrisma = new PrismaClient({
     datasources: {
       db: {
-        url: `${process.env.DATABASE_URL}?schema=${schema}`,
+        url: baseUrl,
       },
     },
   });
+  await tempPrisma.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
+  await tempPrisma.$disconnect();
+
+  // Create client using DATABASE_URL which already has schema parameter
+  const prisma = new PrismaClient();
 
   return { prisma, schema };
 };
 
 /**
- * Run Prisma migrations on this worker's schema
- * Called once when worker starts (in global setup)
+ * Run Prisma migrations on test schema
+ * Called once in global setup before all tests
+ * DATABASE_URL already has schema parameter set by setup-test-env.ts
  */
 export const setupWorkerDatabase = async (): Promise<void> => {
-  const schema = getWorkerSchema();
+  const schema = getTestSchema();
 
-  // Set schema in environment for migration
-  const originalUrl = process.env.DATABASE_URL;
-  process.env.DATABASE_URL = `${originalUrl}?schema=${schema}`;
+  // Create schema first using base URL without schema parameter
+  const baseUrl = process.env.DATABASE_URL?.split('?')[0];
+  const tempPrisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: baseUrl,
+      },
+    },
+  });
+  await tempPrisma.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${schema}"`);
+  await tempPrisma.$disconnect();
 
-  // Run Prisma migrations
+  // Run migrations using DATABASE_URL which already has schema parameter
   execSync(
     'npx prisma migrate deploy --schema=./src/libs/domain-model/prisma/schema.prisma',
     { stdio: 'inherit' }
   );
-
-  // Restore original URL
-  process.env.DATABASE_URL = originalUrl;
 };
 
 /**
- * Clean all data in this worker's schema
+ * Clean all data in the test schema
  * Called in beforeEach to reset state between tests
- * Delete in order to respect foreign key constraints
+ * Uses TRUNCATE for complete cleanup with automatic cascade handling
+ * This resets sequences and removes all data efficiently
  */
 export const cleanWorkerDatabase = async (
   prisma: PrismaClient
 ): Promise<void> => {
-  await prisma.refreshToken.deleteMany();
-  await prisma.localCredentials.deleteMany();
-  await prisma.userProfile.deleteMany();
-  await prisma.user.deleteMany();
+  // Use TRUNCATE for complete cleanup with cascade
+  // This resets sequences and removes all data in one operation
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "RefreshToken" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "LocalCredentials" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "UserProfile" CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "User" CASCADE');
 };
 
 /**
@@ -77,7 +88,7 @@ export const cleanWorkerDatabase = async (
  * Called once when worker shuts down (in global teardown)
  */
 export const teardownWorkerDatabase = async (): Promise<void> => {
-  const schema = getWorkerSchema();
+  const schema = getTestSchema();
   const prisma = new PrismaClient();
   await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
   await prisma.$disconnect();

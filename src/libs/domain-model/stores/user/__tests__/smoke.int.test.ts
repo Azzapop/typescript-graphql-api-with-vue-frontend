@@ -29,9 +29,9 @@ describe('Integration Test Infrastructure (smoke test)', () => {
     await prisma.$disconnect();
   });
 
-  it('should have a unique schema per worker', () => {
-    const workerId = process.env.VITEST_POOL_ID || '1';
-    expect(schema).toBe(`test_worker_${workerId}`);
+  it('should use test_schema for sequential execution', () => {
+    // Sequential execution uses a single schema instead of per-worker schemas
+    expect(schema).toBe('test_schema');
   });
 
   it('should connect to database successfully', async () => {
