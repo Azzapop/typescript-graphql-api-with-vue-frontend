@@ -1,9 +1,6 @@
-import {
-  cleanWorkerDatabase,
-  createTestPrismaClient,
-} from '#test/integration/database';
-import type { PrismaClient } from '@prisma/client';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { PrismaClient } from '@prisma/client';
+import { cleanWorkerDatabase } from '#test/integration';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as RefreshTokenStore from '../index';
 
@@ -11,16 +8,11 @@ import * as RefreshTokenStore from '../index';
  * Integration tests for RefreshTokenStore.clearTokenFamily
  * Tests deletion of all refresh tokens for a user using real database
  */
+const prisma = new PrismaClient();
+
 describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
-  let prisma: PrismaClient;
-
-  beforeAll(async () => {
-    const { prisma: workerPrisma } = await createTestPrismaClient();
-    prisma = workerPrisma;
-  });
-
   beforeEach(async () => {
-    await cleanWorkerDatabase(prisma);
+    await cleanWorkerDatabase();
   });
 
   afterAll(async () => {

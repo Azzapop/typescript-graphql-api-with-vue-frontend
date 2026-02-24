@@ -1,9 +1,6 @@
-import {
-  cleanWorkerDatabase,
-  createTestPrismaClient,
-} from '#test/integration/database';
-import type { PrismaClient } from '@prisma/client';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { PrismaClient } from '@prisma/client';
+import { cleanWorkerDatabase } from '#test/integration';
+import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as LocalCredentialsStore from '../index';
 
@@ -11,16 +8,11 @@ import * as LocalCredentialsStore from '../index';
  * Integration tests for LocalCredentialsStore.getWithUser
  * Tests credentials retrieval with user data using real database
  */
+const prisma = new PrismaClient();
+
 describe('LocalCredentialsStore.getWithUser (integration)', () => {
-  let prisma: PrismaClient;
-
-  beforeAll(async () => {
-    const { prisma: workerPrisma } = await createTestPrismaClient();
-    prisma = workerPrisma;
-  });
-
   beforeEach(async () => {
-    await cleanWorkerDatabase(prisma);
+    await cleanWorkerDatabase();
   });
 
   afterAll(async () => {
@@ -139,9 +131,9 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
       const result1 = await LocalCredentialsStore.getWithUser('TestUser');
       const result2 = await LocalCredentialsStore.getWithUser('testuser');
 
-      expect(result1?.userId).toBe(user1Result.data.id);
-      expect(result2?.userId).toBe(user2Result.data.id);
-      expect(result1?.userId).not.toBe(result2?.userId);
+      expect(result1?.user.id).toBe(user1Result.data.id);
+      expect(result2?.user.id).toBe(user2Result.data.id);
+      expect(result1?.user.id).not.toBe(result2?.user.id);
     });
   });
 
@@ -232,7 +224,7 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
       // Verify credentials fields
       expect(result).toBeDefined();
       expect(result?.id).toBeDefined();
-      expect(result?.userId).toBeDefined();
+      expect(result?.user.id).toBeDefined();
       expect(result?.username).toBeDefined();
       expect(result?.hashedPassword).toBeDefined();
       expect(result?.createdAt).toBeDefined();
@@ -291,9 +283,9 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
       const result = await LocalCredentialsStore.getWithUser('testuser');
 
       expect(result).not.toBeNull();
-      // Credentials userId should match user id
-      expect(result?.userId).toBe(result?.user.id);
-      expect(result?.userId).toBe(userResult.data.id);
+      // Credentials user id should match user id
+      expect(result?.user.id).toBe(result?.user.id);
+      expect(result?.user.id).toBe(userResult.data.id);
     });
   });
 
