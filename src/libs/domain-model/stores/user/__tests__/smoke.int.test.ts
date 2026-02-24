@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { cleanWorkerDatabase } from '#test/integration';
+import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 const prisma = new PrismaClient();

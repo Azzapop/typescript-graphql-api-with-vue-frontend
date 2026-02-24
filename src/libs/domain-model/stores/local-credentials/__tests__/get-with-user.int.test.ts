@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { cleanWorkerDatabase } from '#test/integration';
+import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import * as UserStore from '../../user';
 import * as LocalCredentialsStore from '../index';
