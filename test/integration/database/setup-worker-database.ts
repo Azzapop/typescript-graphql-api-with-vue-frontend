@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { execSync } from 'child_process';
-import { TEST_SCHEMA } from './integration-const.js';
+import { TEST_SCHEMA } from './database-const';
 
 export const setupWorkerDatabase = async (): Promise<void> => {
   // Create schema using base URL without schema parameter

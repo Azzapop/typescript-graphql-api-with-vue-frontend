@@ -1,5 +1,4 @@
-import { setupWorkerDatabase } from './setup-worker-database';
-import { teardownWorkerDatabase } from './teardown-worker-database';
+import { setupWorkerDatabase, teardownWorkerDatabase } from './database';
 
 export async function setup(): Promise<void> {
   console.log('[Integration Tests] Setting up database schema...');
