@@ -1,8 +1,8 @@
 import express from 'express';
 import type { Express } from 'express';
 import { createServer } from 'http';
-import { entry as authEntry } from '../../src/modules/auth/entry.js';
-import { entry as graphqlEntry } from '../../src/modules/graphql/entry.js';
+import { entry as authEntry } from '~modules/auth';
+import { entry as graphqlEntry } from '~modules/graphql';
 
 export const createTestApp = async (): Promise<Express> => {
   const app = express();
@@ -13,8 +13,8 @@ export const createTestApp = async (): Promise<Express> => {
     graphqlEntry({ httpServer }),
   ]);
 
-  app.use(authModule.path, authModule.router);
-  app.use(graphqlModule.path, graphqlModule.router);
+  app.use(authModule.path, authModule.createRouter());
+  app.use(graphqlModule.path, graphqlModule.createRouter());
 
   return app;
 };
