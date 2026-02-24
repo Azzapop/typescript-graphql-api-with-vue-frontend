@@ -10,6 +10,7 @@ export default defineConfig({
     envFile: '.env.test',
 
     include: ['src/**/*.int.test.ts'],
+    passWithNoTests: true,
 
     exclude: ['**/node_modules/**', '**/dist/**'],
 
