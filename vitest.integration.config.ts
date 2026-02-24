@@ -26,6 +26,7 @@ export default defineConfig({
 
     // Global setup/teardown runs once before/after all tests
     globalSetup: './test/integration/global-setup.ts',
+    setupFiles: ['./test/integration/setup-fabbrica.ts'],
 
     testTimeout: 30000,
     hookTimeout: 30000,
