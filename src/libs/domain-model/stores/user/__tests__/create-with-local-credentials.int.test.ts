@@ -1,13 +1,11 @@
 import { cleanWorkerDatabase } from '#test/integration';
 import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
-import * as UserStore from '../index';
+import { createWithLocalCredentials } from '../create-with-local-credentials';
 
 const prisma = new PrismaClient();
 
-const setup = () => ({});
-
-describe('UserStore.createWithLocalCredentials (integration)', () => {
+describe('createWithLocalCredentials (integration)', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });
@@ -17,7 +15,7 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
   });
 
   it('creates user and local credentials', async () => {
-    const result = await UserStore.createWithLocalCredentials({
+    const result = await createWithLocalCredentials({
       username: 'testuser',
       password: 'password123',
     });
@@ -32,7 +30,9 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
       updatedAt: expect.any(Date),
     });
 
-    const user = await prisma.user.findUnique({ where: { id: result.data.id } });
+    const user = await prisma.user.findUnique({
+      where: { id: result.data.id },
+    });
     expect(user).not.toBeNull();
 
     const credentials = await prisma.localCredentials.findUnique({
@@ -47,7 +47,7 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
   it('hashes the password', async () => {
     const password = 'my-secret-password';
 
-    const result = await UserStore.createWithLocalCredentials({
+    const result = await createWithLocalCredentials({
       username: 'testuser',
       password,
     });
@@ -64,12 +64,12 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
   });
 
   it('returns { success: false, error: "USERNAME_EXISTS" } on duplicate username', async () => {
-    await UserStore.createWithLocalCredentials({
+    await createWithLocalCredentials({
       username: 'testuser',
       password: 'password123',
     });
 
-    const result = await UserStore.createWithLocalCredentials({
+    const result = await createWithLocalCredentials({
       username: 'testuser',
       password: 'differentpassword',
     });
@@ -78,14 +78,14 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
   });
 
   it('rolls back the transaction when credentials fail', async () => {
-    await UserStore.createWithLocalCredentials({
+    await createWithLocalCredentials({
       username: 'testuser',
       password: 'password123',
     });
 
     const userCountBefore = await prisma.user.count();
 
-    const result = await UserStore.createWithLocalCredentials({
+    const result = await createWithLocalCredentials({
       username: 'testuser',
       password: 'differentpassword',
     });
@@ -97,12 +97,12 @@ describe('UserStore.createWithLocalCredentials (integration)', () => {
   });
 
   it('treats usernames as case-sensitive', async () => {
-    const result1 = await UserStore.createWithLocalCredentials({
+    const result1 = await createWithLocalCredentials({
       username: 'TestUser',
       password: 'pass1',
     });
 
-    const result2 = await UserStore.createWithLocalCredentials({
+    const result2 = await createWithLocalCredentials({
       username: 'testuser',
       password: 'pass2',
     });

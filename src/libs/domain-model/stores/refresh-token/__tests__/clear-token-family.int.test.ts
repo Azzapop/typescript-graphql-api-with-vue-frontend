@@ -1,11 +1,8 @@
+import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import {
-  defineRefreshTokenFactory,
-  defineUserFactory,
-} from '#test/factories/prisma';
 import { PrismaClient } from '@prisma/client';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
-import * as RefreshTokenStore from '../index';
+import { clearTokenFamily } from '../clear-token-family';
 
 const prisma = new PrismaClient();
 
@@ -16,7 +13,7 @@ const setup = () => ({
   }),
 });
 
-describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
+describe('clearTokenFamily (integration)', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });
@@ -33,7 +30,7 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
 
-    await RefreshTokenStore.clearTokenFamily(user.id);
+    await clearTokenFamily(user.id);
 
     const tokensAfter = await prisma.refreshToken.findMany({
       where: { userId: user.id },
@@ -45,14 +42,12 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    await expect(
-      RefreshTokenStore.clearTokenFamily(user.id)
-    ).resolves.toBeUndefined();
+    await expect(clearTokenFamily(user.id)).resolves.toBeUndefined();
   });
 
   it('succeeds for non-existent user id', async () => {
     await expect(
-      RefreshTokenStore.clearTokenFamily('non-existent-user-id')
+      clearTokenFamily('non-existent-user-id')
     ).resolves.toBeUndefined();
   });
 
@@ -68,7 +63,7 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
     await RefreshTokenFactory.create({ user: { connect: { id: user2.id } } });
     await RefreshTokenFactory.create({ user: { connect: { id: user2.id } } });
 
-    await RefreshTokenStore.clearTokenFamily(user2.id);
+    await clearTokenFamily(user2.id);
 
     const user2Tokens = await prisma.refreshToken.findMany({
       where: { userId: user2.id },
@@ -88,9 +83,9 @@ describe('RefreshTokenStore.clearTokenFamily (integration)', () => {
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
 
-    await RefreshTokenStore.clearTokenFamily(user.id);
-    await RefreshTokenStore.clearTokenFamily(user.id);
-    await RefreshTokenStore.clearTokenFamily(user.id);
+    await clearTokenFamily(user.id);
+    await clearTokenFamily(user.id);
+    await clearTokenFamily(user.id);
 
     const tokens = await prisma.refreshToken.findMany({
       where: { userId: user.id },

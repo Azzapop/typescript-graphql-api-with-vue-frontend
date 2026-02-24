@@ -1,10 +1,10 @@
-import { cleanWorkerDatabase } from '#test/integration';
 import {
   defineLocalCredentialsFactory,
   defineUserFactory,
-} from '#test/factories/prisma';
+} from '#test/factories';
+import { cleanWorkerDatabase } from '#test/integration';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as LocalCredentialsStore from '../index';
+import { getWithUser } from '../get-with-user';
 
 const setup = () => ({
   LocalCredentialsFactory: defineLocalCredentialsFactory({
@@ -21,7 +21,7 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
     const { LocalCredentialsFactory } = setup();
     const credentials = await LocalCredentialsFactory.create();
 
-    const result = await LocalCredentialsStore.getWithUser(credentials.username);
+    const result = await getWithUser(credentials.username);
 
     expect(result).not.toBeNull();
     expect(result).toMatchObject({
@@ -41,13 +41,13 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
   });
 
   it('returns null for non-existent username', async () => {
-    const result = await LocalCredentialsStore.getWithUser('non-existent-user');
+    const result = await getWithUser('non-existent-user');
 
     expect(result).toBeNull();
   });
 
   it('returns null for empty string username', async () => {
-    const result = await LocalCredentialsStore.getWithUser('');
+    const result = await getWithUser('');
 
     expect(result).toBeNull();
   });
@@ -58,7 +58,7 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
       username: 'testuser',
     });
 
-    const result = await LocalCredentialsStore.getWithUser('TestUser');
+    const result = await getWithUser('TestUser');
 
     expect(result).toBeNull();
     expect(credentials.username).toBe('testuser');
@@ -70,9 +70,9 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
     const creds2 = await LocalCredentialsFactory.create();
     const creds3 = await LocalCredentialsFactory.create();
 
-    const result1 = await LocalCredentialsStore.getWithUser(creds1.username);
-    const result2 = await LocalCredentialsStore.getWithUser(creds2.username);
-    const result3 = await LocalCredentialsStore.getWithUser(creds3.username);
+    const result1 = await getWithUser(creds1.username);
+    const result2 = await getWithUser(creds2.username);
+    const result3 = await getWithUser(creds3.username);
 
     expect(result1?.user.id).toBe(creds1.userId);
     expect(result2?.user.id).toBe(creds2.userId);

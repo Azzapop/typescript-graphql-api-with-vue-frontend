@@ -1,13 +1,13 @@
+import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import { defineUserFactory } from '#test/factories/prisma';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as RefreshTokenStore from '../index';
+import { createToken } from '../create-token';
 
 const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('RefreshTokenStore.createToken (integration)', () => {
+describe('createToken (integration)', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });
@@ -16,7 +16,7 @@ describe('RefreshTokenStore.createToken (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const token = await RefreshTokenStore.createToken(user);
+    const token = await createToken(user);
 
     expect(token).toMatchObject({
       id: expect.any(String),
@@ -29,9 +29,9 @@ describe('RefreshTokenStore.createToken (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const token1 = await RefreshTokenStore.createToken(user);
-    const token2 = await RefreshTokenStore.createToken(user);
-    const token3 = await RefreshTokenStore.createToken(user);
+    const token1 = await createToken(user);
+    const token2 = await createToken(user);
+    const token3 = await createToken(user);
 
     expect(token1.id).not.toBe(token2.id);
     expect(token2.id).not.toBe(token3.id);
@@ -46,6 +46,6 @@ describe('RefreshTokenStore.createToken (integration)', () => {
       updatedAt: new Date(),
     };
 
-    await expect(RefreshTokenStore.createToken(fakeUser)).rejects.toThrow();
+    await expect(createToken(fakeUser)).rejects.toThrow();
   });
 });

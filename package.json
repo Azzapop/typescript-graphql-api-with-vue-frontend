@@ -76,6 +76,7 @@
     "@anatine/zod-mock": "^3.13.4",
     "@eslint/js": "^9.5.0",
     "@faker-js/faker": "^8.4.1",
+    "@golevelup/ts-vitest": "^2.2.0",
     "@graphql-codegen/add": "^5.0.3",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/near-operation-file-preset": "^3.0.0",

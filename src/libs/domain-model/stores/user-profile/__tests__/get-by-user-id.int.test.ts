@@ -1,10 +1,7 @@
+import { defineUserFactory, defineUserProfileFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import {
-  defineUserFactory,
-  defineUserProfileFactory,
-} from '#test/factories/prisma';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as UserProfileStore from '../index';
+import { getByUserId } from '../get-by-user-id';
 
 const setup = () => ({
   UserFactory: defineUserFactory(),
@@ -13,7 +10,7 @@ const setup = () => ({
   }),
 });
 
-describe('UserProfileStore.getByUserId (integration)', () => {
+describe('getByUserId (integration)', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });
@@ -26,7 +23,7 @@ describe('UserProfileStore.getByUserId (integration)', () => {
       email: 'test@example.com',
     });
 
-    const result = await UserProfileStore.getByUserId(user.id);
+    const result = await getByUserId(user.id);
 
     expect(result).toMatchObject({
       id: profile.id,
@@ -45,7 +42,7 @@ describe('UserProfileStore.getByUserId (integration)', () => {
       email: null,
     });
 
-    const result = await UserProfileStore.getByUserId(user.id);
+    const result = await getByUserId(user.id);
 
     expect(result).not.toBeNull();
     expect(result?.email).toBeNull();
@@ -55,13 +52,13 @@ describe('UserProfileStore.getByUserId (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const result = await UserProfileStore.getByUserId(user.id);
+    const result = await getByUserId(user.id);
 
     expect(result).toBeNull();
   });
 
   it('returns null for a non-existent userId', async () => {
-    const result = await UserProfileStore.getByUserId('non-existent-id');
+    const result = await getByUserId('non-existent-id');
 
     expect(result).toBeNull();
   });
@@ -85,9 +82,9 @@ describe('UserProfileStore.getByUserId (integration)', () => {
       email: null,
     });
 
-    const result1 = await UserProfileStore.getByUserId(user1.id);
-    const result2 = await UserProfileStore.getByUserId(user2.id);
-    const result3 = await UserProfileStore.getByUserId(user3.id);
+    const result1 = await getByUserId(user1.id);
+    const result2 = await getByUserId(user2.id);
+    const result3 = await getByUserId(user3.id);
 
     expect(result1?.id).toBe(profile1.id);
     expect(result1?.email).toBe('user1@example.com');

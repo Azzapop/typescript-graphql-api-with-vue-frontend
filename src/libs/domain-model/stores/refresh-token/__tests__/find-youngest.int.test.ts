@@ -1,10 +1,7 @@
+import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import {
-  defineRefreshTokenFactory,
-  defineUserFactory,
-} from '#test/factories/prisma';
 import { beforeEach, describe, expect, it } from 'vitest';
-import * as RefreshTokenStore from '../index';
+import * as RefreshTokenStore from '../find-youngest';
 
 const setup = () => ({
   UserFactory: defineUserFactory(),
@@ -21,7 +18,9 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
   it('returns the only token when one exists', async () => {
     const { UserFactory, RefreshTokenFactory } = setup();
     const user = await UserFactory.create();
-    const token = await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
+    const token = await RefreshTokenFactory.create({
+      user: { connect: { id: user.id } },
+    });
 
     const youngest = await RefreshTokenStore.findYoungest(user.id);
 
@@ -38,7 +37,9 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
     await new Promise((resolve) => setTimeout(resolve, 10));
 
-    const token3 = await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
+    const token3 = await RefreshTokenFactory.create({
+      user: { connect: { id: user.id } },
+    });
 
     const youngest = await RefreshTokenStore.findYoungest(user.id);
 
@@ -55,7 +56,9 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
   });
 
   it('returns null for a non-existent user id', async () => {
-    const youngest = await RefreshTokenStore.findYoungest('non-existent-user-id');
+    const youngest = await RefreshTokenStore.findYoungest(
+      'non-existent-user-id'
+    );
 
     expect(youngest).toBeNull();
   });
@@ -67,13 +70,17 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
 
     await RefreshTokenFactory.create({ user: { connect: { id: user1.id } } });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    const user1Token2 = await RefreshTokenFactory.create({ user: { connect: { id: user1.id } } });
+    const user1Token2 = await RefreshTokenFactory.create({
+      user: { connect: { id: user1.id } },
+    });
 
     await RefreshTokenFactory.create({ user: { connect: { id: user2.id } } });
     await new Promise((resolve) => setTimeout(resolve, 10));
     await RefreshTokenFactory.create({ user: { connect: { id: user2.id } } });
     await new Promise((resolve) => setTimeout(resolve, 10));
-    const user2Token3 = await RefreshTokenFactory.create({ user: { connect: { id: user2.id } } });
+    const user2Token3 = await RefreshTokenFactory.create({
+      user: { connect: { id: user2.id } },
+    });
 
     const user1Youngest = await RefreshTokenStore.findYoungest(user1.id);
     const user2Youngest = await RefreshTokenStore.findYoungest(user2.id);
