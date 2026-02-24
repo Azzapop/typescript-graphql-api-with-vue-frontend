@@ -4,264 +4,61 @@ This directory contains utilities for running integration tests with real databa
 
 ## Architecture
 
-### Schema-Based Isolation with Sequential Execution
+### Sequential Execution with Schema Isolation
 
-Tests use a dedicated PostgreSQL schema (`test_schema`) with sequential execution:
+Tests run sequentially in a single process against a dedicated PostgreSQL schema (`test_schema`). This was chosen over parallel execution because the current test count runs fast enough that the simplicity of sequential testing outweighs the coordination overhead of parallel schemas. When tests grow beyond ~200, parallel schema-per-worker execution becomes worthwhile — see Future Improvements below.
 
-- **Single schema**: `test_schema`
-- **Sequential execution**: Tests run one at a time (single fork)
-- **Complete cleanup**: TRUNCATE CASCADE between each test
-- **Simple and reliable**: No race conditions or parallel complexity
+Using a dedicated schema rather than a separate database keeps setup simple: no separate database instance or user permissions are required, and the test schema lives alongside the development database.
 
-This enables:
-- Complete isolation between tests
-- Predictable test execution order
-- Simple debugging
-- Fast enough for current test count (~10 seconds for 89 tests)
+### Why TRUNCATE CASCADE instead of DELETE
 
-### Test Lifecycle
+`TRUNCATE` resets auto-increment sequences and removes all rows atomically, whereas `DELETE` leaves sequences in their post-insert state. Sequence reset ensures tests cannot accidentally assert on ID values that were influenced by prior test runs. CASCADE handles foreign key ordering automatically, removing the need to specify a deletion order.
 
-1. **Global Setup** (`global-setup.ts`):
-   - Runs once before all tests
-   - Creates `test_schema` if it doesn't exist
-   - Runs Prisma migrations
+### Test App Setup
 
-2. **Test Execution**:
-   - Tests run sequentially (one at a time)
-   - `beforeEach` uses TRUNCATE CASCADE to reset all tables
-   - Each test starts with completely empty tables
-   - Auto-increment sequences are reset
+The test app mounts only the auth and GraphQL modules — the client (SSR) module is excluded because integration tests target the API layer. This keeps test startup fast and focused.
 
-3. **Global Teardown** (`global-setup.ts`):
-   - Runs once after all tests
-   - Drops `test_schema` completely
+## Test Lifecycle
+
+1. **Global Setup** — Creates `test_schema` if it doesn't exist, then runs Prisma migrations. Runs once before all tests.
+2. **Test Execution** — Tests run sequentially. `beforeEach` truncates all tables, giving each test a clean slate.
+3. **Global Teardown** — Drops `test_schema` completely. Runs once after all tests.
 
 ## Utilities
 
-### `database.ts`
-
-Database management utilities:
-
-- **`createTestPrismaClient()`** - Create Prisma client configured for test schema
-- **`setupWorkerDatabase()`** - Create schema and run migrations (global setup)
-- **`cleanWorkerDatabase(prisma)`** - TRUNCATE all tables with CASCADE (beforeEach)
-- **`teardownWorkerDatabase()`** - Drop test schema (global teardown)
-
-#### TRUNCATE CASCADE Cleanup
-
-Complete database cleanup between tests:
-
-```typescript
-export const cleanWorkerDatabase = async (prisma: PrismaClient): Promise<void> => {
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "RefreshToken" CASCADE');
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "LocalCredentials" CASCADE');
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "UserProfile" CASCADE');
-  await prisma.$executeRawUnsafe('TRUNCATE TABLE "User" CASCADE');
-};
-```
-
-Benefits:
-- ⚡ Faster than DELETE for removing all rows
-- 🔄 Resets auto-increment sequences
-- 🔗 Automatic cascade handling
-- ✨ Complete cleanup ensures true isolation
-
-### `app.ts`
-
-Test Express app creation:
-
-- `createTestApp()` - Create Express app with auth + GraphQL modules mounted
-- Used for supertest HTTP testing
-- Does NOT mount client module (not needed for API tests)
-
-## Usage
-
-### Basic Test Pattern
-
-```typescript
-import { describe, it, expect, beforeAll, beforeEach, afterAll } from 'vitest';
-import type { PrismaClient } from '@prisma/client';
-import {
-  cleanWorkerDatabase,
-  createTestPrismaClient,
-} from '#test/integration/database';
-
-describe('My Integration Test', () => {
-  let prisma: PrismaClient;
-
-  beforeAll(async () => {
-    const { prisma: workerPrisma } = await createTestPrismaClient();
-    prisma = workerPrisma;
-  });
-
-  beforeEach(async () => {
-    // Complete cleanup - TRUNCATE CASCADE resets everything
-    await cleanWorkerDatabase(prisma);
-  });
-
-  afterAll(async () => {
-    await prisma.$disconnect();
-  });
-
-  it('should test something', async () => {
-    // Test implementation - starts with clean database
-  });
-});
-```
-
-### HTTP Testing Pattern
-
-```typescript
-import request from 'supertest';
-import { createTestApp } from '#test/integration/app';
-
-describe('API Integration Test', () => {
-  let app: Express;
-  let prisma: PrismaClient;
-
-  beforeAll(async () => {
-    const { prisma: workerPrisma } = await createTestPrismaClient();
-    prisma = workerPrisma;
-    app = await createTestApp();
-  });
-
-  beforeEach(async () => {
-    await cleanWorkerDatabase(prisma);
-  });
-
-  afterAll(async () => {
-    await prisma.$disconnect();
-  });
-
-  it('should test API endpoint', async () => {
-    const response = await request(app)
-      .post('/auth/login/local')
-      .send({ username: 'test', password: 'pass' })
-      .expect(200);
-
-    expect(response.body).toMatchObject({
-      accessToken: expect.any(String),
-    });
-  });
-});
-```
-
-## Configuration
-
-### Environment Variables (`.env.test`)
-
-```bash
-DATABASE_URL="postgresql://financial_planner_local@localhost:5432/test_financial_planner_local_db"
-JWT_ACCESS_SECRET="test-access-secret-min-32-chars-long-for-jwt"
-JWT_REFRESH_SECRET="test-refresh-secret-min-32-chars-long-for-jwt"
-NODE_ENV="test"
-LOG_LEVEL="error"
-```
-
-**Note**: The `DATABASE_URL` is automatically appended with `?schema=test_schema` by the test configuration.
-
-### Vitest Config (`vitest.integration.config.ts`)
-
-```typescript
-export default defineConfig({
-  test: {
-    include: ['src/**/*.int.test.ts'],
-
-    // Sequential execution in single process
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,  // All tests in one process, one at a time
-      },
-    },
-
-    // Global setup/teardown runs once before/after all tests
-    globalSetup: './test/integration/global-setup.ts',
-
-    // Integration tests may need longer timeouts
-    testTimeout: 30000,
-    hookTimeout: 30000,
-  },
-});
-```
+- **`createTestPrismaClient()`** — Creates a Prisma client scoped to the test schema.
+- **`setupWorkerDatabase()`** — Creates the schema and runs migrations. Used in global setup.
+- **`cleanWorkerDatabase(prisma)`** — TRUNCATEs all tables with CASCADE. Used in `beforeEach`.
+- **`teardownWorkerDatabase()`** — Drops the test schema. Used in global teardown.
+- **`createTestApp()`** — Creates an Express app with auth and GraphQL modules for HTTP testing with supertest.
 
 ## Running Tests
 
 ```bash
-# Run all integration tests
 npm run test:integration
-
-# Run in watch mode
 npm run test:integration:watch
-
-# Run with verbose output
 npm run test:integration -- --reporter=verbose
-
-# Run specific test file
-npm run test:integration -- src/libs/domain-model/stores/user/__tests__/create.int.test.ts
+npm run test:integration -- src/path/to/specific.int.test.ts
 ```
 
 ## Prerequisites
 
-1. PostgreSQL database running
-2. Test database created: `test_financial_planner_local_db`
-3. Database user with schema creation permissions
-4. `.env.test` configured with correct DATABASE_URL
+1. PostgreSQL running with `test_financial_planner_local_db` database created
+2. Database user with schema creation permissions
+3. `.env.test` configured with correct `DATABASE_URL`
 
 ## Debugging
 
-### View Test Schema
+If tests are interrupted mid-run, `test_schema` may remain in the database. Re-running tests will handle this correctly — the global setup uses `CREATE SCHEMA IF NOT EXISTS` and Prisma migrations are idempotent.
 
-```sql
--- Connect to test database
-psql -d test_financial_planner_local_db
-
--- List all schemas
-\dn
-
--- View tables in test schema
-\dt test_schema.*
-
--- Query data in test schema
-SELECT * FROM test_schema."User";
-```
-
-### Clean Up Test Schema
-
-If tests are interrupted, the schema may remain:
-
-```sql
-DROP SCHEMA IF EXISTS test_schema CASCADE;
-```
-
-Or run:
-```bash
-npm run test:integration
-```
-The global setup will recreate the schema automatically.
+To inspect state during development, connect to the test database and query `test_schema.*` tables directly.
 
 ## Best Practices
 
-1. **Always use `beforeEach`** to clean database with `cleanWorkerDatabase()`
-2. **Always disconnect** Prisma client in `afterAll`
-3. **Use test factories** for creating test data consistently
-4. **Keep tests independent** - each test should work in isolation
-5. **Test both success and error cases** - comprehensive coverage
-6. **Verify database state** after operations to ensure data integrity
-7. **Don't rely on test order** - sequential ≠ dependencies
+- Call `cleanWorkerDatabase()` in `beforeEach`, not `beforeAll` — every test must start with empty tables, not just the first one in each suite.
+- Always disconnect Prisma in `afterAll` to prevent open handles from blocking test completion.
+- Don't rely on test execution order. Sequential ≠ dependent.
 
-## Future Improvements
+## Future: Parallel Execution
 
-When test count grows significantly (>200 tests):
-
-1. **Enable parallel execution** by creating multiple schemas (test_worker_1, test_worker_2, etc.)
-2. **Update** `vitest.integration.config.ts` to remove `singleFork: true`
-3. **Modify** `database.ts` to use worker-specific schemas
-4. **Keep** TRUNCATE CASCADE approach for cleanup
-
-This will provide ~4x speedup with minimal code changes.
-
-## Related Documentation
-
-- [Integration Testing Strategy](../../docs/INTEGRATION_TESTING_STRATEGY.md)
-- [Unit Testing Strategy](../../docs/UNIT_TESTING_STRATEGY.md)
+When test count grows significantly, each Vitest worker can be given its own schema (`test_worker_1`, `test_worker_2`, etc.), with migrations running once per worker on startup. TRUNCATE CASCADE still handles per-test cleanup within each worker. The infrastructure supports this with minimal changes to the Vitest config.
