@@ -1,8 +1,8 @@
 import type { UserProfile } from '@prisma/client';
-import { prisma } from '../../prisma';
+import { prisma } from '~database';
 
 export const getByUserId = async (
   userId: string
 ): Promise<UserProfile | null> => {
-  return prisma.userProfile.findUnique({ where: { userId } });
+  return prisma().userProfile.findUnique({ where: { userId } });
 };

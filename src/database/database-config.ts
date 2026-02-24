@@ -1,10 +1,10 @@
 import { createConfig } from '~libs/config';
 
-export interface DomainModelConfig {
+export interface DatabaseConfig {
   DATABASE_URL: string;
 }
 
-export const domainModelConfig = createConfig<DomainModelConfig>({
+export const databaseConfig = createConfig<DatabaseConfig>({
   DATABASE_URL: {
     doc: 'PostgreSQL database connection URL',
     format: String,

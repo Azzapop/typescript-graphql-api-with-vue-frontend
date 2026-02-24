@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
+import { parsePrismaError, prisma } from '~database';
 import type { User } from '../../models';
-import { parsePrismaError, prisma } from '../../prisma';
 
 const SALT_ROUNDS = 10;
 
@@ -25,7 +25,7 @@ export const createWithLocalCredentials = async (
   const tokenVersion = generateTokenVersion();
 
   try {
-    const data = await prisma.user.create({
+    const data = await prisma().user.create({
       data: {
         tokenVersion,
         localCredentials: {

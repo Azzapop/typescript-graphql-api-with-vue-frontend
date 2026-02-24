@@ -13,8 +13,8 @@ generator client {
 
 generator fabbrica {
   provider         = "prisma-fabbrica"
-  output           = "../../../../test/factories/prisma"
-  tsConfigFilePath = "../../../../tsconfig.json"
+  output           = "../../test/factories/prisma"
+  tsConfigFilePath = "../../tsconfig.json"
   noTranspile      = "true"
 }
 
