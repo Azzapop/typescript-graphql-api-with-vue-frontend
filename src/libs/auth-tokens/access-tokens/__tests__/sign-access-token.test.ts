@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-vitest';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { User } from '~libs/domain-model';
+import type { User } from '~libs/domain-model';
 import { ACCESS_SECRET, ACCESS_TTL_TIMESPAN } from '../access-tokens-const';
 import { signAccessToken } from '../sign-access-token';
 

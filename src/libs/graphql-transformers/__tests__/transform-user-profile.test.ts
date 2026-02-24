@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-vitest';
 import { describe, it, expect } from 'vitest';
-import { UserProfile } from '~libs/domain-model';
+import type { UserProfile } from '~libs/domain-model';
 import { transformUserProfile } from '../transform-user-profile';
 
 describe('transformUserProfile', () => {
@@ -30,14 +30,18 @@ describe('transformUserProfile', () => {
 
   describe('null and undefined handling', () => {
     it('converts null email to null', () => {
-      const profile = createMock<UserProfile>({ email: null as any });
+      const profile = createMock<UserProfile>({
+        email: null as unknown as string,
+      });
       const result = transformUserProfile(profile);
 
       expect(result?.email).toBeNull();
     });
 
     it('converts undefined email to null', () => {
-      const profile = createMock<UserProfile>({ email: undefined as any });
+      const profile = createMock<UserProfile>({
+        email: undefined as unknown as string,
+      });
       const result = transformUserProfile(profile);
 
       expect(result?.email).toBeNull();
