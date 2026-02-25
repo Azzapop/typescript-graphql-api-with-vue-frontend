@@ -1,5 +1,5 @@
 import { SignJWT } from 'jose';
-import type { User } from '~libs/domain-model';
+import type { User } from '@prisma/client';
 import { ACCESS_SECRET, ACCESS_TTL_TIMESPAN } from './access-tokens-const';
 
 export const signAccessToken = async (user: User): Promise<string> => {

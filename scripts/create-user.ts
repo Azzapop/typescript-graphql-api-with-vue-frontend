@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { UserStore } from '~libs/domain-model';
 import { logger } from '~libs/logger';
+import { userRepo } from '~libs/repositories';
 import { runWithTrace } from '~libs/trace-context';
 import { generateTraceToken } from '~libs/trace-token';
 
@@ -15,7 +15,7 @@ const createUser = async () => {
     process.exit(1);
   }
 
-  const result = await UserStore.createWithLocalCredentials({
+  const result = await userRepo.createWithLocalCredentials({
     username,
     password,
   });

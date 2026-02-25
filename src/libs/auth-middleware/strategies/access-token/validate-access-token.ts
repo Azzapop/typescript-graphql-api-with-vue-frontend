@@ -1,6 +1,6 @@
+import type { User } from '@prisma/client';
 import { accessTokens } from '~libs/auth-tokens';
-import type { User } from '~libs/domain-model';
-import { UserStore } from '~libs/domain-model';
+import { userRepo } from '~libs/repositories';
 import { logger } from '~libs/logger';
 
 export const validateAccessToken = async (
@@ -14,7 +14,7 @@ export const validateAccessToken = async (
 
   const { data } = result;
   const { sub: userId, tokenVersion } = data;
-  const userResult = await UserStore.getById(userId);
+  const userResult = await userRepo.getById(userId);
 
   if (!userResult.success) {
     logger.error(

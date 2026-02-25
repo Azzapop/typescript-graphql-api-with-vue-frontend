@@ -1,4 +1,4 @@
-import type { UserProfile } from '~libs/domain-model';
+import type { UserProfile } from '@prisma/client';
 import type { GqlUserProfile } from '~libs/graphql-types';
 
 export const transformUserProfile = (

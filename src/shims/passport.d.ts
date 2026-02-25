@@ -1,4 +1,4 @@
-import { type User as DomainUser } from '../libs/domain-model';
+import { type User as DomainUser } from '@prisma/client';
 
 declare global {
   namespace Express {

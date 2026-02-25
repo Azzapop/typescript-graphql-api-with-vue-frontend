@@ -1,11 +1,11 @@
+import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import { parsePrismaError, prisma } from '~database';
 import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
-import type { User } from '../../models';
-import { handleStoreError } from '../handle-store-error';
-import type { StoreError } from '../stores-types';
+import type { RepositoryError } from '../repository-types';
+import { handleRepositoryError } from '../handle-repository-error';
 
 const SALT_ROUNDS = 10;
 
@@ -16,7 +16,7 @@ type CreateWithLocalCredentialsInput = {
 
 export const createWithLocalCredentials = async (
   input: CreateWithLocalCredentialsInput
-): Promise<Result<User, StoreError>> => {
+): Promise<Result<User, RepositoryError>> => {
   const { username, password } = input;
 
   logger.info(`Creating user with username "${username}"`);
@@ -41,6 +41,6 @@ export const createWithLocalCredentials = async (
   } catch (e) {
     const parsed = parsePrismaError(e);
     logger.error('Failed to create user');
-    return handleStoreError(parsed);
+    return handleRepositoryError(parsed);
   }
 };

@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import type { VerifyFunctionWithRequest } from 'passport-local';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { LocalCredentialsStore } from '~libs/domain-model';
+import { localCredentialsRepo } from '~libs/repositories';
 import { logger } from '~libs/logger';
 
 // passport-local calls the callback function type a different name
@@ -11,7 +11,7 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
   password,
   done
 ) => {
-  const credentialsResult = await LocalCredentialsStore.getWithUser(username);
+  const credentialsResult = await localCredentialsRepo.getWithUser(username);
 
   if (!credentialsResult.success) {
     logger.error(
