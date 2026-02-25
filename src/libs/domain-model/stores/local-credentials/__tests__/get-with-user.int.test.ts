@@ -24,8 +24,10 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
 
     const result = await getWithUser(credentials.username);
 
-    expect(result).not.toBeNull();
-    expect(result).toMatchObject({
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).toMatchObject({
       id: expect.any(String),
       userId: credentials.userId,
       username: credentials.username,
@@ -41,16 +43,16 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
     });
   });
 
-  it('returns null for non-existent username', async () => {
+  it('returns success with null for non-existent username', async () => {
     const result = await getWithUser(faker.internet.userName());
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
-  it('returns null for empty string username', async () => {
+  it('returns success with null for empty string username', async () => {
     const result = await getWithUser('');
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
   it('is case-sensitive', async () => {
@@ -60,7 +62,7 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
 
     const result = await getWithUser(username.toUpperCase());
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
     expect(credentials.username).toBe(username);
   });
 
@@ -74,8 +76,13 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
     const result2 = await getWithUser(creds2.username);
     const result3 = await getWithUser(creds3.username);
 
-    expect(result1?.user.id).toBe(creds1.userId);
-    expect(result2?.user.id).toBe(creds2.userId);
-    expect(result3?.user.id).toBe(creds3.userId);
+    expect(result1.success).toBe(true);
+    expect(result2.success).toBe(true);
+    expect(result3.success).toBe(true);
+    if (!result1.success || !result2.success || !result3.success) return;
+
+    expect(result1.data?.user.id).toBe(creds1.userId);
+    expect(result2.data?.user.id).toBe(creds2.userId);
+    expect(result3.data?.user.id).toBe(creds3.userId);
   });
 });

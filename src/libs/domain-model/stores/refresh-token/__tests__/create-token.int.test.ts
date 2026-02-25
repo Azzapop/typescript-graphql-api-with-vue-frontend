@@ -17,9 +17,12 @@ describe('createToken (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const token = await createToken(user);
+    const result = await createToken(user);
 
-    expect(token).toMatchObject({
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).toMatchObject({
       id: expect.any(String),
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
@@ -30,16 +33,21 @@ describe('createToken (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const token1 = await createToken(user);
-    const token2 = await createToken(user);
-    const token3 = await createToken(user);
+    const result1 = await createToken(user);
+    const result2 = await createToken(user);
+    const result3 = await createToken(user);
 
-    expect(token1.id).not.toBe(token2.id);
-    expect(token2.id).not.toBe(token3.id);
-    expect(token1.id).not.toBe(token3.id);
+    expect(result1.success).toBe(true);
+    expect(result2.success).toBe(true);
+    expect(result3.success).toBe(true);
+    if (!result1.success || !result2.success || !result3.success) return;
+
+    expect(result1.data.id).not.toBe(result2.data.id);
+    expect(result2.data.id).not.toBe(result3.data.id);
+    expect(result1.data.id).not.toBe(result3.data.id);
   });
 
-  it('throws when the user does not exist', async () => {
+  it('returns FOREIGN_KEY_CONSTRAINT when the user does not exist', async () => {
     const fakeUser = {
       id: faker.string.uuid(),
       tokenVersion: faker.string.uuid(),
@@ -47,6 +55,8 @@ describe('createToken (integration)', () => {
       updatedAt: new Date(),
     };
 
-    await expect(createToken(fakeUser)).rejects.toThrow();
+    const result = await createToken(fakeUser);
+
+    expect(result).toEqual({ success: false, error: 'FOREIGN_KEY_CONSTRAINT' });
   });
 });

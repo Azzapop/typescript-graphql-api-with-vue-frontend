@@ -25,7 +25,9 @@ describe('clearTokenFamily (integration)', () => {
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
     await RefreshTokenFactory.create({ user: { connect: { id: user.id } } });
 
-    await clearTokenFamily(user.id);
+    const result = await clearTokenFamily(user.id);
+
+    expect(result).toEqual({ success: true, data: undefined });
 
     const tokensAfter = await prisma().refreshToken.findMany({
       where: { userId: user.id },
@@ -37,13 +39,15 @@ describe('clearTokenFamily (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    await expect(clearTokenFamily(user.id)).resolves.toBeUndefined();
+    const result = await clearTokenFamily(user.id);
+
+    expect(result).toEqual({ success: true, data: undefined });
   });
 
   it('succeeds for non-existent user id', async () => {
-    await expect(
-      clearTokenFamily(faker.string.uuid())
-    ).resolves.toBeUndefined();
+    const result = await clearTokenFamily(faker.string.uuid());
+
+    expect(result).toEqual({ success: true, data: undefined });
   });
 
   it('only deletes tokens for the specified user', async () => {

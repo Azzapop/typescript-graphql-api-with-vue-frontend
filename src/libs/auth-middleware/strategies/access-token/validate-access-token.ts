@@ -13,10 +13,14 @@ export const validateAccessToken = async (
 
   const { data } = result;
   const { sub: userId, tokenVersion } = data;
-  const user = await UserStore.getById(userId);
-  if (!user || user.tokenVersion !== tokenVersion) {
+  const userResult = await UserStore.getById(userId);
+  if (!userResult.success || !userResult.data) {
     return null;
   }
 
-  return user;
+  if (userResult.data.tokenVersion !== tokenVersion) {
+    return null;
+  }
+
+  return userResult.data;
 };

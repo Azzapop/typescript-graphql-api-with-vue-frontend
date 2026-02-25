@@ -18,7 +18,9 @@ describe('rotateTokenVersion (integration)', () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    await rotateTokenVersion(user.id);
+    const result = await rotateTokenVersion(user.id);
+
+    expect(result).toEqual({ success: true, data: undefined });
 
     const updatedUser = await prisma().user.findFirst({ where: { id: user.id } });
 
@@ -32,7 +34,9 @@ describe('rotateTokenVersion (integration)', () => {
     const versions: string[] = [user.tokenVersion];
 
     for (let i = 0; i < 5; i++) {
-      await rotateTokenVersion(user.id);
+      const result = await rotateTokenVersion(user.id);
+      expect(result.success).toBe(true);
+
       const updated = await prisma().user.findFirst({ where: { id: user.id } });
       if (updated) {
         versions.push(updated.tokenVersion);
@@ -60,7 +64,9 @@ describe('rotateTokenVersion (integration)', () => {
     expect(user3After?.tokenVersion).toBe(user3.tokenVersion);
   });
 
-  it('throws for non-existent id', async () => {
-    await expect(rotateTokenVersion(faker.string.uuid())).rejects.toThrow();
+  it('returns NOT_FOUND for non-existent id', async () => {
+    const result = await rotateTokenVersion(faker.string.uuid());
+
+    expect(result).toEqual({ success: false, error: 'NOT_FOUND' });
   });
 });

@@ -11,9 +11,10 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
   password,
   done
 ) => {
-  const localCredentials = await LocalCredentialsStore.getWithUser(username);
+  const credentialsResult =
+    await LocalCredentialsStore.getWithUser(username);
 
-  if (!localCredentials) {
+  if (!credentialsResult.success || !credentialsResult.data) {
     logger.info('No user found with the specified credentials');
     done(null, false);
     return;
@@ -22,7 +23,7 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
   // We retrieve and destructure the user in this way to ensure that we only
   // pass around the details of the users profile in the callback. This prevents
   // us from accidentally passing any credentials into the callback.
-  const { hashedPassword, user } = localCredentials;
+  const { data: { hashedPassword, user } } = credentialsResult;
 
   const correctPassword = await bcrypt.compare(password, hashedPassword);
   if (!correctPassword) {

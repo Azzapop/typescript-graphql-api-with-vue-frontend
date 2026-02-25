@@ -23,9 +23,12 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       user: { connect: { id: user.id } },
     });
 
-    const youngest = await RefreshTokenStore.findYoungest(user.id);
+    const result = await RefreshTokenStore.findYoungest(user.id);
 
-    expect(youngest).toEqual(token);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).toEqual(token);
   });
 
   it('returns the most recently created token when multiple exist', async () => {
@@ -42,26 +45,29 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       user: { connect: { id: user.id } },
     });
 
-    const youngest = await RefreshTokenStore.findYoungest(user.id);
+    const result = await RefreshTokenStore.findYoungest(user.id);
 
-    expect(youngest?.id).toBe(token3.id);
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data?.id).toBe(token3.id);
   });
 
-  it('returns null when the user has no tokens', async () => {
+  it('returns success with null when the user has no tokens', async () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
-    const youngest = await RefreshTokenStore.findYoungest(user.id);
+    const result = await RefreshTokenStore.findYoungest(user.id);
 
-    expect(youngest).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
-  it('returns null for a non-existent user id', async () => {
-    const youngest = await RefreshTokenStore.findYoungest(
+  it('returns success with null for a non-existent user id', async () => {
+    const result = await RefreshTokenStore.findYoungest(
       faker.string.uuid()
     );
 
-    expect(youngest).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
   it('returns the correct youngest per user independently', async () => {
@@ -83,10 +89,14 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
       user: { connect: { id: user2.id } },
     });
 
-    const user1Youngest = await RefreshTokenStore.findYoungest(user1.id);
-    const user2Youngest = await RefreshTokenStore.findYoungest(user2.id);
+    const result1 = await RefreshTokenStore.findYoungest(user1.id);
+    const result2 = await RefreshTokenStore.findYoungest(user2.id);
 
-    expect(user1Youngest?.id).toBe(user1Token2.id);
-    expect(user2Youngest?.id).toBe(user2Token3.id);
+    expect(result1.success).toBe(true);
+    expect(result2.success).toBe(true);
+    if (!result1.success || !result2.success) return;
+
+    expect(result1.data?.id).toBe(user1Token2.id);
+    expect(result2.data?.id).toBe(user2Token3.id);
   });
 });

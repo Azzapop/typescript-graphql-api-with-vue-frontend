@@ -12,7 +12,14 @@ export const handleTokens = (): Handler => async (req, res, next) => {
   }
 
   if (issueNewTokens) {
-    const { accessToken, refreshToken } = await issueTokens(user);
+    const tokensResult = await issueTokens(user);
+
+    if (!tokensResult.success) {
+      res.clearCookie('access_token').clearCookie('refresh_token');
+      return next();
+    }
+
+    const { data: { accessToken, refreshToken } } = tokensResult;
     res
       .cookie('access_token', accessToken, {
         httpOnly: true,

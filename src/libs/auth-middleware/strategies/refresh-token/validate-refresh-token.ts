@@ -12,17 +12,21 @@ export const validateRefreshToken = async (
 
   const { data } = result;
   const { sub: userId, refreshTokenId, tokenVersion } = data;
-  const user = await UserStore.getById(userId);
-  if (!user || user.tokenVersion !== tokenVersion) {
+  const userResult = await UserStore.getById(userId);
+  if (!userResult.success || !userResult.data) {
     return null;
   }
 
-  const youngestRefreshToken = await RefreshTokenStore.findYoungest(userId);
-  if (!youngestRefreshToken || youngestRefreshToken.id !== refreshTokenId) {
+  if (userResult.data.tokenVersion !== tokenVersion) {
+    return null;
+  }
+
+  const youngestResult = await RefreshTokenStore.findYoungest(userId);
+  if (!youngestResult.success || !youngestResult.data || youngestResult.data.id !== refreshTokenId) {
     // Replay attack detected - an old refresh token is being reused, clear the entire family
-    RefreshTokenStore.clearTokenFamily(userId);
+    void RefreshTokenStore.clearTokenFamily(userId);
     return null;
   }
 
-  return user;
+  return userResult.data;
 };

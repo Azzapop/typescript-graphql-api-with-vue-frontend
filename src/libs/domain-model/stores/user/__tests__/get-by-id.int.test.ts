@@ -17,9 +17,12 @@ describe('getById (integration)', () => {
     const { UserFactory } = setup();
     const created = await UserFactory.create();
 
-    const user = await getById(created.id);
+    const result = await getById(created.id);
 
-    expect(user).toMatchObject({
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).toMatchObject({
       id: created.id,
       tokenVersion: created.tokenVersion,
       createdAt: expect.any(Date),
@@ -27,16 +30,16 @@ describe('getById (integration)', () => {
     });
   });
 
-  it('returns null for a non-existent id', async () => {
-    const user = await getById(faker.string.uuid());
+  it('returns success with null for a non-existent id', async () => {
+    const result = await getById(faker.string.uuid());
 
-    expect(user).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
-  it('returns null for empty string id', async () => {
-    const user = await getById('');
+  it('returns success with null for empty string id', async () => {
+    const result = await getById('');
 
-    expect(user).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
   it('returns the correct user when multiple users exist', async () => {
@@ -49,8 +52,13 @@ describe('getById (integration)', () => {
     const result2 = await getById(user2.id);
     const result3 = await getById(user3.id);
 
-    expect(result1?.id).toBe(user1.id);
-    expect(result2?.id).toBe(user2.id);
-    expect(result3?.id).toBe(user3.id);
+    expect(result1.success).toBe(true);
+    expect(result2.success).toBe(true);
+    expect(result3.success).toBe(true);
+    if (!result1.success || !result2.success || !result3.success) return;
+
+    expect(result1.data?.id).toBe(user1.id);
+    expect(result2.data?.id).toBe(user2.id);
+    expect(result3.data?.id).toBe(user3.id);
   });
 });

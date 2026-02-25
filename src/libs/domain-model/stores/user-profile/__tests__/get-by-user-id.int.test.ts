@@ -26,7 +26,10 @@ describe('getByUserId (integration)', () => {
 
     const result = await getByUserId(user.id);
 
-    expect(result).toMatchObject({
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).toMatchObject({
       id: profile.id,
       userId: user.id,
       email: profile.email,
@@ -45,23 +48,26 @@ describe('getByUserId (integration)', () => {
 
     const result = await getByUserId(user.id);
 
-    expect(result).not.toBeNull();
-    expect(result?.email).toBeNull();
+    expect(result.success).toBe(true);
+    if (!result.success) return;
+
+    expect(result.data).not.toBeNull();
+    expect(result.data?.email).toBeNull();
   });
 
-  it('returns null when user has no profile', async () => {
+  it('returns success with null when user has no profile', async () => {
     const { UserFactory } = setup();
     const user = await UserFactory.create();
 
     const result = await getByUserId(user.id);
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
-  it('returns null for a non-existent userId', async () => {
+  it('returns success with null for a non-existent userId', async () => {
     const result = await getByUserId(faker.string.uuid());
 
-    expect(result).toBeNull();
+    expect(result).toEqual({ success: true, data: null });
   });
 
   it('returns the correct profile for each user when multiple exist', async () => {
@@ -87,13 +93,18 @@ describe('getByUserId (integration)', () => {
     const result2 = await getByUserId(user2.id);
     const result3 = await getByUserId(user3.id);
 
-    expect(result1?.id).toBe(profile1.id);
-    expect(result1?.email).toBe(profile1.email);
+    expect(result1.success).toBe(true);
+    expect(result2.success).toBe(true);
+    expect(result3.success).toBe(true);
+    if (!result1.success || !result2.success || !result3.success) return;
 
-    expect(result2?.id).toBe(profile2.id);
-    expect(result2?.email).toBe(profile2.email);
+    expect(result1.data?.id).toBe(profile1.id);
+    expect(result1.data?.email).toBe(profile1.email);
 
-    expect(result3?.id).toBe(profile3.id);
-    expect(result3?.email).toBeNull();
+    expect(result2.data?.id).toBe(profile2.id);
+    expect(result2.data?.email).toBe(profile2.email);
+
+    expect(result3.data?.id).toBe(profile3.id);
+    expect(result3.data?.email).toBeNull();
   });
 });
