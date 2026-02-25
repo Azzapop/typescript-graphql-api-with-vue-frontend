@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import type { VerifyFunctionWithRequest } from 'passport-local';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { localCredentialsRepo } from '~libs/repositories';
 import { logger } from '~libs/logger';
+import { localCredentialsRepo } from '~libs/repositories';
 
 // passport-local calls the callback function type a different name
 const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (

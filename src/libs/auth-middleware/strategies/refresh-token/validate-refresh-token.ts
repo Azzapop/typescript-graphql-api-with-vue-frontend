@@ -1,7 +1,7 @@
 import type { User } from '@prisma/client';
 import { refreshTokens } from '~libs/auth-tokens';
-import { refreshTokenRepo, userRepo } from '~libs/repositories';
 import { logger } from '~libs/logger';
+import { refreshTokenRepo, userRepo } from '~libs/repositories';
 
 export const validateRefreshToken = async (
   refreshToken: string

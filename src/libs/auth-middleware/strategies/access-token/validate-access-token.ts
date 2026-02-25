@@ -1,7 +1,7 @@
 import type { User } from '@prisma/client';
 import { accessTokens } from '~libs/auth-tokens';
-import { userRepo } from '~libs/repositories';
 import { logger } from '~libs/logger';
+import { userRepo } from '~libs/repositories';
 
 export const validateAccessToken = async (
   accessToken: string

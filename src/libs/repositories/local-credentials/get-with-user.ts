@@ -1,9 +1,9 @@
-import { LocalCredentials, User } from '@prisma/client';
+import type { LocalCredentials, User } from '@prisma/client';
 import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
-import type { RepositoryError } from '../repository-types';
 import { handleRepositoryError } from '../handle-repository-error';
+import type { RepositoryError } from '../repository-types';
 
 type LocalCredentialsWithUser = LocalCredentials & { user: User };
 

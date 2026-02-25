@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-vitest';
+import type { User } from '@prisma/client';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { User } from '@prisma/client';
 import { ACCESS_SECRET, ACCESS_TTL_TIMESPAN } from '../access-tokens-const';
 import { signAccessToken } from '../sign-access-token';
 

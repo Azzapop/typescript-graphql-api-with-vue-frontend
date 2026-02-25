@@ -1,5 +1,5 @@
-import { SignJWT } from 'jose';
 import type { User, RefreshToken } from '@prisma/client';
+import { SignJWT } from 'jose';
 import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from './refresh-tokens-const';
 
 export const signRefreshToken = async (

@@ -1,9 +1,9 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
-import type { RepositoryError } from '../repository-types';
 import { handleRepositoryError } from '../handle-repository-error';
+import type { RepositoryError } from '../repository-types';
 
 export const getById = async (
   id: string
