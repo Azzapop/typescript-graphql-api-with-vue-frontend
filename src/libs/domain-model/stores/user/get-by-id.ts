@@ -12,7 +12,7 @@ export const getById = async (
     return { success: true, data };
   } catch (e) {
     const error = parsePrismaError(e);
-    logger.error(`Failed to get user by id "${id}" [${error.code}]: ${e}`);
+    logger.error(`Failed to get user by id "${id}" [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

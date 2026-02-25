@@ -48,7 +48,7 @@ export const createWithLocalCredentials = async (
       return { success: false, error: 'USERNAME_EXISTS' };
     }
 
-    logger.error(`Failed to create user: ${e}`);
+    logger.error(`Failed to create user [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

@@ -21,7 +21,7 @@ export const rotateTokenVersion = async (
       return { success: false, error: 'NOT_FOUND' };
     }
 
-    logger.error(`Failed to rotate token version for userId "${userId}": ${e}`);
+    logger.error(`Failed to rotate token version for userId "${userId}" [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

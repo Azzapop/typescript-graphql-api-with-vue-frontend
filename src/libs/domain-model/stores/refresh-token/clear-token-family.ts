@@ -11,7 +11,7 @@ export const clearTokenFamily = async (
     return { success: true, data: undefined };
   } catch (e) {
     const error = parsePrismaError(e);
-    logger.error(`Failed to clear token family for userId "${userId}" [${error.code}]: ${e}`);
+    logger.error(`Failed to clear token family for userId "${userId}" [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

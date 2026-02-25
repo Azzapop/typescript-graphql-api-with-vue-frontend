@@ -12,7 +12,7 @@ export const getByUserId = async (
     return { success: true, data };
   } catch (e) {
     const error = parsePrismaError(e);
-    logger.error(`Failed to get user profile for userId "${userId}" [${error.code}]: ${e}`);
+    logger.error(`Failed to get user profile for userId "${userId}" [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

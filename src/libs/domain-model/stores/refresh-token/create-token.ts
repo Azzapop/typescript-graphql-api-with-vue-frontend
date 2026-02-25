@@ -20,7 +20,7 @@ export const createToken = async (
       return { success: false, error: 'FOREIGN_KEY_CONSTRAINT' };
     }
 
-    logger.error(`Failed to create refresh token for userId "${userId}": ${e}`);
+    logger.error(`Failed to create refresh token for userId "${userId}" [${error.code}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };
