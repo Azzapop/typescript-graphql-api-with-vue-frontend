@@ -14,7 +14,7 @@ export const issueTokens = async (
   const refreshTokenResult = await RefreshTokenStore.createToken(user);
 
   if (!refreshTokenResult.success) {
-    logger.error(`Failed to issue tokens for userId "${user.id}"`);
+    logger.error(`Failed to issue tokens for userId "${user.id}" [${refreshTokenResult.error}]`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 

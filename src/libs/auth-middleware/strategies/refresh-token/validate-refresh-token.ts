@@ -16,7 +16,7 @@ export const validateRefreshToken = async (
   const userResult = await UserStore.getById(userId);
 
   if (!userResult.success) {
-    logger.error(`Failed to look up user "${userId}" during refresh token validation`);
+    logger.error(`Failed to look up user "${userId}" during refresh token validation [${userResult.error}]`);
     return null;
   }
 
@@ -33,7 +33,7 @@ export const validateRefreshToken = async (
   const youngestResult = await RefreshTokenStore.findYoungest(userId);
 
   if (!youngestResult.success) {
-    logger.error(`Failed to find youngest refresh token for user "${userId}"`);
+    logger.error(`Failed to find youngest refresh token for user "${userId}" [${youngestResult.error}]`);
     return null;
   }
 
