@@ -16,12 +16,16 @@ export const handleTokens = (): Handler => async (req, res, next) => {
     const tokensResult = await issueTokens(user);
 
     if (!tokensResult.success) {
-      logger.error(`Failed to issue tokens for user "${user.id}" [${tokensResult.error}]`);
+      logger.error(
+        `Failed to issue tokens for user "${user.id}" [${tokensResult.error}]`
+      );
       res.clearCookie('access_token').clearCookie('refresh_token');
       return next();
     }
 
-    const { data: { accessToken, refreshToken } } = tokensResult;
+    const {
+      data: { accessToken, refreshToken },
+    } = tokensResult;
     res
       .cookie('access_token', accessToken, {
         httpOnly: true,

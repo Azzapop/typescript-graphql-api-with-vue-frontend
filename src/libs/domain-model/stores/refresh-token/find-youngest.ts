@@ -16,7 +16,9 @@ export const findYoungest = async (
     return { success: true, data };
   } catch (e) {
     const parsed = parsePrismaError(e);
-    logger.error(`Failed to find youngest refresh token for userId "${userId}"`);
+    logger.error(
+      `Failed to find youngest refresh token for userId "${userId}"`
+    );
     return handleStoreError(parsed);
   }
 };

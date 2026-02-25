@@ -1,8 +1,8 @@
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
-import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { prisma } from '~database';
 import { clearTokenFamily } from '../clear-token-family';
 
 const setup = () => ({

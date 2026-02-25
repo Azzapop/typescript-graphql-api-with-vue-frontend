@@ -1,7 +1,7 @@
 import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
-import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { prisma } from '~database';
 import { createWithLocalCredentials } from '../create-with-local-credentials';
 
 describe('createWithLocalCredentials (integration)', () => {

@@ -17,7 +17,9 @@ export const validateAccessToken = async (
   const userResult = await UserStore.getById(userId);
 
   if (!userResult.success) {
-    logger.error(`Failed to look up user "${userId}" during access token validation [${userResult.error}]`);
+    logger.error(
+      `Failed to look up user "${userId}" during access token validation [${userResult.error}]`
+    );
     return null;
   }
 

@@ -1,8 +1,8 @@
 import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
-import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { prisma } from '~database';
 import { rotateTokenVersion } from '../rotate-token-version';
 
 const setup = () => ({
@@ -22,7 +22,9 @@ describe('rotateTokenVersion (integration)', () => {
 
     expect(result).toEqual({ success: true, data: undefined });
 
-    const updatedUser = await prisma().user.findFirst({ where: { id: user.id } });
+    const updatedUser = await prisma().user.findFirst({
+      where: { id: user.id },
+    });
 
     expect(updatedUser?.tokenVersion).not.toBe(user.tokenVersion);
   });
@@ -55,9 +57,15 @@ describe('rotateTokenVersion (integration)', () => {
 
     await rotateTokenVersion(user2.id);
 
-    const user1After = await prisma().user.findFirst({ where: { id: user1.id } });
-    const user2After = await prisma().user.findFirst({ where: { id: user2.id } });
-    const user3After = await prisma().user.findFirst({ where: { id: user3.id } });
+    const user1After = await prisma().user.findFirst({
+      where: { id: user1.id },
+    });
+    const user2After = await prisma().user.findFirst({
+      where: { id: user2.id },
+    });
+    const user3After = await prisma().user.findFirst({
+      where: { id: user3.id },
+    });
 
     expect(user1After?.tokenVersion).toBe(user1.tokenVersion);
     expect(user2After?.tokenVersion).not.toBe(user2.tokenVersion);

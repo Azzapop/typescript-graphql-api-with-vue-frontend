@@ -12,7 +12,10 @@ export const rotateTokenVersion = async (
   const tokenVersion = generateTokenVersion();
 
   try {
-    await prisma().user.update({ data: { tokenVersion }, where: { id: userId } });
+    await prisma().user.update({
+      data: { tokenVersion },
+      where: { id: userId },
+    });
     return { success: true, data: undefined };
   } catch (e) {
     const parsed = parsePrismaError(e);

@@ -16,7 +16,9 @@ export const validateRefreshToken = async (
   const userResult = await UserStore.getById(userId);
 
   if (!userResult.success) {
-    logger.error(`Failed to look up user "${userId}" during refresh token validation [${userResult.error}]`);
+    logger.error(
+      `Failed to look up user "${userId}" during refresh token validation [${userResult.error}]`
+    );
     return null;
   }
 
@@ -33,13 +35,17 @@ export const validateRefreshToken = async (
   const youngestResult = await RefreshTokenStore.findYoungest(userId);
 
   if (!youngestResult.success) {
-    logger.error(`Failed to find youngest refresh token for user "${userId}" [${youngestResult.error}]`);
+    logger.error(
+      `Failed to find youngest refresh token for user "${userId}" [${youngestResult.error}]`
+    );
     return null;
   }
 
   if (!youngestResult.data || youngestResult.data.id !== refreshTokenId) {
-    logger.info(`Replay attack detected for user "${userId}", clearing token family`);
-    void RefreshTokenStore.clearTokenFamily(userId);
+    logger.info(
+      `Replay attack detected for user "${userId}", clearing token family`
+    );
+    await RefreshTokenStore.clearTokenFamily(userId);
     return null;
   }
 

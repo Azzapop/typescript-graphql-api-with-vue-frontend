@@ -63,9 +63,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
   });
 
   it('returns success with null for a non-existent user id', async () => {
-    const result = await RefreshTokenStore.findYoungest(
-      faker.string.uuid()
-    );
+    const result = await RefreshTokenStore.findYoungest(faker.string.uuid());
 
     expect(result).toEqual({ success: true, data: null });
   });
