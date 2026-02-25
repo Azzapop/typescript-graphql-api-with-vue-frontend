@@ -1,7 +1,7 @@
-import { createTestRefreshToken } from '#test/factories/refresh-token-factory';
-import { createTestUser } from '#test/factories/user-factory';
+import { createMock } from '@golevelup/ts-vitest';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { RefreshToken, User } from '~libs/domain-model';
 import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from '../refresh-tokens-const';
 import { signRefreshToken } from '../sign-refresh-token';
 
@@ -37,11 +37,11 @@ describe('signRefreshToken', () => {
 
   describe('when given a valid user and refresh token', () => {
     it('creates a JWT with the correct payload', async () => {
-      const user = createTestUser({
+      const user = createMock<User>({
         id: 'user-123',
         tokenVersion: 'token-version-456',
       });
-      const refreshToken = createTestRefreshToken({
+      const refreshToken = createMock<RefreshToken>({
         id: 'refresh-token-789',
       });
 
@@ -56,8 +56,8 @@ describe('signRefreshToken', () => {
     });
 
     it('sets the subject to the user ID', async () => {
-      const user = createTestUser({ id: 'user-123' });
-      const refreshToken = createTestRefreshToken();
+      const user = createMock<User>({ id: 'user-123' });
+      const refreshToken = createMock<RefreshToken>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -67,8 +67,8 @@ describe('signRefreshToken', () => {
     });
 
     it('sets the expiration time correctly', async () => {
-      const user = createTestUser();
-      const refreshToken = createTestRefreshToken();
+      const user = createMock<User>();
+      const refreshToken = createMock<RefreshToken>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -78,8 +78,8 @@ describe('signRefreshToken', () => {
     });
 
     it('sets the protected header with HS256 algorithm', async () => {
-      const user = createTestUser();
-      const refreshToken = createTestRefreshToken();
+      const user = createMock<User>();
+      const refreshToken = createMock<RefreshToken>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -89,8 +89,8 @@ describe('signRefreshToken', () => {
     });
 
     it('signs with the refresh secret', async () => {
-      const user = createTestUser();
-      const refreshToken = createTestRefreshToken();
+      const user = createMock<User>();
+      const refreshToken = createMock<RefreshToken>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -100,8 +100,8 @@ describe('signRefreshToken', () => {
     });
 
     it('returns the signed token', async () => {
-      const user = createTestUser();
-      const refreshToken = createTestRefreshToken();
+      const user = createMock<User>();
+      const refreshToken = createMock<RefreshToken>();
 
       mockSign.mockResolvedValue('signed-token-string');
 

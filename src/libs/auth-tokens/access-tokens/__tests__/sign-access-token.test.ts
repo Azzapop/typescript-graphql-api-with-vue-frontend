@@ -1,6 +1,7 @@
-import { createTestUser } from '#test/factories';
+import { createMock } from '@golevelup/ts-vitest';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { User } from '~libs/domain-model';
 import { ACCESS_SECRET, ACCESS_TTL_TIMESPAN } from '../access-tokens-const';
 import { signAccessToken } from '../sign-access-token';
 
@@ -36,7 +37,7 @@ describe('signAccessToken', () => {
 
   describe('when given a valid user', () => {
     it('creates a JWT with the correct payload', async () => {
-      const user = createTestUser({
+      const user = createMock<User>({
         id: 'user-123',
         tokenVersion: 'token-version-456',
       });
@@ -51,7 +52,7 @@ describe('signAccessToken', () => {
     });
 
     it('sets the subject to the user ID', async () => {
-      const user = createTestUser({ id: 'user-123' });
+      const user = createMock<User>({ id: 'user-123' });
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -61,7 +62,7 @@ describe('signAccessToken', () => {
     });
 
     it('sets the expiration time correctly', async () => {
-      const user = createTestUser();
+      const user = createMock<User>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -71,7 +72,7 @@ describe('signAccessToken', () => {
     });
 
     it('sets the protected header with HS256 algorithm', async () => {
-      const user = createTestUser();
+      const user = createMock<User>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -81,7 +82,7 @@ describe('signAccessToken', () => {
     });
 
     it('signs with the access secret', async () => {
-      const user = createTestUser();
+      const user = createMock<User>();
 
       mockSign.mockResolvedValue('signed-token-string');
 
@@ -91,7 +92,7 @@ describe('signAccessToken', () => {
     });
 
     it('returns the signed token', async () => {
-      const user = createTestUser();
+      const user = createMock<User>();
 
       mockSign.mockResolvedValue('signed-token-string');
 

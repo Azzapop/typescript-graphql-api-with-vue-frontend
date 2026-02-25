@@ -11,6 +11,13 @@ generator client {
   binaryTargets = ["native", "darwin-arm64"]
 }
 
+generator fabbrica {
+  provider         = "prisma-fabbrica"
+  output           = "../../test/factories/prisma"
+  tsConfigFilePath = "../../tsconfig.json"
+  noTranspile      = "true"
+}
+
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")

@@ -1,14 +1,28 @@
 import type { User } from '~libs/domain-model';
 import { RefreshTokenStore } from '~libs/domain-model';
+import { logger } from '~libs/logger';
+import type { Result } from '~libs/result';
 import { signAccessToken } from './access-tokens';
 import { signRefreshToken } from './refresh-tokens';
 
+type IssueTokensError = 'UNABLE_TO_CREATE_REFRESH_TOKEN';
+
 export const issueTokens = async (
   user: User
-): Promise<{ accessToken: string; refreshToken: string }> => {
+): Promise<
+  Result<{ accessToken: string; refreshToken: string }, IssueTokensError>
+> => {
   const accessToken = await signAccessToken(user);
-  const refreshTokenRecord = await RefreshTokenStore.createToken(user);
-  const refreshToken = await signRefreshToken(user, refreshTokenRecord);
+  const refreshTokenResult = await RefreshTokenStore.createToken(user);
 
-  return { accessToken, refreshToken };
+  if (!refreshTokenResult.success) {
+    logger.error(
+      `Failed to issue tokens for userId "${user.id}" [${refreshTokenResult.error}]`
+    );
+    return { success: false, error: 'UNABLE_TO_CREATE_REFRESH_TOKEN' };
+  }
+
+  const refreshToken = await signRefreshToken(user, refreshTokenResult.data);
+
+  return { success: true, data: { accessToken, refreshToken } };
 };

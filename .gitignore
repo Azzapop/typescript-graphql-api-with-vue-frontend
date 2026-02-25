@@ -14,3 +14,4 @@ src/libs/graphql-types/index.ts
 src/packages/auth-api-client
 swagger.yaml
 logs
+test/factories/prisma

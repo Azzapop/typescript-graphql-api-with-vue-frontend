@@ -20,11 +20,16 @@ Full-stack TypeScript application with a GraphQL API backend and Vue 3 SSR front
 src/
 ├── index.ts              # Server entry point
 ├── server.ts             # Express server setup
+├── database/             # Prisma client, schema, and migrations
+│   ├── client.ts         # Lazy PrismaClient singleton
+│   ├── database-config.ts # DATABASE_URL config
+│   ├── parse-prisma-error.ts # Prisma error parsing
+│   ├── schema.prisma     # Prisma schema
+│   └── migrations/       # Prisma migrations
 ├── libs/                 # Shared libraries
-│   ├── domain-model/     # Prisma models, stores, types
+│   ├── domain-model/     # Domain models, stores, types
 │   │   ├── models/       # TypeScript types for domain entities
 │   │   ├── stores/       # Data access functions (one dir per entity)
-│   │   ├── prisma/       # Prisma client and utilities
 │   │   └── types/        # Shared types (Result, etc.)
 │   ├── module/           # Module system (createModule, mountModules)
 │   ├── graphql-types/    # Generated GraphQL TypeScript types
@@ -224,6 +229,8 @@ Configured in `tsconfig.json`:
 - `~libs/*` → `./src/libs/*`
 - `~modules/*` → `./src/modules/*`
 - `~packages/*` → `./src/packages/*`
+- `~database` → `./src/database/index.ts`
+- `~database/*` → `./src/database/*`
 - `@app/*` → `./src/modules/client/app/*`
 - `#test/*` → `./test/*`
 

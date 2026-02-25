@@ -1,9 +1,9 @@
-import type { UserProfile } from '@prisma/client';
-import type { GqlResolversTypes } from '~libs/graphql-types';
+import type { UserProfile } from '~libs/domain-model';
+import type { GqlUserProfile } from '~libs/graphql-types';
 
 export const transformUserProfile = (
   profile: UserProfile
-): GqlResolversTypes['UserProfile'] | null => {
+): GqlUserProfile | null => {
   return {
     id: profile.id,
     email: profile.email ?? null,

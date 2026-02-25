@@ -44,7 +44,7 @@ A unit test:
 **Pure Utility Functions**:
 
 - `src/libs/trace-token/generate-trace-token.ts`
-- `src/libs/domain-model/prisma/parse-error.ts`
+- `src/database/parse-prisma-error.ts`
 - Any function with no external dependencies
 
 **Data Transformers**:
@@ -233,7 +233,7 @@ Test GraphQL transformers:
 Test utility functions:
 
 - `src/libs/trace-token/generate-trace-token.test.ts`
-- `src/libs/domain-model/prisma/parse-error.test.ts`
+- `src/database/__tests__/parse-prisma-error.test.ts`
 
 ### Phase 5: Token Logic (Week 3) - 4-6 hours
 
@@ -279,7 +279,7 @@ Track progress as each lib/module is analyzed and tested. Each PR should focus o
 
 #### Domain Model
 - [ ] `domain-model/models/` - Type definitions only (skip)
-- [x] `domain-model/prisma/parse-prisma-error.ts` - Prisma error parsing and mapping ✅ 100% coverage (19 tests)
+- [x] `database/parse-prisma-error.ts` - Prisma error parsing and mapping ✅ 100% coverage (19 tests)
 - [ ] `domain-model/stores/` - Integration tests only (skip for unit tests)
 - [ ] `domain-model/types/` - Type definitions only (skip)
 

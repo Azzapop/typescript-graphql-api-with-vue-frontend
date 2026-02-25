@@ -1,11 +1,12 @@
-import { createTestUserProfile } from '#test/factories';
+import { createMock } from '@golevelup/ts-vitest';
 import { describe, it, expect } from 'vitest';
+import type { UserProfile } from '~libs/domain-model';
 import { transformUserProfile } from '../transform-user-profile';
 
 describe('transformUserProfile', () => {
   describe('successful transformation', () => {
     it('transforms UserProfile to GraphQL UserProfile format', () => {
-      const profile = createTestUserProfile({
+      const profile = createMock<UserProfile>({
         id: 'profile-123',
         email: 'test@example.com',
       });
@@ -19,7 +20,7 @@ describe('transformUserProfile', () => {
     });
 
     it('includes all required fields', () => {
-      const profile = createTestUserProfile();
+      const profile = createMock<UserProfile>();
       const result = transformUserProfile(profile);
 
       expect(result).toHaveProperty('id');
@@ -29,19 +30,19 @@ describe('transformUserProfile', () => {
 
   describe('null and undefined handling', () => {
     it('converts null email to null', () => {
-      const profile = createTestUserProfile({ email: null });
+      const profile = createMock<UserProfile>({
+        email: null as unknown as string,
+      });
       const result = transformUserProfile(profile);
 
       expect(result?.email).toBeNull();
     });
 
     it('converts undefined email to null', () => {
-      const profile = createTestUserProfile({ email: null });
-      // Simulate undefined by deleting the property
-      const profileWithUndefined = { ...profile, email: undefined };
-      const result = transformUserProfile(
-        profileWithUndefined as typeof profile
-      );
+      const profile = createMock<UserProfile>({
+        email: undefined as unknown as string,
+      });
+      const result = transformUserProfile(profile);
 
       expect(result?.email).toBeNull();
     });
@@ -49,7 +50,7 @@ describe('transformUserProfile', () => {
 
   describe('edge cases', () => {
     it('handles empty string email', () => {
-      const profile = createTestUserProfile({ email: '' });
+      const profile = createMock<UserProfile>({ email: '' });
       const result = transformUserProfile(profile);
 
       // Empty string should be preserved, not converted to null
@@ -58,7 +59,7 @@ describe('transformUserProfile', () => {
 
     it('preserves email with special characters', () => {
       const email = 'test+tag@example.co.uk';
-      const profile = createTestUserProfile({ email });
+      const profile = createMock<UserProfile>({ email });
       const result = transformUserProfile(profile);
 
       expect(result?.email).toBe(email);

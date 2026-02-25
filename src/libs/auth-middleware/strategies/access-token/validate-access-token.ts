@@ -1,6 +1,7 @@
 import { accessTokens } from '~libs/auth-tokens';
 import type { User } from '~libs/domain-model';
 import { UserStore } from '~libs/domain-model';
+import { logger } from '~libs/logger';
 
 export const validateAccessToken = async (
   accessToken: string
@@ -13,10 +14,24 @@ export const validateAccessToken = async (
 
   const { data } = result;
   const { sub: userId, tokenVersion } = data;
-  const user = await UserStore.getById(userId);
-  if (!user || user.tokenVersion !== tokenVersion) {
+  const userResult = await UserStore.getById(userId);
+
+  if (!userResult.success) {
+    logger.error(
+      `Failed to look up user "${userId}" during access token validation [${userResult.error}]`
+    );
     return null;
   }
 
-  return user;
+  if (!userResult.data) {
+    logger.info(`User "${userId}" from access token not found`);
+    return null;
+  }
+
+  if (userResult.data.tokenVersion !== tokenVersion) {
+    logger.info(`Token version mismatch for user "${userId}"`);
+    return null;
+  }
+
+  return userResult.data;
 };
