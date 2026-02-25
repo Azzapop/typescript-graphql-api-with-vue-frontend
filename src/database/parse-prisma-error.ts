@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-type PrismaError =
+export type PrismaError =
   | { code: 'UNIQUE_CONSTRAINT'; fields: string[] }
   | { code: 'FOREIGN_KEY_CONSTRAINT'; field: string }
   | { code: 'RECORD_NOT_FOUND' }

@@ -59,7 +59,7 @@ describe('createWithLocalCredentials (integration)', () => {
     expect(credentials?.hashedPassword).toMatch(/^\$2[aby]\$\d+\$/);
   });
 
-  it('returns { success: false, error: "USERNAME_EXISTS" } on duplicate username', async () => {
+  it('returns { success: false, error: "UNIQUE_CONSTRAINT" } on duplicate username', async () => {
     const username = faker.internet.userName();
 
     await createWithLocalCredentials({
@@ -72,7 +72,7 @@ describe('createWithLocalCredentials (integration)', () => {
       password: faker.internet.password(),
     });
 
-    expect(result).toEqual({ success: false, error: 'USERNAME_EXISTS' });
+    expect(result).toEqual({ success: false, error: 'UNIQUE_CONSTRAINT' });
   });
 
   it('rolls back the transaction when credentials fail', async () => {

@@ -1,5 +1,5 @@
 export type StoreError =
   | 'UNEXPECTED_ERROR'
   | 'NOT_FOUND'
-  | 'USERNAME_EXISTS'
+  | 'UNIQUE_CONSTRAINT'
   | 'FOREIGN_KEY_CONSTRAINT';

@@ -3,6 +3,7 @@ import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { User } from '../../models';
+import { handleStoreError } from '../handle-store-error';
 import type { StoreError } from '../stores-types';
 
 export const rotateTokenVersion = async (
@@ -14,14 +15,8 @@ export const rotateTokenVersion = async (
     await prisma().user.update({ data: { tokenVersion }, where: { id: userId } });
     return { success: true, data: undefined };
   } catch (e) {
-    const error = parsePrismaError(e);
-
-    if (error.code === 'RECORD_NOT_FOUND') {
-      logger.error(`Failed to rotate token version: user "${userId}" not found`);
-      return { success: false, error: 'NOT_FOUND' };
-    }
-
-    logger.error(`Failed to rotate token version for userId "${userId}" [${error.code}]`);
-    return { success: false, error: 'UNEXPECTED_ERROR' };
+    const parsed = parsePrismaError(e);
+    logger.error(`Failed to rotate token version for userId "${userId}"`);
+    return handleStoreError(parsed);
   }
 };

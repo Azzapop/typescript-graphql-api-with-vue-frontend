@@ -2,6 +2,7 @@ import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { LocalCredentials, User } from '../../models';
+import { handleStoreError } from '../handle-store-error';
 import type { StoreError } from '../stores-types';
 
 type LocalCredentialsWithUser = LocalCredentials & { user: User };
@@ -16,8 +17,8 @@ export const getWithUser = async (
     });
     return { success: true, data };
   } catch (e) {
-    const error = parsePrismaError(e);
-    logger.error(`Failed to get credentials for username "${username}" [${error.code}]`);
-    return { success: false, error: 'UNEXPECTED_ERROR' };
+    const parsed = parsePrismaError(e);
+    logger.error(`Failed to get credentials for username "${username}"`);
+    return handleStoreError(parsed);
   }
 };

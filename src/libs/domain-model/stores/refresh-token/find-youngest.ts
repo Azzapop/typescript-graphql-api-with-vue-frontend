@@ -2,6 +2,7 @@ import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { RefreshToken } from '../../models';
+import { handleStoreError } from '../handle-store-error';
 import type { StoreError } from '../stores-types';
 
 export const findYoungest = async (
@@ -14,8 +15,8 @@ export const findYoungest = async (
     });
     return { success: true, data };
   } catch (e) {
-    const error = parsePrismaError(e);
-    logger.error(`Failed to find youngest refresh token for userId "${userId}" [${error.code}]`);
-    return { success: false, error: 'UNEXPECTED_ERROR' };
+    const parsed = parsePrismaError(e);
+    logger.error(`Failed to find youngest refresh token for userId "${userId}"`);
+    return handleStoreError(parsed);
   }
 };
