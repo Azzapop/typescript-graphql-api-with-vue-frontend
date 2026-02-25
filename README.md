@@ -71,5 +71,3 @@ See [docs/UNIT_TESTING_STRATEGY.md](./docs/UNIT_TESTING_STRATEGY.md) for detaile
 ### GraphQL Mappers
 
 If you want to resolve certain fields in the model resolvers, ensure that you add a mapper to omit that field in the codegen.ts file. Examples are there to guide you.
-
-If you want to resolve certain fields in the model resolvers, ensure that you add a mapper to omit that field in the codegen.ts file. Examples are there to guide you.
