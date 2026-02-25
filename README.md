@@ -5,12 +5,14 @@
 **Current Status**: 87 unit tests passing - 100% coverage of pure utility functions
 
 **Documentation**:
+
 - [Testing Strategy Overview](./docs/TESTING_STRATEGY.md) - High-level testing approach
 - [Unit Testing Strategy](./docs/UNIT_TESTING_STRATEGY.md) - ✅ Complete (15 test files, 87 tests)
 - [Integration Testing Strategy](./docs/INTEGRATION_TESTING_STRATEGY.md) - 📋 Ready for implementation
 - [E2E Testing Strategy](./docs/E2E_TESTING_STRATEGY.md) - 📝 Future
 
 **Running Tests**:
+
 ```bash
 npm test                        # All tests in watch mode
 npm run test:unit               # Unit tests only
@@ -64,7 +66,10 @@ See [docs/UNIT_TESTING_STRATEGY.md](./docs/UNIT_TESTING_STRATEGY.md) for detaile
 - gitignore i18n compiled files
 - Split public and private clients to make auth handling neater, this will also tidy up the hydration handling
 - fix load order so css is loaded first
+- better name for db stores, so we dont mix them up with client stores
 
 ### GraphQL Mappers
+
+If you want to resolve certain fields in the model resolvers, ensure that you add a mapper to omit that field in the codegen.ts file. Examples are there to guide you.
 
 If you want to resolve certain fields in the model resolvers, ensure that you add a mapper to omit that field in the codegen.ts file. Examples are there to guide you.

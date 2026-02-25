@@ -1,10 +1,8 @@
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import { PrismaClient } from '@prisma/client';
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { prisma } from '~database';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { clearTokenFamily } from '../clear-token-family';
-
-const prisma = new PrismaClient();
 
 const setup = () => ({
   UserFactory: defineUserFactory(),
@@ -18,10 +16,6 @@ describe('clearTokenFamily (integration)', () => {
     await cleanWorkerDatabase();
   });
 
-  afterAll(async () => {
-    await prisma.$disconnect();
-  });
-
   it('deletes all tokens for a user', async () => {
     const { UserFactory, RefreshTokenFactory } = setup();
     const user = await UserFactory.create();
@@ -32,7 +26,7 @@ describe('clearTokenFamily (integration)', () => {
 
     await clearTokenFamily(user.id);
 
-    const tokensAfter = await prisma.refreshToken.findMany({
+    const tokensAfter = await prisma().refreshToken.findMany({
       where: { userId: user.id },
     });
     expect(tokensAfter).toHaveLength(0);
@@ -65,12 +59,12 @@ describe('clearTokenFamily (integration)', () => {
 
     await clearTokenFamily(user2.id);
 
-    const user2Tokens = await prisma.refreshToken.findMany({
+    const user2Tokens = await prisma().refreshToken.findMany({
       where: { userId: user2.id },
     });
     expect(user2Tokens).toHaveLength(0);
 
-    const user1Tokens = await prisma.refreshToken.findMany({
+    const user1Tokens = await prisma().refreshToken.findMany({
       where: { userId: user1.id },
     });
     expect(user1Tokens).toHaveLength(2);
@@ -87,7 +81,7 @@ describe('clearTokenFamily (integration)', () => {
     await clearTokenFamily(user.id);
     await clearTokenFamily(user.id);
 
-    const tokens = await prisma.refreshToken.findMany({
+    const tokens = await prisma().refreshToken.findMany({
       where: { userId: user.id },
     });
     expect(tokens).toHaveLength(0);

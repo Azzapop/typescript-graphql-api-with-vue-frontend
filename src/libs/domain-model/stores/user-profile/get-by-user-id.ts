@@ -1,5 +1,5 @@
-import type { UserProfile } from '@prisma/client';
 import { prisma } from '~database';
+import type { UserProfile } from '../../models';
 
 export const getByUserId = async (
   userId: string

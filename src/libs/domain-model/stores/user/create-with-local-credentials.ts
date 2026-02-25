@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
+import { parsePrismaError, prisma } from '~database';
 import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
-import { parsePrismaError, prisma } from '~database';
 import type { User } from '../../models';
 
 const SALT_ROUNDS = 10;

@@ -1,14 +1,12 @@
-import { defineUserFactory } from '#test/factories/prisma';
+import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { rotateTokenVersion } from '../rotate-token-version';
 
 const setup = () => ({
   UserFactory: defineUserFactory(),
 });
-
-const prisma = new PrismaClient();
 
 describe('rotateTokenVersion (integration)', () => {
   beforeEach(async () => {
@@ -21,7 +19,7 @@ describe('rotateTokenVersion (integration)', () => {
 
     await rotateTokenVersion(user.id);
 
-    const updatedUser = await prisma.user.findFirst({ where: { id: user.id } });
+    const updatedUser = await prisma().user.findFirst({ where: { id: user.id } });
 
     expect(updatedUser?.tokenVersion).not.toBe(user.tokenVersion);
   });
@@ -34,7 +32,7 @@ describe('rotateTokenVersion (integration)', () => {
 
     for (let i = 0; i < 5; i++) {
       await rotateTokenVersion(user.id);
-      const updated = await prisma.user.findFirst({ where: { id: user.id } });
+      const updated = await prisma().user.findFirst({ where: { id: user.id } });
       if (updated) {
         versions.push(updated.tokenVersion);
       }
@@ -52,9 +50,9 @@ describe('rotateTokenVersion (integration)', () => {
 
     await rotateTokenVersion(user2.id);
 
-    const user1After = await prisma.user.findFirst({ where: { id: user1.id } });
-    const user2After = await prisma.user.findFirst({ where: { id: user2.id } });
-    const user3After = await prisma.user.findFirst({ where: { id: user3.id } });
+    const user1After = await prisma().user.findFirst({ where: { id: user1.id } });
+    const user2After = await prisma().user.findFirst({ where: { id: user2.id } });
+    const user3After = await prisma().user.findFirst({ where: { id: user3.id } });
 
     expect(user1After?.tokenVersion).toBe(user1.tokenVersion);
     expect(user2After?.tokenVersion).not.toBe(user2.tokenVersion);

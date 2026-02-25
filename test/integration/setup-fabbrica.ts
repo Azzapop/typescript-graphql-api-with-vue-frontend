@@ -1,4 +1,4 @@
 import { initialize } from '#test/factories/prisma';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '~database';
 
-initialize({ prisma: new PrismaClient() });
+initialize({ prisma: prisma() });

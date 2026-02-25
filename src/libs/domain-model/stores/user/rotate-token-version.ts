@@ -1,5 +1,5 @@
-import { generateTokenVersion } from '~libs/auth-tokens';
 import { prisma } from '~database';
+import { generateTokenVersion } from '~libs/auth-tokens';
 import type { User } from '../../models';
 
 export const rotateTokenVersion = async (userId: User['id']): Promise<void> => {

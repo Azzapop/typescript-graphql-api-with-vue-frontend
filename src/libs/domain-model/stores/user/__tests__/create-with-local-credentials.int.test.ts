@@ -1,17 +1,11 @@
 import { cleanWorkerDatabase } from '#test/integration';
-import { PrismaClient } from '@prisma/client';
-import { afterAll, beforeEach, describe, expect, it } from 'vitest';
+import { prisma } from '~database';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { createWithLocalCredentials } from '../create-with-local-credentials';
-
-const prisma = new PrismaClient();
 
 describe('createWithLocalCredentials (integration)', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
-  });
-
-  afterAll(async () => {
-    await prisma.$disconnect();
   });
 
   it('creates user and local credentials', async () => {
@@ -30,12 +24,12 @@ describe('createWithLocalCredentials (integration)', () => {
       updatedAt: expect.any(Date),
     });
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma().user.findUnique({
       where: { id: result.data.id },
     });
     expect(user).not.toBeNull();
 
-    const credentials = await prisma.localCredentials.findUnique({
+    const credentials = await prisma().localCredentials.findUnique({
       where: { userId: result.data.id },
     });
     expect(credentials).toMatchObject({
@@ -55,7 +49,7 @@ describe('createWithLocalCredentials (integration)', () => {
     expect(result.success).toBe(true);
     if (!result.success) return;
 
-    const credentials = await prisma.localCredentials.findUnique({
+    const credentials = await prisma().localCredentials.findUnique({
       where: { userId: result.data.id },
     });
 
@@ -83,7 +77,7 @@ describe('createWithLocalCredentials (integration)', () => {
       password: 'password123',
     });
 
-    const userCountBefore = await prisma.user.count();
+    const userCountBefore = await prisma().user.count();
 
     const result = await createWithLocalCredentials({
       username: 'testuser',
@@ -92,7 +86,7 @@ describe('createWithLocalCredentials (integration)', () => {
 
     expect(result.success).toBe(false);
 
-    const userCountAfter = await prisma.user.count();
+    const userCountAfter = await prisma().user.count();
     expect(userCountAfter).toBe(userCountBefore);
   });
 
