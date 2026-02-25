@@ -4,6 +4,7 @@ import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { User } from '../../models';
+import type { StoreError } from '../stores-types';
 
 const SALT_ROUNDS = 10;
 
@@ -12,7 +13,7 @@ type CreateWithLocalCredentialsInput = {
   password: string;
 };
 
-type CreateWithLocalCredentialsError = 'USERNAME_EXISTS' | 'UNEXPECTED_ERROR';
+type CreateWithLocalCredentialsError = Extract<StoreError, 'USERNAME_EXISTS' | 'UNEXPECTED_ERROR'>;
 
 export const createWithLocalCredentials = async (
   input: CreateWithLocalCredentialsInput

@@ -2,8 +2,9 @@ import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { UserProfile } from '../../models';
+import type { StoreError } from '../stores-types';
 
-type GetByUserIdError = 'UNEXPECTED_ERROR';
+type GetByUserIdError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
 
 export const getByUserId = async (
   userId: string
@@ -12,8 +13,8 @@ export const getByUserId = async (
     const data = await prisma().userProfile.findUnique({ where: { userId } });
     return { success: true, data };
   } catch (e) {
-    parsePrismaError(e);
-    logger.error(`Failed to get user profile for userId "${userId}": ${e}`);
+    const error = parsePrismaError(e);
+    logger.error(`Failed to get user profile for userId "${userId}" [${error.code}]: ${e}`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };

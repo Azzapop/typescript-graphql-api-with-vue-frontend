@@ -2,8 +2,9 @@ import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { RefreshToken, User } from '../../models';
+import type { StoreError } from '../stores-types';
 
-type CreateTokenError = 'FOREIGN_KEY_CONSTRAINT' | 'UNEXPECTED_ERROR';
+type CreateTokenError = Extract<StoreError, 'FOREIGN_KEY_CONSTRAINT' | 'UNEXPECTED_ERROR'>;
 
 export const createToken = async (
   user: User

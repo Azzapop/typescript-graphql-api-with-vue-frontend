@@ -3,8 +3,9 @@ import { generateTokenVersion } from '~libs/auth-tokens';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { User } from '../../models';
+import type { StoreError } from '../stores-types';
 
-type RotateTokenVersionError = 'NOT_FOUND' | 'UNEXPECTED_ERROR';
+type RotateTokenVersionError = Extract<StoreError, 'NOT_FOUND' | 'UNEXPECTED_ERROR'>;
 
 export const rotateTokenVersion = async (
   userId: User['id']

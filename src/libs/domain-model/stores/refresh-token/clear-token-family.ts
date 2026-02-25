@@ -1,8 +1,9 @@
 import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
+import type { StoreError } from '../stores-types';
 
-type ClearTokenFamilyError = 'UNEXPECTED_ERROR';
+type ClearTokenFamilyError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
 
 export const clearTokenFamily = async (
   userId: string
@@ -11,8 +12,8 @@ export const clearTokenFamily = async (
     await prisma().refreshToken.deleteMany({ where: { userId } });
     return { success: true, data: undefined };
   } catch (e) {
-    parsePrismaError(e);
-    logger.error(`Failed to clear token family for userId "${userId}": ${e}`);
+    const error = parsePrismaError(e);
+    logger.error(`Failed to clear token family for userId "${userId}" [${error.code}]: ${e}`);
     return { success: false, error: 'UNEXPECTED_ERROR' };
   }
 };
