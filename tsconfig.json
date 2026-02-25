@@ -35,6 +35,7 @@
       "~packages/*": ["./src/packages/*"],
       "~database": ["./src/database/index.ts"],
       "@app/*": ["./src/modules/client/app/*"],
+      "#test": ["./test"],
       "#test/*": ["./test/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */

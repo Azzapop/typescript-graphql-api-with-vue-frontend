@@ -1,5 +1,5 @@
+import { cleanWorkerDatabase } from '#test';
 import { defineUserFactory, defineUserProfileFactory } from '#test/factories';
-import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getByUserId } from '../get-by-user-id';
