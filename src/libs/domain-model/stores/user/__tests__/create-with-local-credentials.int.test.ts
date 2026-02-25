@@ -1,4 +1,5 @@
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createWithLocalCredentials } from '../create-with-local-credentials';
@@ -9,10 +10,10 @@ describe('createWithLocalCredentials (integration)', () => {
   });
 
   it('creates user and local credentials', async () => {
-    const result = await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'password123',
-    });
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+
+    const result = await createWithLocalCredentials({ username, password });
 
     expect(result.success).toBe(true);
     if (!result.success) return;
@@ -33,16 +34,16 @@ describe('createWithLocalCredentials (integration)', () => {
       where: { userId: result.data.id },
     });
     expect(credentials).toMatchObject({
-      username: 'testuser',
+      username,
       hashedPassword: expect.any(String),
     });
   });
 
   it('hashes the password', async () => {
-    const password = 'my-secret-password';
+    const password = faker.internet.password();
 
     const result = await createWithLocalCredentials({
-      username: 'testuser',
+      username: faker.internet.userName(),
       password,
     });
 
@@ -54,34 +55,39 @@ describe('createWithLocalCredentials (integration)', () => {
     });
 
     expect(credentials?.hashedPassword).not.toBe(password);
+    // Matches bcrypt hash format: $2a$, $2b$, or $2y$ followed by cost factor
     expect(credentials?.hashedPassword).toMatch(/^\$2[aby]\$\d+\$/);
   });
 
   it('returns { success: false, error: "USERNAME_EXISTS" } on duplicate username', async () => {
+    const username = faker.internet.userName();
+
     await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'password123',
+      username,
+      password: faker.internet.password(),
     });
 
     const result = await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'differentpassword',
+      username,
+      password: faker.internet.password(),
     });
 
     expect(result).toEqual({ success: false, error: 'USERNAME_EXISTS' });
   });
 
   it('rolls back the transaction when credentials fail', async () => {
+    const username = faker.internet.userName();
+
     await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'password123',
+      username,
+      password: faker.internet.password(),
     });
 
     const userCountBefore = await prisma().user.count();
 
     const result = await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'differentpassword',
+      username,
+      password: faker.internet.password(),
     });
 
     expect(result.success).toBe(false);
@@ -91,14 +97,16 @@ describe('createWithLocalCredentials (integration)', () => {
   });
 
   it('treats usernames as case-sensitive', async () => {
+    const username = faker.internet.userName();
+
     const result1 = await createWithLocalCredentials({
-      username: 'TestUser',
-      password: 'pass1',
+      username: username.toUpperCase(),
+      password: faker.internet.password(),
     });
 
     const result2 = await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'pass2',
+      username: username.toLowerCase(),
+      password: faker.internet.password(),
     });
 
     expect(result1.success).toBe(true);

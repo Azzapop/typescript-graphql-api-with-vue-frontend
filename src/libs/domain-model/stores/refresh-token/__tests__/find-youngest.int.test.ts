@@ -1,5 +1,6 @@
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import * as RefreshTokenStore from '../find-youngest';
 
@@ -57,7 +58,7 @@ describe('RefreshTokenStore.findYoungest (integration)', () => {
 
   it('returns null for a non-existent user id', async () => {
     const youngest = await RefreshTokenStore.findYoungest(
-      'non-existent-user-id'
+      faker.string.uuid()
     );
 
     expect(youngest).toBeNull();

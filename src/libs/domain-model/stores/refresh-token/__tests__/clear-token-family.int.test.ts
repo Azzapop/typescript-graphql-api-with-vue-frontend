@@ -1,5 +1,6 @@
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { clearTokenFamily } from '../clear-token-family';
@@ -41,7 +42,7 @@ describe('clearTokenFamily (integration)', () => {
 
   it('succeeds for non-existent user id', async () => {
     await expect(
-      clearTokenFamily('non-existent-user-id')
+      clearTokenFamily(faker.string.uuid())
     ).resolves.toBeUndefined();
   });
 

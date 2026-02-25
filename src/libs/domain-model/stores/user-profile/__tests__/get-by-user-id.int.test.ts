@@ -1,5 +1,6 @@
 import { defineUserFactory, defineUserProfileFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getByUserId } from '../get-by-user-id';
 
@@ -20,7 +21,7 @@ describe('getByUserId (integration)', () => {
     const user = await UserFactory.create();
     const profile = await UserProfileFactory.create({
       user: { connect: { id: user.id } },
-      email: 'test@example.com',
+      email: faker.internet.email(),
     });
 
     const result = await getByUserId(user.id);
@@ -28,7 +29,7 @@ describe('getByUserId (integration)', () => {
     expect(result).toMatchObject({
       id: profile.id,
       userId: user.id,
-      email: 'test@example.com',
+      email: profile.email,
       createdAt: expect.any(Date),
       updatedAt: expect.any(Date),
     });
@@ -58,7 +59,7 @@ describe('getByUserId (integration)', () => {
   });
 
   it('returns null for a non-existent userId', async () => {
-    const result = await getByUserId('non-existent-id');
+    const result = await getByUserId(faker.string.uuid());
 
     expect(result).toBeNull();
   });
@@ -71,11 +72,11 @@ describe('getByUserId (integration)', () => {
 
     const profile1 = await UserProfileFactory.create({
       user: { connect: { id: user1.id } },
-      email: 'user1@example.com',
+      email: faker.internet.email(),
     });
     const profile2 = await UserProfileFactory.create({
       user: { connect: { id: user2.id } },
-      email: 'user2@example.com',
+      email: faker.internet.email(),
     });
     const profile3 = await UserProfileFactory.create({
       user: { connect: { id: user3.id } },
@@ -87,10 +88,10 @@ describe('getByUserId (integration)', () => {
     const result3 = await getByUserId(user3.id);
 
     expect(result1?.id).toBe(profile1.id);
-    expect(result1?.email).toBe('user1@example.com');
+    expect(result1?.email).toBe(profile1.email);
 
     expect(result2?.id).toBe(profile2.id);
-    expect(result2?.email).toBe('user2@example.com');
+    expect(result2?.email).toBe(profile2.email);
 
     expect(result3?.id).toBe(profile3.id);
     expect(result3?.email).toBeNull();

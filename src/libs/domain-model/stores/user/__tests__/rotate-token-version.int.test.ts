@@ -1,5 +1,6 @@
 import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { prisma } from '~database';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { rotateTokenVersion } from '../rotate-token-version';
@@ -60,6 +61,6 @@ describe('rotateTokenVersion (integration)', () => {
   });
 
   it('throws for non-existent id', async () => {
-    await expect(rotateTokenVersion('non-existent-id')).rejects.toThrow();
+    await expect(rotateTokenVersion(faker.string.uuid())).rejects.toThrow();
   });
 });

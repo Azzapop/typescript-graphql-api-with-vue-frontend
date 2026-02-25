@@ -1,5 +1,6 @@
 import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getById } from '../get-by-id';
 
@@ -27,7 +28,7 @@ describe('getById (integration)', () => {
   });
 
   it('returns null for a non-existent id', async () => {
-    const user = await getById('non-existent-id');
+    const user = await getById(faker.string.uuid());
 
     expect(user).toBeNull();
   });

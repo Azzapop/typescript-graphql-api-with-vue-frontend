@@ -3,6 +3,7 @@ import {
   defineUserFactory,
 } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getWithUser } from '../get-with-user';
 
@@ -41,7 +42,7 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
   });
 
   it('returns null for non-existent username', async () => {
-    const result = await getWithUser('non-existent-user');
+    const result = await getWithUser(faker.internet.userName());
 
     expect(result).toBeNull();
   });
@@ -54,14 +55,13 @@ describe('LocalCredentialsStore.getWithUser (integration)', () => {
 
   it('is case-sensitive', async () => {
     const { LocalCredentialsFactory } = setup();
-    const credentials = await LocalCredentialsFactory.create({
-      username: 'testuser',
-    });
+    const username = faker.internet.userName().toLowerCase();
+    const credentials = await LocalCredentialsFactory.create({ username });
 
-    const result = await getWithUser('TestUser');
+    const result = await getWithUser(username.toUpperCase());
 
     expect(result).toBeNull();
-    expect(credentials.username).toBe('testuser');
+    expect(credentials.username).toBe(username);
   });
 
   it('returns the correct credentials for each username when multiple exist', async () => {

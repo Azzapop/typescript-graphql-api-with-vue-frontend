@@ -1,5 +1,6 @@
 import { defineUserFactory } from '#test/factories';
 import { cleanWorkerDatabase } from '#test/integration';
+import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createToken } from '../create-token';
 
@@ -40,8 +41,8 @@ describe('createToken (integration)', () => {
 
   it('throws when the user does not exist', async () => {
     const fakeUser = {
-      id: 'non-existent-user-id',
-      tokenVersion: 'fake-version',
+      id: faker.string.uuid(),
+      tokenVersion: faker.string.uuid(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
