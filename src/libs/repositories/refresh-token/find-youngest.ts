@@ -1,13 +1,13 @@
+import type { RefreshToken } from '@prisma/client';
 import { parsePrismaError, prisma } from '~database';
 import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
-import type { RefreshToken } from '../../models';
-import { handleStoreError } from '../handle-store-error';
-import type { StoreError } from '../stores-types';
+import { handleRepositoryError } from '../handle-repository-error';
+import type { RepositoryError } from '../repository-types';
 
 export const findYoungest = async (
   userId: string
-): Promise<Result<RefreshToken | null, StoreError>> => {
+): Promise<Result<RefreshToken | null, RepositoryError>> => {
   try {
     const data = await prisma().refreshToken.findFirst({
       where: { userId },
@@ -19,6 +19,6 @@ export const findYoungest = async (
     logger.error(
       `Failed to find youngest refresh token for userId "${userId}"`
     );
-    return handleStoreError(parsed);
+    return handleRepositoryError(parsed);
   }
 };

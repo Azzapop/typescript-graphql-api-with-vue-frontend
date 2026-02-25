@@ -1,7 +1,7 @@
 import { createMock } from '@golevelup/ts-vitest';
+import type { RefreshToken, User } from '@prisma/client';
 import { SignJWT } from 'jose';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { RefreshToken, User } from '~libs/domain-model';
 import { REFRESH_SECRET, REFRESH_TTL_TIMESPAN } from '../refresh-tokens-const';
 import { signRefreshToken } from '../sign-refresh-token';
 

@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import type { User } from '@prisma/client';
 import type { Server as HttpServer } from 'http';
-import type { User } from '~libs/domain-model';
 import { createSchema } from './create-schema';
 
 interface MyContext {

@@ -1,7 +1,7 @@
+import type { User } from '@prisma/client';
 import { refreshTokens } from '~libs/auth-tokens';
-import type { User } from '~libs/domain-model';
-import { RefreshTokenStore, UserStore } from '~libs/domain-model';
 import { logger } from '~libs/logger';
+import { refreshTokenRepo, userRepo } from '~libs/repositories';
 
 export const validateRefreshToken = async (
   refreshToken: string
@@ -13,7 +13,7 @@ export const validateRefreshToken = async (
 
   const { data } = result;
   const { sub: userId, refreshTokenId, tokenVersion } = data;
-  const userResult = await UserStore.getById(userId);
+  const userResult = await userRepo.getById(userId);
 
   if (!userResult.success) {
     logger.error(
@@ -32,7 +32,7 @@ export const validateRefreshToken = async (
     return null;
   }
 
-  const youngestResult = await RefreshTokenStore.findYoungest(userId);
+  const youngestResult = await refreshTokenRepo.findYoungest(userId);
 
   if (!youngestResult.success) {
     logger.error(
@@ -45,7 +45,7 @@ export const validateRefreshToken = async (
     logger.info(
       `Replay attack detected for user "${userId}", clearing token family`
     );
-    await RefreshTokenStore.clearTokenFamily(userId);
+    await refreshTokenRepo.clearTokenFamily(userId);
     return null;
   }
 

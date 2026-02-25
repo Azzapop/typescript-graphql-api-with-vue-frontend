@@ -27,10 +27,7 @@ src/
 │   ├── schema.prisma     # Prisma schema
 │   └── migrations/       # Prisma migrations
 ├── libs/                 # Shared libraries
-│   ├── domain-model/     # Domain models, stores, types
-│   │   ├── models/       # TypeScript types for domain entities
-│   │   ├── stores/       # Data access functions (one dir per entity)
-│   │   └── types/        # Shared types (Result, etc.)
+│   ├── repositories/     # Data access functions (one dir per entity)
 │   ├── module/           # Module system (createModule, mountModules)
 │   ├── graphql-types/    # Generated GraphQL TypeScript types
 │   ├── graphql-validators/ # Generated Zod schemas for GraphQL
@@ -100,11 +97,11 @@ try {
 }
 ```
 
-### Store Functions
+### Repository Functions
 
-- Located in `src/libs/domain-model/stores/<entity>/`
+- Located in `src/libs/repositories/<entity>/`
 - One function per file, exported via index
-- Return types from `models/`, not Prisma types directly
+- Return Prisma types directly
 - Use `Result` type for operations that can fail
 
 ### GraphQL Context

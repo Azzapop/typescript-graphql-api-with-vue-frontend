@@ -1,4 +1,4 @@
-import type { User } from '~libs/domain-model';
+import type { User } from '@prisma/client';
 
 export type GraphQLContext = {
   user: User;

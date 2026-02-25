@@ -1,6 +1,6 @@
 import { createMock } from '@golevelup/ts-vitest';
+import type { UserProfile } from '@prisma/client';
 import { describe, it, expect } from 'vitest';
-import type { UserProfile } from '~libs/domain-model';
 import { transformUserProfile } from '../transform-user-profile';
 
 describe('transformUserProfile', () => {

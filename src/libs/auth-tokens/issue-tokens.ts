@@ -1,6 +1,6 @@
-import type { User } from '~libs/domain-model';
-import { RefreshTokenStore } from '~libs/domain-model';
+import type { User } from '@prisma/client';
 import { logger } from '~libs/logger';
+import { refreshTokenRepo } from '~libs/repositories';
 import type { Result } from '~libs/result';
 import { signAccessToken } from './access-tokens';
 import { signRefreshToken } from './refresh-tokens';
@@ -13,7 +13,7 @@ export const issueTokens = async (
   Result<{ accessToken: string; refreshToken: string }, IssueTokensError>
 > => {
   const accessToken = await signAccessToken(user);
-  const refreshTokenResult = await RefreshTokenStore.createToken(user);
+  const refreshTokenResult = await refreshTokenRepo.createToken(user);
 
   if (!refreshTokenResult.success) {
     logger.error(

@@ -1,10 +1,12 @@
 import type { PrismaError } from '~database';
 import { logger } from '~libs/logger';
-import type { StoreError } from './stores-types';
+import type { RepositoryError } from './repository-types';
 
-type StoreErrorResult = { success: false; error: StoreError };
+type RepositoryErrorResult = { success: false; error: RepositoryError };
 
-export const handleStoreError = (parsed: PrismaError): StoreErrorResult => {
+export const handleRepositoryError = (
+  parsed: PrismaError
+): RepositoryErrorResult => {
   switch (parsed.code) {
     case 'RECORD_NOT_FOUND':
       logger.error('[RECORD_NOT_FOUND]');
