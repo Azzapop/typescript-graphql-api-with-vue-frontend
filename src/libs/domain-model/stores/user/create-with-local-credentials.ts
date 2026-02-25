@@ -13,11 +13,9 @@ type CreateWithLocalCredentialsInput = {
   password: string;
 };
 
-type CreateWithLocalCredentialsError = Extract<StoreError, 'USERNAME_EXISTS' | 'UNEXPECTED_ERROR'>;
-
 export const createWithLocalCredentials = async (
   input: CreateWithLocalCredentialsInput
-): Promise<Result<User, CreateWithLocalCredentialsError>> => {
+): Promise<Result<User, StoreError>> => {
   const { username, password } = input;
 
   logger.info(`Creating user with username "${username}"`);

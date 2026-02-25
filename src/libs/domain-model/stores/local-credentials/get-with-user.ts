@@ -6,11 +6,9 @@ import type { StoreError } from '../stores-types';
 
 type LocalCredentialsWithUser = LocalCredentials & { user: User };
 
-type GetWithUserError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
-
 export const getWithUser = async (
   username: string
-): Promise<Result<LocalCredentialsWithUser | null, GetWithUserError>> => {
+): Promise<Result<LocalCredentialsWithUser | null, StoreError>> => {
   try {
     const data = await prisma().localCredentials.findUnique({
       where: { username },

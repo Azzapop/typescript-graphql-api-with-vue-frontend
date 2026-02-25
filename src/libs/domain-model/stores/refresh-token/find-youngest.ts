@@ -4,11 +4,9 @@ import type { Result } from '~libs/result';
 import type { RefreshToken } from '../../models';
 import type { StoreError } from '../stores-types';
 
-type FindYoungestError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
-
 export const findYoungest = async (
   userId: string
-): Promise<Result<RefreshToken | null, FindYoungestError>> => {
+): Promise<Result<RefreshToken | null, StoreError>> => {
   try {
     const data = await prisma().refreshToken.findFirst({
       where: { userId },

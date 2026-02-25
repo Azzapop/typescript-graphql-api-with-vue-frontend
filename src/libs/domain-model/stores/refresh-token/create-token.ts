@@ -4,11 +4,9 @@ import type { Result } from '~libs/result';
 import type { RefreshToken, User } from '../../models';
 import type { StoreError } from '../stores-types';
 
-type CreateTokenError = Extract<StoreError, 'FOREIGN_KEY_CONSTRAINT' | 'UNEXPECTED_ERROR'>;
-
 export const createToken = async (
   user: User
-): Promise<Result<RefreshToken, CreateTokenError>> => {
+): Promise<Result<RefreshToken, StoreError>> => {
   const { id: userId } = user;
 
   try {

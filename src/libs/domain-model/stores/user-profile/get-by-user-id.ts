@@ -4,11 +4,9 @@ import type { Result } from '~libs/result';
 import type { UserProfile } from '../../models';
 import type { StoreError } from '../stores-types';
 
-type GetByUserIdError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
-
 export const getByUserId = async (
   userId: string
-): Promise<Result<UserProfile | null, GetByUserIdError>> => {
+): Promise<Result<UserProfile | null, StoreError>> => {
   try {
     const data = await prisma().userProfile.findUnique({ where: { userId } });
     return { success: true, data };

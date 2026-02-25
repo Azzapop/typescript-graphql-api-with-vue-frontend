@@ -5,11 +5,9 @@ import type { Result } from '~libs/result';
 import type { User } from '../../models';
 import type { StoreError } from '../stores-types';
 
-type RotateTokenVersionError = Extract<StoreError, 'NOT_FOUND' | 'UNEXPECTED_ERROR'>;
-
 export const rotateTokenVersion = async (
   userId: User['id']
-): Promise<Result<void, RotateTokenVersionError>> => {
+): Promise<Result<void, StoreError>> => {
   const tokenVersion = generateTokenVersion();
 
   try {

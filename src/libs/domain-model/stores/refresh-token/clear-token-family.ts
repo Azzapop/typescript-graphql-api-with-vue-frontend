@@ -3,11 +3,9 @@ import { logger } from '~libs/logger';
 import type { Result } from '~libs/result';
 import type { StoreError } from '../stores-types';
 
-type ClearTokenFamilyError = Extract<StoreError, 'UNEXPECTED_ERROR'>;
-
 export const clearTokenFamily = async (
   userId: string
-): Promise<Result<void, ClearTokenFamilyError>> => {
+): Promise<Result<void, StoreError>> => {
   try {
     await prisma().refreshToken.deleteMany({ where: { userId } });
     return { success: true, data: undefined };
