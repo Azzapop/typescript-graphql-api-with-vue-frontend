@@ -14,7 +14,13 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
   const credentialsResult =
     await LocalCredentialsStore.getWithUser(username);
 
-  if (!credentialsResult.success || !credentialsResult.data) {
+  if (!credentialsResult.success) {
+    logger.error('Failed to look up credentials during login');
+    done(null, false);
+    return;
+  }
+
+  if (!credentialsResult.data) {
     logger.info('No user found with the specified credentials');
     done(null, false);
     return;

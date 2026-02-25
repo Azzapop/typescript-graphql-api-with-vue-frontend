@@ -1,5 +1,6 @@
 import type { Handler } from 'express';
 import { accessTokens, issueTokens, refreshTokens } from '~libs/auth-tokens';
+import { logger } from '~libs/logger';
 import { authMiddlewareConfig } from './auth-middleware-config';
 
 export const handleTokens = (): Handler => async (req, res, next) => {
@@ -15,6 +16,7 @@ export const handleTokens = (): Handler => async (req, res, next) => {
     const tokensResult = await issueTokens(user);
 
     if (!tokensResult.success) {
+      logger.error(`Failed to issue tokens for user "${user.id}"`);
       res.clearCookie('access_token').clearCookie('refresh_token');
       return next();
     }
