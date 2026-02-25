@@ -1,9 +1,10 @@
 import vue from '@vitejs/plugin-vue';
+import graphqlLoader from 'vite-plugin-graphql-loader';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [tsconfigPaths({ loose: true }), vue()],
+  plugins: [tsconfigPaths({ loose: true }), vue(), graphqlLoader()],
   test: {
     globals: true,
     environment: 'node',
