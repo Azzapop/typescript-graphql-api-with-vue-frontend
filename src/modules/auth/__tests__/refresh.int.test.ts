@@ -45,6 +45,7 @@ describe('POST /auth/refresh', () => {
       password,
     });
     if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
 
     const loginCookies = await loginAndGetCookies(app, username, password);
 
@@ -53,7 +54,7 @@ describe('POST /auth/refresh', () => {
       .set('Cookie', loginCookies);
 
     expect(resp.status).toBe(200);
-    expect(resp.body).toEqual({ user: { id: createResult.data.id } });
+    expect(resp.body).toEqual({ user: { id: createdUser.id } });
 
     // eslint-disable-next-line prefer-destructuring
     const cookies = resp.headers['set-cookie'];
@@ -61,6 +62,34 @@ describe('POST /auth/refresh', () => {
     const cookieArr = Array.isArray(cookies) ? cookies : [];
     expect(extractCookieValue(cookieArr, 'access_token')).toBeTruthy();
     expect(extractCookieValue(cookieArr, 'refresh_token')).toBeTruthy();
+  });
+
+  it('replaces the refresh token record in the database on successful refresh', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    const loginCookies = await loginAndGetCookies(app, username, password);
+
+    const tokenAfterLogin = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenAfterLogin.success).toBe(true);
+    if (!tokenAfterLogin.success) throw new Error('Unexpected result shape');
+    expect(tokenAfterLogin.data).not.toBeNull();
+    const loginTokenId = tokenAfterLogin.data?.id;
+
+    await request(app)
+      .post('/auth/refresh')
+      .set('Cookie', loginCookies);
+
+    const tokenAfterRefresh = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenAfterRefresh.success).toBe(true);
+    if (!tokenAfterRefresh.success) throw new Error('Unexpected result shape');
+    expect(tokenAfterRefresh.data).not.toBeNull();
+    // A new record was created — the old one is no longer the youngest
+    expect(tokenAfterRefresh.data?.id).not.toBe(loginTokenId);
   });
 
   it('issues tokens that are different from the ones issued at login', async () => {

@@ -2,7 +2,7 @@ import { cleanWorkerDatabase, createTestApp } from '#test';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { localCredentialsRepo, userRepo } from '~libs/repositories';
+import { localCredentialsRepo, refreshTokenRepo, userRepo } from '~libs/repositories';
 
 describe('POST /auth/login/local', () => {
   beforeEach(async () => {
@@ -22,6 +22,7 @@ describe('POST /auth/login/local', () => {
       password,
     });
     if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
 
     const resp = await request(app)
       .post('/auth/login/local')
@@ -29,7 +30,7 @@ describe('POST /auth/login/local', () => {
       .send({ username, password });
 
     expect(resp.status).toBe(200);
-    expect(resp.body).toEqual({ user: { id: createResult.data.id } });
+    expect(resp.body).toEqual({ user: { id: createdUser.id } });
 
     // eslint-disable-next-line prefer-destructuring
     const cookies = resp.headers['set-cookie'];
@@ -38,6 +39,46 @@ describe('POST /auth/login/local', () => {
     expect(cookieStr).toMatch(/access_token=.+/);
     expect(cookieStr).toMatch(/refresh_token=.+/);
     expect(cookieStr).toMatch(/HttpOnly/i);
+  });
+
+  it('persists a refresh token record in the database on successful login', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+      .type('form')
+      .send({ username, password });
+
+    expect(resp.status).toBe(200);
+
+    const tokenResult = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenResult.success).toBe(true);
+    if (!tokenResult.success) throw new Error('Unexpected result shape');
+    expect(tokenResult.data).not.toBeNull();
+  });
+
+  it('does not persist a refresh token when credentials are invalid', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    await request(app)
+      .post('/auth/login/local')
+      .type('form')
+      .send({ username, password: 'wrong-password' });
+
+    const tokenResult = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenResult.success).toBe(true);
+    if (!tokenResult.success) throw new Error('Unexpected result shape');
+    expect(tokenResult.data).toBeNull();
   });
 
   it('returns 401 when password is wrong', async () => {
