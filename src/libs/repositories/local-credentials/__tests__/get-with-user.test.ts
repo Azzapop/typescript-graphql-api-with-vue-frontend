@@ -13,7 +13,7 @@ const setup = () => ({
   }),
 });
 
-describe('LocalCredentialsStore.getWithUser (integration)', () => {
+describe('LocalCredentialsStore.getWithUser', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

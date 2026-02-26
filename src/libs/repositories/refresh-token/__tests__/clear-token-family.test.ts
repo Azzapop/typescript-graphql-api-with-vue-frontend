@@ -12,7 +12,7 @@ const setup = () => ({
   }),
 });
 
-describe('clearTokenFamily (integration)', () => {
+describe('clearTokenFamily', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

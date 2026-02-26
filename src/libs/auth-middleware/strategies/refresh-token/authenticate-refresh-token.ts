@@ -9,9 +9,8 @@ export const authenticateRefreshToken = (): Handler => (req, res, next) => {
       // TODO log info here when safely redacting information
 
       if (err) {
-        logger.error('Error verifying local credentials');
-        // TODO log error here when safely redacting information
-        return next();
+        logger.error('Error verifying refresh token');
+        return next(err);
       }
 
       if (!user) {

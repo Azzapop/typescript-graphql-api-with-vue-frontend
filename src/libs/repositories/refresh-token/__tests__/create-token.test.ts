@@ -8,7 +8,7 @@ const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('createToken (integration)', () => {
+describe('createToken', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

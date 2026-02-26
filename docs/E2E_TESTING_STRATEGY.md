@@ -10,7 +10,7 @@
 
 This document is a **placeholder** for the E2E testing strategy, which will be developed after unit and integration testing infrastructure is in place.
 
-E2E tests verify **complete user workflows** through the **entire application stack**, including the **browser UI**.
+E2E tests are **full walkthroughs of user flows for the frontend app**. They exercise the complete stack from browser through SSR, API, and database.
 
 ---
 
@@ -18,32 +18,27 @@ E2E tests verify **complete user workflows** through the **entire application st
 
 ### What Will Be E2E Tested
 
-**Critical User Workflows**:
-- User registration and login flow
-- Password reset flow
-- Profile management
+**Complete User Flow Walkthroughs**:
+- User registration and login flow (start to finish)
+- Password reset flow (start to finish)
+- Profile management workflow
 - Core feature workflows (specific to this app)
 
-**Cross-Browser Compatibility**:
+**SSR + Navigation**:
+- Initial page load with server-rendered content
+- Hydration and client-side navigation
+- Deep linking
+
+**Cross-Browser Compatibility** (for critical flows):
 - Chromium (primary)
 - Firefox (secondary)
 - WebKit/Safari (tertiary)
 
-**SSR Rendering**:
-- Initial page load with server-rendered content
-- Hydration
-- Client-side navigation
+### What Will NOT Be E2E Tested
 
-**Error Scenarios**:
-- Network errors
-- Validation errors
-- Authentication failures
-- 404/500 error pages
-
-**Responsive Design** (optional):
-- Desktop viewport
-- Mobile viewport
-- Tablet viewport
+- Individual lib functions (unit tests)
+- API endpoint behavior (integration tests)
+- Edge cases and error conditions (unit/integration tests)
 
 ---
 

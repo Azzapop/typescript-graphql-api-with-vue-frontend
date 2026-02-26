@@ -11,7 +11,7 @@ const setup = () => ({
   }),
 });
 
-describe('RefreshTokenStore.findYoungest (integration)', () => {
+describe('RefreshTokenStore.findYoungest', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

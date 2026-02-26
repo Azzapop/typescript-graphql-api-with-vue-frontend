@@ -1,6 +1,6 @@
 import express from 'express';
 import http from 'http';
-import { logger } from '~libs/logger';
+import { errorHandler } from '~libs/error-handler';
 import { mountModules } from '~libs/module';
 import { entry as authEntry } from '~modules/auth';
 import { entry as clientEntry } from '~modules/client';
@@ -17,16 +17,7 @@ export const server = async () => {
   ]);
 
   mountModules(expressServer, modules);
-
-  // @ts-expect-error implicit any types
-  // TODO move this out to a util function again
-  // Error handler in case something goes wrong somewhere in our process
-  expressServer.use((err, _req, res, _next) => {
-    logger.error('===== Error handler middleware =====');
-    logger.error(JSON.stringify({ err }));
-    logger.error('====================================');
-    res.status(500).json({ e: 'error with the request' });
-  });
+  expressServer.use(errorHandler);
 
   return httpServer;
 };

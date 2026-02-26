@@ -8,7 +8,7 @@ const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('getById (integration)', () => {
+describe('getById', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

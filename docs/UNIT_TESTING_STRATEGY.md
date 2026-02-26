@@ -7,33 +7,32 @@
 
 ## Overview
 
-This document provides a comprehensive strategy for implementing unit tests in the TypeScript/GraphQL/Vue application. Unit tests verify **individual units of code in complete isolation**, with all external dependencies mocked.
+This document provides a comprehensive strategy for implementing unit tests in the TypeScript/GraphQL/Vue application. Unit tests verify the **inputs and outputs of library functions** (`src/libs/`). They may touch the database where appropriate (e.g., store functions), otherwise they use `createMock` to get proxies of objects.
 
 ### Definition
 
 A unit test:
 
-- ✅ Tests a single function, class, or component
-- ✅ Has no I/O operations (no database, no filesystem, no network)
-- ✅ Executes in milliseconds
+- ✅ Tests a single function's inputs and outputs
+- ✅ Scoped to `src/libs/` functions
+- ✅ May use a real database where appropriate (e.g., store functions)
+- ✅ Uses `createMock` for dependencies that don't need to be real
 - ✅ Is deterministic (same input → same output)
-- ✅ Runs in parallel with other tests
-- ✅ Requires no setup beyond mocks
+- ✅ Runs independently of other tests
 
 ### Purpose
 
 - **Fast feedback** during development (TDD-friendly)
-- **Confidence in pure logic** (transformations, calculations, validations)
+- **Confidence in lib functions** (transformations, stores, validations, token logic)
 - **Documentation** of function behavior
-- **Regression protection** for utility code
+- **Regression protection** for library code
 - **Foundation** for test-driven development
 
 ### What Unit Tests Are NOT
 
-- ❌ Not for testing database interactions (that's integration tests)
-- ❌ Not for testing GraphQL resolvers (they touch the database via stores)
-- ❌ Not for testing API routes (they touch the database)
-- ❌ Not for testing complete user workflows (that's E2E tests)
+- ❌ Not for testing API modules end-to-end (that's integration tests)
+- ❌ Not for testing complete user workflows through the browser (that's E2E tests)
+- ❌ Not for testing generated code (GraphQL types, Prisma validators, API clients)
 
 ---
 
@@ -53,17 +52,23 @@ A unit test:
 - Any Prisma → GraphQL transformation
 - Any data mapping or conversion logic
 
+**Store Functions** (with real database):
+
+- `src/libs/domain-model/stores/**`
+- Test inputs and outputs against a real PostgreSQL database
+- Use database cleanup between tests
+
 **Validation Logic**:
 
 - Input validators
 - Schema validators (if not generated)
 - Business rule validators
 
-**Token Logic** (with mocked crypto):
+**Token Logic** (with `createMock` for dependencies):
 
-- `src/libs/auth-tokens/access-tokens/sign-access-token.ts` (mock jose)
-- `src/libs/auth-tokens/access-tokens/verify-access-token.ts` (mock jose)
-- Token generation with mocked randomness
+- `src/libs/auth-tokens/access-tokens/sign-access-token.ts`
+- `src/libs/auth-tokens/access-tokens/verify-access-token.ts`
+- Token generation and verification
 
 **Vue Components** (with mocked composables/API calls):
 
@@ -81,24 +86,17 @@ A unit test:
 
 ### Out of Scope ❌
 
-**Database Operations** → Integration Tests:
+**API Modules** → Integration Tests:
 
-- All store functions (`src/libs/domain-model/stores/**`)
-- Any function that imports `prisma`
+- Route handlers (`src/modules/auth/routes/**`)
+- GraphQL resolvers (`src/modules/graphql/resolvers/**`)
+- Module entry points (`src/modules/*/entry.ts`)
+- These are tested as full modules via HTTP in integration tests
 
-**GraphQL Resolvers** → Integration Tests:
+**Frontend App** → E2E Tests:
 
-- All resolver functions (`src/modules/graphql/resolvers/**`)
-- They call stores, which touch the database
-
-**API Route Handlers** → Integration Tests:
-
-- All route handlers (`src/modules/auth/routes/**`)
-- They call stores or perform authentication
-
-**Module Entry Points**:
-
-- `src/modules/*/entry.ts` (configuration, not logic)
+- Complete user flow walkthroughs
+- Browser-based interactions
 
 **Generated Code**:
 
@@ -280,7 +278,9 @@ Track progress as each lib/module is analyzed and tested. Each PR should focus o
 #### Domain Model
 - [ ] `domain-model/models/` - Type definitions only (skip)
 - [x] `database/parse-prisma-error.ts` - Prisma error parsing and mapping ✅ 100% coverage (19 tests)
-- [ ] `domain-model/stores/` - Integration tests only (skip for unit tests)
+- [ ] `domain-model/stores/user/` - User store functions (with real DB)
+- [ ] `domain-model/stores/refresh-token/` - RefreshToken store functions (with real DB)
+- [ ] `domain-model/stores/local-credentials/` - LocalCredentials store functions (with real DB)
 - [ ] `domain-model/types/` - Type definitions only (skip)
 
 #### GraphQL

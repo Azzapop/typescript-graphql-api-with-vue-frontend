@@ -9,7 +9,7 @@ type Handler = RequestHandler<any, any, any, any, any>;
  * Use this helper to wrap any async functions and ensure their errors
  * are passed along to the application error handler
  */
-export const asyncHanlder = (handler: Handler) => {
+export const asyncHandler = (handler: Handler) => {
   const wrapper: Handler = (req, res, next): Promise<void> => {
     const handlerReturn = handler(req, res, next);
     return Promise.resolve(handlerReturn).catch(next);

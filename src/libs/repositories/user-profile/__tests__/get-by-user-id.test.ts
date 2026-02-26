@@ -11,7 +11,7 @@ const setup = () => ({
   }),
 });
 
-describe('getByUserId (integration)', () => {
+describe('getByUserId', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

@@ -10,8 +10,7 @@ export const authenticateLocalCredentials = (): Handler => (req, res, next) => {
 
       if (err) {
         logger.error('Error verifying local credentials');
-        // TODO log error here when safely redacting information
-        return next();
+        return next(err);
       }
 
       if (!user) {

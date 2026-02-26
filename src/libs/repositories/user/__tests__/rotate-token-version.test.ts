@@ -9,7 +9,7 @@ const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('rotateTokenVersion (integration)', () => {
+describe('rotateTokenVersion', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });
