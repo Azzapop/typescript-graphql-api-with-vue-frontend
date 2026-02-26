@@ -1,6 +1,6 @@
-# Integration Test Infrastructure
+# Test Infrastructure
 
-This directory contains utilities for running integration tests with real database connections.
+This directory contains utilities for running tests with real database connections. Used by both **unit tests** (lib functions that touch the DB, like store functions) and **integration tests** (full module API tests via HTTP).
 
 ## Architecture
 
@@ -14,9 +14,9 @@ Using a dedicated schema rather than a separate database keeps setup simple: no 
 
 `TRUNCATE` resets auto-increment sequences and removes all rows atomically, whereas `DELETE` leaves sequences in their post-insert state. Sequence reset ensures tests cannot accidentally assert on ID values that were influenced by prior test runs. CASCADE handles foreign key ordering automatically, removing the need to specify a deletion order.
 
-### Test App Setup
+### Test App Setup (Integration Tests Only)
 
-The test app mounts only the auth and GraphQL modules — the client (SSR) module is excluded because integration tests target the API layer. This keeps test startup fast and focused.
+The test app mounts only the auth and GraphQL modules — the client (SSR) module is excluded because integration tests target the API layer. This keeps test startup fast and focused. Unit tests that need the database use the Prisma client directly without the Express app.
 
 ## Test Lifecycle
 
@@ -35,10 +35,16 @@ The test app mounts only the auth and GraphQL modules — the client (SSR) modul
 ## Running Tests
 
 ```bash
+# Unit tests (includes repository tests that use the DB)
+npm run test:unit
+npm run test:unit:watch
+
+# Integration tests (full module API tests via HTTP)
 npm run test:integration
 npm run test:integration:watch
-npm run test:integration -- --reporter=verbose
-npm run test:integration -- src/path/to/specific.int.test.ts
+
+# All tests
+npm run test:all
 ```
 
 ## Prerequisites

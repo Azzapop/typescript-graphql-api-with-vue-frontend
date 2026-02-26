@@ -1,5 +1,5 @@
+import { cleanWorkerDatabase } from '#test';
 import { defineUserFactory } from '#test/factories';
-import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getById } from '../get-by-id';
@@ -8,7 +8,7 @@ const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('getById (integration)', () => {
+describe('getById', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

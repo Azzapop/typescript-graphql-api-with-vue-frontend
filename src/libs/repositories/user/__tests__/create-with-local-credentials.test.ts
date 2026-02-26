@@ -1,10 +1,10 @@
-import { cleanWorkerDatabase } from '#test/integration';
+import { cleanWorkerDatabase } from '#test';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '~database';
 import { createWithLocalCredentials } from '../create-with-local-credentials';
 
-describe('createWithLocalCredentials (integration)', () => {
+describe('createWithLocalCredentials', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

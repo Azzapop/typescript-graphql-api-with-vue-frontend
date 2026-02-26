@@ -41,20 +41,20 @@ Our testing strategy follows the classic testing pyramid model:
                  /______\              Slowest, most expensive
                 /        \             Full browser, full stack
                /  Integ.  \
-              /____________\           30% of tests
-             /              \          Moderate speed, moderate cost
-            /   Unit Tests   \         Real database, no browser
+              /____________\           20% of tests
+             /              \          Full module API tests
+            /   Unit Tests   \         HTTP-level verification
            /__________________\
-                                       60% of tests
-                                       Fastest, cheapest
-                                       Isolated, mocked dependencies
+                                       70% of tests
+                                       Test lib inputs/outputs
+                                       May touch DB where appropriate
 ```
 
 ### Why This Shape?
 
-- **More unit tests**: Fast, isolated, easy to write and maintain
-- **Fewer integration tests**: Slower, require database setup, test interactions
-- **Minimal E2E tests**: Slowest, most brittle, test critical user workflows only
+- **More unit tests**: Test every lib function's inputs and outputs directly
+- **Fewer integration tests**: Full module-level API tests that verify the complete HTTP stack
+- **Minimal E2E tests**: Full user flow walkthroughs through the frontend app
 
 ### Anti-Pattern: Inverted Pyramid
 
@@ -71,29 +71,27 @@ Our testing strategy follows the classic testing pyramid model:
 
 ### 1. Unit Tests
 
-**Definition**: Tests that verify a single unit of code in isolation, with all external dependencies mocked.
+**Definition**: Tests that verify the inputs and outputs of library functions (`src/libs/`). They may touch the database where appropriate (e.g., store functions), otherwise they use `createMock` to get proxies of objects.
 
 **Characteristics**:
-- ✅ **No I/O operations** (no database, no filesystem, no network)
-- ✅ **Fast execution** (milliseconds per test)
+- ✅ **Test inputs and outputs** of individual functions
+- ✅ **Scoped to libs** (`src/libs/`)
+- ✅ **May touch the database** where appropriate (e.g., store functions)
+- ✅ **Use `createMock`** for dependencies that don't need to be real
 - ✅ **Deterministic** (same input always produces same output)
 - ✅ **Isolated** (no shared state between tests)
-- ✅ **Mocked dependencies** (external modules are mocked)
 
 **What to unit test**:
-- Pure utility functions
-- Data transformers (e.g., Prisma → GraphQL transformers)
-- Business logic that doesn't touch external systems
-- Vue component rendering and user interactions (with mocked API calls)
-- Token generation/validation logic (with mocked signing/verification)
+- Pure utility functions (transformers, parsers, validators)
+- Store functions (with real database)
+- Token generation/validation logic
 - Error parsers (e.g., `parsePrismaError`)
-- Validation logic
+- Any function exported from `src/libs/`
 
 **What NOT to unit test**:
-- Store functions (they use Prisma → database)
-- GraphQL resolvers (they call stores → database)
-- Express route handlers (they call stores)
-- Any function that performs I/O
+- Module entry points and route handlers (those are integration tests)
+- Generated code (GraphQL types, Prisma validators, API clients)
+- Pure type definitions
 
 **Example**:
 ```typescript
@@ -115,11 +113,31 @@ describe('transformUserProfile', () => {
       email: 'test@example.com',
     });
   });
+});
 
-  it('returns null for email when email is null', () => {
-    const prismaProfile = createTestUserProfile({ email: null });
-    const result = transformUserProfile(prismaProfile);
-    expect(result.email).toBeNull();
+// ✅ UNIT TEST - Store function with real database
+describe('createWithLocalCredentials', () => {
+  beforeEach(async () => {
+    await cleanDatabase();
+  });
+
+  it('creates user in database with hashed password', async () => {
+    const result = await createWithLocalCredentials({
+      username: 'testuser',
+      password: 'password123',
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.id).toBeDefined();
+    }
+  });
+
+  it('returns USERNAME_EXISTS when username is taken', async () => {
+    await createWithLocalCredentials({ username: 'existing', password: 'pass' });
+    const result = await createWithLocalCredentials({ username: 'existing', password: 'other' });
+
+    expect(result).toEqual({ success: false, error: 'USERNAME_EXISTS' });
   });
 });
 ```
@@ -134,101 +152,95 @@ describe('transformUserProfile', () => {
 
 ### 2. Integration Tests
 
-**Definition**: Tests that verify multiple units working together with real external dependencies (database, APIs, etc.).
+**Definition**: Full tests of modules that expose APIs (`src/modules/auth/`, `src/modules/graphql/`). They exercise the complete HTTP stack — routing, middleware, authentication, stores, and database — via supertest.
 
 **Characteristics**:
-- ✅ **Real I/O operations** (real database, real file system)
+- ✅ **Full module-level testing** via HTTP requests
+- ✅ **Real database, real middleware, real auth**
+- ✅ **Test the API contract** that clients actually consume
 - ⚠️ **Slower execution** (seconds per test)
-- ✅ **Test interactions** (how units work together)
 - ⚠️ **Require setup/teardown** (database seeding, cleanup)
-- ❌ **No UI/browser** (backend only)
+- ❌ **No UI/browser** (API layer only)
 
 **What to integration test**:
-- **Store functions** (Prisma client → PostgreSQL database)
-- **GraphQL resolvers** (resolver → store → database)
-- **Authentication flows** (login → token generation → database verification)
-- **API route handlers** (Express route → store → database)
-- **Module integration** (how modules interact with each other)
-- **SSR rendering** (server-side GraphQL queries)
+- **Auth module endpoints** (POST /auth/login/local, POST /auth/refresh, POST /auth/logout)
+- **GraphQL module** (queries and mutations via HTTP, including auth middleware)
+- **Full request/response cycles** (status codes, headers, cookies, response bodies)
+- **Error handling** at the HTTP level (401, 403, 400, 500)
 
 **What NOT to integration test**:
-- Pure functions (those should be unit tests)
-- Complete user workflows through UI (those are E2E tests)
+- Individual lib functions (those are unit tests)
+- Frontend user flows (those are E2E tests)
 
 **Example**:
 ```typescript
-// ✅ INTEGRATION TEST - Real database
-describe('createWithLocalCredentials (integration)', () => {
+// ✅ INTEGRATION TEST - Full module API test
+describe('POST /auth/login/local', () => {
   beforeEach(async () => {
-    await cleanDatabase(); // Real database cleanup
+    await cleanDatabase();
+    await createTestUser({ username: 'testuser', password: 'password123' });
   });
 
-  it('creates user in database with hashed password', async () => {
-    const result = await createWithLocalCredentials({
-      username: 'testuser',
-      password: 'password123',
-    });
+  it('returns tokens on successful login', async () => {
+    const response = await request(app)
+      .post('/auth/login/local')
+      .send({ username: 'testuser', password: 'password123' });
 
-    expect(result.success).toBe(true);
-
-    if (result.success) {
-      // Verify in real database
-      const dbUser = await prisma.user.findUnique({
-        where: { id: result.data.id },
-        include: { localCredentials: true },
-      });
-
-      expect(dbUser).toBeDefined();
-      expect(dbUser!.localCredentials!.username).toBe('testuser');
-      expect(dbUser!.localCredentials!.hashedPassword).not.toBe('password123');
-
-      // Verify password was hashed correctly
-      const isValid = await bcrypt.compare(
-        'password123',
-        dbUser!.localCredentials!.hashedPassword
-      );
-      expect(isValid).toBe(true);
-    }
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('accessToken');
+    expect(response.headers['set-cookie']).toBeDefined();
   });
 
-  it('returns USERNAME_EXISTS when username is taken', async () => {
-    // Create first user in real database
-    await createWithLocalCredentials({
-      username: 'existing',
-      password: 'password123',
-    });
+  it('returns 401 with invalid credentials', async () => {
+    const response = await request(app)
+      .post('/auth/login/local')
+      .send({ username: 'testuser', password: 'wrong' });
 
-    // Try to create duplicate
-    const result = await createWithLocalCredentials({
-      username: 'existing',
-      password: 'different',
-    });
+    expect(response.status).toBe(401);
+  });
+});
 
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error).toBe('USERNAME_EXISTS');
-    }
+// ✅ INTEGRATION TEST - GraphQL via HTTP
+describe('GraphQL me query', () => {
+  it('returns current user when authenticated', async () => {
+    const { accessToken } = await loginTestUser(app);
+
+    const response = await request(app)
+      .post('/graphql')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({ query: '{ me { id username } }' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.me.username).toBe('testuser');
+  });
+
+  it('rejects unauthenticated requests', async () => {
+    const response = await request(app)
+      .post('/graphql')
+      .send({ query: '{ me { id } }' });
+
+    expect(response.status).toBe(401);
   });
 });
 ```
 
-**Tools**: Vitest, PostgreSQL (test database), Prisma
+**Tools**: Vitest, supertest, PostgreSQL (test database), Prisma
 
-**Location**: `src/**/__tests__/**/*.integration.test.ts` (in `__tests__` directories)
+**Location**: `src/**/__tests__/**/*.int.test.ts` (in `__tests__` directories)
 
 **Execution**: `npm run test:integration`
 
 **Setup Requirements**:
 - Test database instance
 - Database migrations
-- Seed data scripts
+- Test app with mounted modules
 - Cleanup utilities
 
 ---
 
 ### 3. E2E Tests (End-to-End)
 
-**Definition**: Tests that verify complete user workflows through the entire application stack, including the browser.
+**Definition**: Full walkthroughs of user flows for the frontend app. They exercise the complete stack from browser through SSR, API, and database.
 
 **Characteristics**:
 - ✅ **Real browser** (Chromium, Firefox, WebKit)
@@ -239,19 +251,16 @@ describe('createWithLocalCredentials (integration)', () => {
 - ⚠️ **Expensive to maintain**
 
 **What to E2E test**:
-- **Critical user workflows**:
-  - User registration and login
+- **Complete user flow walkthroughs**:
+  - User registration and login flow
   - Password reset flow
   - Data creation/editing workflows
-  - Checkout/payment flows (if applicable)
-- **Cross-browser compatibility** (for critical features)
-- **SSR rendering** (full page loads)
-- **Navigation flows**
-- **Error states** (network errors, validation errors)
+- **SSR rendering** (full page loads, hydration)
+- **Navigation flows** (client-side routing, deep links)
 
 **What NOT to E2E test**:
-- Individual component behavior (use unit tests)
-- Data transformation logic (use unit tests)
+- Individual lib functions (use unit tests)
+- API endpoint behavior (use integration tests)
 - Edge cases and error conditions (use unit/integration tests)
 - Every possible path through the application
 
@@ -313,38 +322,42 @@ describe('User Login Flow', () => {
 ### Decision Tree
 
 ```
-Does it touch the database, filesystem, or external API?
+Is it a function in src/libs/?
 │
-├─ NO → Can it be tested in isolation?
-│       │
-│       ├─ YES → UNIT TEST ✅
-│       │        Examples: transformers, pure utilities, parsers
-│       │
-│       └─ NO → Why not? If it requires real browser/UI interaction
-│                → E2E TEST 🌐
+├─ YES → UNIT TEST ✅
+│        Test inputs and outputs directly.
+│        May use real DB (stores) or createMock (other deps).
+│        Examples: transformers, parsers, store functions, token logic
 │
-└─ YES → Does it require a browser?
+└─ NO → Is it an API module (src/modules/auth, src/modules/graphql)?
          │
-         ├─ NO → INTEGRATION TEST 🔗
-         │        Examples: stores, resolvers, route handlers
+         ├─ YES → INTEGRATION TEST 🔗
+         │        Full HTTP-level tests of the module's API.
+         │        Examples: POST /auth/login, GraphQL queries via HTTP
          │
-         └─ YES → E2E TEST 🌐
-                  Examples: login flow, form submission
+         └─ NO → Is it the frontend app (src/modules/client)?
+                  │
+                  ├─ YES → E2E TEST 🌐
+                  │        Full user flow walkthroughs in a browser.
+                  │        Examples: login flow, form submission, navigation
+                  │
+                  └─ NO → Probably generated/config code (skip)
 ```
 
 ### Quick Reference Table
 
 | Scenario | Test Type | Why |
 |----------|-----------|-----|
-| Pure data transformation | Unit | No dependencies, fast |
-| Error parsing | Unit | No I/O, deterministic |
-| Vue component rendering | Unit | Isolated with mocked data |
-| Token generation (mocked crypto) | Unit | Pure logic, mocked I/O |
-| Store function (creates user) | Integration | Uses Prisma → database |
-| GraphQL resolver | Integration | Calls stores → database |
-| Login route handler | Integration | Database + auth flow |
-| User completes signup form | E2E | Requires browser + full stack |
-| Password reset flow | E2E | Multi-step user workflow |
+| Pure data transformation | Unit | Lib function, test inputs/outputs |
+| Error parsing | Unit | Lib function, deterministic |
+| Store function (creates user) | Unit | Lib function, may use real DB |
+| Token generation/validation | Unit | Lib function, use createMock for deps |
+| Vue component rendering | Unit | Lib-like, isolated with mocked data |
+| POST /auth/login/local endpoint | Integration | Full module API test via HTTP |
+| GraphQL query via HTTP | Integration | Full module API test via HTTP |
+| Token refresh endpoint | Integration | Full module API test via HTTP |
+| User completes signup in browser | E2E | Full user flow walkthrough |
+| Password reset flow in browser | E2E | Multi-step user flow walkthrough |
 
 ---
 
@@ -354,9 +367,9 @@ Does it touch the database, filesystem, or external API?
 
 | Test Type | Count Target | Coverage Target | Execution Time Target |
 |-----------|--------------|-----------------|----------------------|
-| Unit | 60% of tests (~200 tests) | 85% of pure functions | < 5 seconds total |
-| Integration | 35% of tests (~120 tests) | 80% of stores/resolvers | < 30 seconds total |
-| E2E | 5% of tests (~15 tests) | Critical user paths | < 3 minutes total |
+| Unit | 70% of tests | 85% of lib functions | < 30 seconds total |
+| Integration | 20% of tests | API module endpoints | < 30 seconds total |
+| E2E | 10% of tests | Critical user flows | < 3 minutes total |
 
 ### Coverage Metrics
 
@@ -365,10 +378,12 @@ Does it touch the database, filesystem, or external API?
 **By category**:
 - Pure utilities: 90%
 - Transformers: 90%
-- Store functions: 85% (integration tests)
-- GraphQL resolvers: 80% (integration tests)
+- Store functions: 85% (unit tests with real DB)
+- Token logic: 80% (unit tests with createMock)
+- Auth module endpoints: 80% (integration tests)
+- GraphQL endpoints: 80% (integration tests)
 - Vue components: 60% (unit tests for logic)
-- Route handlers: 75% (integration tests)
+- Frontend user flows: critical paths (E2E tests)
 
 **Excluded from coverage**:
 - Generated code (`**/graphql-types/**`, `**/packages/**`)
@@ -641,22 +656,13 @@ This document should be reviewed and updated:
 
 ## Appendix: Common Questions
 
-### Q: Why not mock the database for store tests?
+### Q: Why do unit tests touch the database for store functions?
 
-**A**: Mocking Prisma for store tests creates a false sense of security. You're testing that your code calls Prisma methods correctly, but not that your database interactions actually work. Integration tests with a real database catch:
-- SQL syntax errors
-- Schema mismatches
-- Transaction issues
-- Constraint violations
-- Performance problems
+**A**: Store functions are lib functions whose purpose is database interaction. Mocking Prisma creates a false sense of security — you'd only be testing that your code calls Prisma methods, not that the queries work. Unit tests for stores use a real database to catch SQL errors, constraint violations, and schema mismatches. Use `createMock` for dependencies that aren't central to the function being tested.
 
-### Q: Aren't integration tests slow?
+### Q: What's the difference between unit tests with a DB and integration tests?
 
-**A**: Yes, slower than unit tests, but:
-- Still fast enough for TDD (sub-second for individual tests)
-- Run in parallel to improve performance
-- Provide much more value than mocked alternatives
-- Worth the trade-off for critical paths
+**A**: Scope. Unit tests test a single lib function's inputs and outputs — even if that function uses the database. Integration tests test an entire API module end-to-end via HTTP (routing, middleware, auth, stores, response formatting). Unit tests call `createWithLocalCredentials()` directly; integration tests send `POST /auth/login/local` via supertest.
 
 ### Q: Should I write unit tests for Vue components?
 

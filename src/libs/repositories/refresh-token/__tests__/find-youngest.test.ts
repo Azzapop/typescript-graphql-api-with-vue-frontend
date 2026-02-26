@@ -1,5 +1,5 @@
+import { cleanWorkerDatabase } from '#test';
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
-import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import * as RefreshTokenStore from '../find-youngest';
@@ -11,7 +11,7 @@ const setup = () => ({
   }),
 });
 
-describe('RefreshTokenStore.findYoungest (integration)', () => {
+describe('RefreshTokenStore.findYoungest', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

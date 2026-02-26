@@ -1,5 +1,5 @@
+import { cleanWorkerDatabase } from '#test';
 import { defineRefreshTokenFactory, defineUserFactory } from '#test/factories';
-import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '~database';
@@ -12,7 +12,7 @@ const setup = () => ({
   }),
 });
 
-describe('clearTokenFamily (integration)', () => {
+describe('clearTokenFamily', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

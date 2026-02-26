@@ -1,5 +1,6 @@
 import type { VerifyCallback } from 'passport-custom';
 import { Strategy as CustomStrategy } from 'passport-custom';
+import { asyncVerify } from '~libs/async-verify';
 import { validateAccessToken } from '../access-token/validate-access-token';
 import { validateRefreshToken } from '../refresh-token/validate-refresh-token';
 
@@ -29,5 +30,5 @@ const verifyClientCredentialsCallback: VerifyCallback = async (req, done) => {
 };
 
 export const clientCredentialsStrategy = new CustomStrategy(
-  verifyClientCredentialsCallback
+  asyncVerify(verifyClientCredentialsCallback)
 );

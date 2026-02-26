@@ -1,5 +1,5 @@
+import { cleanWorkerDatabase } from '#test';
 import { defineUserFactory } from '#test/factories';
-import { cleanWorkerDatabase } from '#test/integration';
 import { faker } from '@faker-js/faker';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { prisma } from '~database';
@@ -9,7 +9,7 @@ const setup = () => ({
   UserFactory: defineUserFactory(),
 });
 
-describe('rotateTokenVersion (integration)', () => {
+describe('rotateTokenVersion', () => {
   beforeEach(async () => {
     await cleanWorkerDatabase();
   });

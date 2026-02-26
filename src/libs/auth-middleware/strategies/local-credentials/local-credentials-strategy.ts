@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import type { VerifyFunctionWithRequest } from 'passport-local';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { asyncVerify } from '~libs/async-verify';
 import { logger } from '~libs/logger';
 import { localCredentialsRepo } from '~libs/repositories';
 
@@ -47,5 +48,5 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
 
 export const localCredentialsStrategy = new LocalStrategy(
   { passReqToCallback: true },
-  verifyLocalCredentialsCallback
+  asyncVerify(verifyLocalCredentialsCallback)
 );

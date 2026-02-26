@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import type { ViteDevServer } from 'vite';
-import { asyncHanlder } from '~libs/async-handler';
+import { asyncHandler } from '~libs/async-handler';
 import { renderHtml } from './render-html';
 
 export const createServerHandler = (opts: {
@@ -51,5 +51,5 @@ export const createServerHandler = (opts: {
     }
   };
 
-  return asyncHanlder(handler);
+  return asyncHandler(handler);
 };

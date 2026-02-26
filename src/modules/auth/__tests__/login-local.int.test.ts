@@ -1,0 +1,198 @@
+import { cleanWorkerDatabase, createTestApp } from '#test';
+import { faker } from '@faker-js/faker';
+import request from 'supertest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  localCredentialsRepo,
+  refreshTokenRepo,
+  userRepo,
+} from '~libs/repositories';
+
+describe('POST /auth/login/local', () => {
+  beforeEach(async () => {
+    await cleanWorkerDatabase();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('returns 200 with user id and sets auth cookies on valid credentials', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ username, password });
+
+    expect(resp.status).toBe(200);
+    expect(resp.body).toEqual({ user: { id: createdUser.id } });
+
+    // eslint-disable-next-line prefer-destructuring
+    const cookies = resp.headers['set-cookie'];
+    expect(cookies).toBeDefined();
+    const cookieStr = Array.isArray(cookies) ? cookies.join('; ') : cookies;
+    expect(cookieStr).toMatch(/access_token=.+/);
+    expect(cookieStr).toMatch(/refresh_token=.+/);
+    expect(cookieStr).toMatch(/HttpOnly/i);
+  });
+
+  it('persists a refresh token record in the database on successful login', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ username, password });
+
+    expect(resp.status).toBe(200);
+
+    const tokenResult = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenResult.success).toBe(true);
+    if (!tokenResult.success) throw new Error('Unexpected result shape');
+    expect(tokenResult.data).not.toBeNull();
+  });
+
+  it('does not persist a refresh token when credentials are invalid', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
+    if (!createResult.success) throw new Error('Failed to create user');
+    const { data: createdUser } = createResult;
+
+    await request(app)
+      .post('/auth/login/local')
+
+      .send({ username, password: 'wrong-password' });
+
+    const tokenResult = await refreshTokenRepo.findYoungest(createdUser.id);
+    expect(tokenResult.success).toBe(true);
+    if (!tokenResult.success) throw new Error('Unexpected result shape');
+    expect(tokenResult.data).toBeNull();
+  });
+
+  it('returns 401 when password is wrong', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    await userRepo.createWithLocalCredentials({
+      username,
+      password: faker.internet.password(),
+    });
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ username, password: 'wrong-password' });
+
+    expect(resp.status).toBe(401);
+    expect(resp.body).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: expect.any(String),
+    });
+  });
+
+  it('returns 401 when username does not exist', async () => {
+    const app = await createTestApp();
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({
+        username: 'nonexistent-user',
+        password: faker.internet.password(),
+      });
+
+    expect(resp.status).toBe(401);
+    expect(resp.body).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: expect.any(String),
+    });
+  });
+
+  it('returns 401 when username is missing', async () => {
+    const app = await createTestApp();
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ password: faker.internet.password() });
+
+    expect(resp.status).toBe(401);
+    expect(resp.body).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: expect.any(String),
+    });
+  });
+
+  it('returns 401 when password is missing', async () => {
+    const app = await createTestApp();
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ username: faker.internet.userName() });
+
+    expect(resp.status).toBe(401);
+    expect(resp.body).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: expect.any(String),
+    });
+  });
+
+  it('returns 401 when body is empty', async () => {
+    const app = await createTestApp();
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({});
+
+    expect(resp.status).toBe(401);
+    expect(resp.body).toMatchObject({
+      code: 'UNAUTHORIZED',
+      message: expect.any(String),
+    });
+  });
+
+  it('returns 500 when credential lookup throws', async () => {
+    const app = await createTestApp();
+    const username = faker.internet.userName();
+    const password = faker.internet.password();
+    await userRepo.createWithLocalCredentials({ username, password });
+
+    vi.spyOn(localCredentialsRepo, 'getWithUser').mockRejectedValueOnce(
+      new Error('DB connection lost')
+    );
+
+    const resp = await request(app)
+      .post('/auth/login/local')
+
+      .send({ username, password });
+
+    expect(resp.status).toBe(500);
+    expect(resp.body).toMatchObject({
+      code: 'INTERNAL_ERROR',
+      message: expect.any(String),
+    });
+  });
+});

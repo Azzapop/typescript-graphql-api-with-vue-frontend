@@ -1,7 +1,7 @@
 # Integration Testing Strategy
 
-**Version**: 1.1
-**Last Updated**: 2026-02-24
+**Version**: 2.0
+**Last Updated**: 2026-02-25
 **Status**: Infrastructure complete — tests being added
 **Parent Document**: [Testing Strategy Overview](./TESTING_STRATEGY.md)
 
@@ -9,29 +9,40 @@
 
 ## What Integration Tests Cover
 
-Integration tests verify that multiple units work correctly together with real external dependencies (database, HTTP server, GraphQL execution). They complement unit tests by catching issues that only appear when components interact.
+Integration tests are **full tests of modules that expose APIs**. They exercise the complete HTTP stack — routing, middleware, authentication, stores, and database — via supertest. They verify the API contract that clients actually consume.
 
-**Store Functions** (`src/libs/domain-model/stores/**`) — Real Prisma client against a real PostgreSQL database. This catches constraint violations, transaction rollbacks, and query edge cases that mocks cannot reproduce.
+**Auth Module** (`src/modules/auth/`) — Full HTTP request/response cycle for authentication endpoints. Login, token refresh, logout, including Passport.js strategy execution, JWT signing, cookie setting, and response formatting.
 
-**Authentication Flows** (`src/modules/auth/routes/**`) — Full HTTP request/response cycle including Passport.js strategy execution, JWT signing, cookie setting, and session management.
+**GraphQL Module** (`src/modules/graphql/`) — End-to-end query and mutation execution through the HTTP stack, including authentication middleware and data transformations. Tested via HTTP with supertest so the full middleware chain runs.
 
-**GraphQL Resolvers** (`src/modules/graphql/resolvers/**`) — End-to-end resolver execution through the HTTP stack, including authentication middleware and data transformations. Tested via HTTP rather than `executeOperation()` so the full middleware chain runs.
+### What Integration Tests Do NOT Cover
 
-**API Route Handlers** — Express routing, request validation, response formatting, and error handling.
+- **Individual lib functions** — Those are unit tests. Store functions, transformers, token logic, etc. are tested directly as unit tests.
+- **Frontend user flows** — Those are E2E tests. Browser-based interactions are not covered here.
 
 ---
 
 ## File Naming and Organization
 
-Integration tests use `*.int.test.ts` naming and live alongside unit tests in `__tests__` directories. This separates them from unit tests (`*.test.ts`) so they can be run independently — unit tests don't need a database, integration tests do.
+Integration tests use `*.int.test.ts` naming and live in `__tests__` directories within the module being tested. This separates them from unit tests (`*.test.ts`) so they can be run independently.
 
 ```
-src/libs/domain-model/stores/user/
+src/modules/auth/
 ├── __tests__/
-│   ├── create-with-local-credentials.test.ts     # Unit test
-│   └── create-with-local-credentials.int.test.ts # Integration test
-├── create-with-local-credentials.ts
-└── index.ts
+│   ├── login-local.int.test.ts     # POST /auth/login/local
+│   ├── refresh.int.test.ts         # POST /auth/refresh
+│   └── logout.int.test.ts          # POST /auth/logout
+├── entry.ts
+└── routes/
+```
+
+```
+src/modules/graphql/
+├── __tests__/
+│   ├── me-query.int.test.ts        # { me { ... } }
+│   └── auth-rejection.int.test.ts  # Unauthenticated requests
+├── entry.ts
+└── resolvers/
 ```
 
 ---
@@ -52,9 +63,9 @@ Sequential execution was chosen over parallel (schema-per-worker) because the cu
 
 A minimal Express app is created for HTTP testing, mounting only the auth and GraphQL modules. The SSR client module is excluded — integration tests target the API layer. This keeps test startup fast.
 
-### Supertest for GraphQL
+### Supertest for All Endpoints
 
-GraphQL endpoints are tested via HTTP with supertest, not with `executeOperation()`. This tests the complete stack including authentication middleware, which is the behaviour clients actually experience.
+All endpoints are tested via HTTP with supertest. This tests the complete stack including routing, middleware, authentication, and response formatting — which is the behaviour clients actually experience.
 
 ---
 
@@ -79,27 +90,16 @@ npm run test:all                # Unit tests + integration tests
 
 ## Implementation Checklist
 
-### Database Store Tests
-- [ ] User store (create, get, rotate-token-version)
-- [ ] RefreshToken store (create, find-youngest, clear-family)
-- [ ] LocalCredentials store (get-with-user)
+### Auth Module Endpoints
+- [ ] POST /auth/login/local — successful login, invalid credentials, missing fields
+- [ ] POST /auth/refresh — valid refresh, expired token, reuse detection
+- [ ] POST /auth/logout — successful logout, unauthenticated request
 
-### Authentication Tests
-- [ ] Local credentials login flow
-- [ ] Token refresh flow
-- [ ] Access token validation
-- [ ] Refresh token reuse detection
-
-### GraphQL Tests
-- [ ] Query resolvers (me, user)
-- [ ] Mutation resolvers
-- [ ] Error handling (NotFoundError, BadInputError)
-- [ ] Authorization checks
-
-### API Endpoint Tests
-- [ ] POST /auth/login/local
-- [ ] POST /auth/refresh
-- [ ] POST /auth/logout
+### GraphQL Module Endpoints
+- [ ] Authenticated queries (me, user profile)
+- [ ] Authenticated mutations
+- [ ] Unauthenticated rejection (401)
+- [ ] Error handling (NotFoundError, BadInputError responses)
 
 ---
 
