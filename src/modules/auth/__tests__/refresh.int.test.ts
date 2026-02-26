@@ -1,6 +1,10 @@
-import { cleanWorkerDatabase, createTestApp, tick } from '#test';
+import {
+  cleanWorkerDatabase,
+  createTestApp,
+  loginAndGetCookies,
+  tick,
+} from '#test';
 import { faker } from '@faker-js/faker';
-import type { Express } from 'express';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as authTokens from '~libs/auth-tokens';
@@ -12,22 +16,6 @@ const extractCookieValue = (
 ): string | undefined => {
   const match = cookies.find((c) => c.startsWith(`${name}=`));
   return match?.split(';')[0]?.slice(name.length + 1);
-};
-
-const loginAndGetCookies = async (
-  app: Express,
-  username: string,
-  password: string
-): Promise<string[]> => {
-  const resp = await request(app)
-    .post('/auth/login/local')
-
-    .send({ username, password });
-
-  expect(resp.status).toBe(200);
-  // eslint-disable-next-line prefer-destructuring
-  const cookies = resp.headers['set-cookie'];
-  return Array.isArray(cookies) ? cookies : [];
 };
 
 describe('POST /auth/refresh', () => {
