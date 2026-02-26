@@ -16,6 +16,7 @@ const loginAndGetCookies = async (
     .send({ username, password });
 
   expect(resp.status).toBe(200);
+  // eslint-disable-next-line prefer-destructuring
   const cookies = resp.headers['set-cookie'];
   return Array.isArray(cookies) ? cookies : [];
 };

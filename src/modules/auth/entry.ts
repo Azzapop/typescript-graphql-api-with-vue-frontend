@@ -4,7 +4,7 @@ import { authenticate, initAuth } from '~libs/auth-middleware';
 import { errorHandler } from '~libs/error-handler';
 import type { ModuleContext } from '~libs/module';
 import { createModule } from '~libs/module';
-import { loginLocal, logout, refresh, validateLoginBody } from './routes';
+import { loginLocal, logout, refresh } from './routes';
 
 export const entry = (context: ModuleContext = {}) =>
   createModule(
@@ -17,7 +17,6 @@ export const entry = (context: ModuleContext = {}) =>
 
         router.post(
           '/login/local',
-          validateLoginBody,
           authenticate('local-credentials', { onFailure: 'reject' }),
           asyncHandler(loginLocal)
         );

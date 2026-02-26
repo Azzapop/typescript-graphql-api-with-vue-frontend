@@ -17,6 +17,7 @@ const loginAndGetCookies = async (
     .send({ username, password });
 
   expect(resp.status).toBe(200);
+  // eslint-disable-next-line prefer-destructuring
   const cookies = resp.headers['set-cookie'];
   return Array.isArray(cookies) ? cookies : [];
 };
@@ -49,7 +50,8 @@ describe('POST /auth/refresh', () => {
     expect(resp.status).toBe(200);
     expect(resp.body).toEqual({ user: { id: createResult.data.id } });
 
-    const cookies = resp.headers['set-cookie'];
+    // eslint-disable-next-line prefer-destructuring
+  const cookies = resp.headers['set-cookie'];
     expect(cookies).toBeDefined();
     const cookieStr = Array.isArray(cookies) ? cookies.join('; ') : cookies;
     expect(cookieStr).toMatch(/access_token=.+/);
@@ -121,6 +123,7 @@ describe('POST /auth/refresh', () => {
       .post('/auth/refresh')
       .set('Cookie', loginCookies);
     expect(firstRefresh.status).toBe(200);
+    // eslint-disable-next-line prefer-destructuring
     const newCookies = firstRefresh.headers['set-cookie'];
 
     // Replay attack with old cookies — triggers family clear

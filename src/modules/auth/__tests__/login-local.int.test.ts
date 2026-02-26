@@ -31,6 +31,7 @@ describe('POST /auth/login/local', () => {
     expect(resp.status).toBe(200);
     expect(resp.body).toEqual({ user: { id: createResult.data.id } });
 
+    // eslint-disable-next-line prefer-destructuring
     const cookies = resp.headers['set-cookie'];
     expect(cookies).toBeDefined();
     const cookieStr = Array.isArray(cookies) ? cookies.join('; ') : cookies;
@@ -77,7 +78,7 @@ describe('POST /auth/login/local', () => {
     });
   });
 
-  it('returns 400 when username is missing', async () => {
+  it('returns 401 when username is missing', async () => {
     const app = await createTestApp();
 
     const resp = await request(app)
@@ -85,14 +86,14 @@ describe('POST /auth/login/local', () => {
       .type('form')
       .send({ password: faker.internet.password() });
 
-    expect(resp.status).toBe(400);
+    expect(resp.status).toBe(401);
     expect(resp.body).toMatchObject({
-      code: 'BAD_REQUEST',
+      code: 'UNAUTHORIZED',
       message: expect.any(String),
     });
   });
 
-  it('returns 400 when password is missing', async () => {
+  it('returns 401 when password is missing', async () => {
     const app = await createTestApp();
 
     const resp = await request(app)
@@ -100,14 +101,14 @@ describe('POST /auth/login/local', () => {
       .type('form')
       .send({ username: faker.internet.userName() });
 
-    expect(resp.status).toBe(400);
+    expect(resp.status).toBe(401);
     expect(resp.body).toMatchObject({
-      code: 'BAD_REQUEST',
+      code: 'UNAUTHORIZED',
       message: expect.any(String),
     });
   });
 
-  it('returns 400 when body is empty', async () => {
+  it('returns 401 when body is empty', async () => {
     const app = await createTestApp();
 
     const resp = await request(app)
@@ -115,9 +116,9 @@ describe('POST /auth/login/local', () => {
       .type('form')
       .send({});
 
-    expect(resp.status).toBe(400);
+    expect(resp.status).toBe(401);
     expect(resp.body).toMatchObject({
-      code: 'BAD_REQUEST',
+      code: 'UNAUTHORIZED',
       message: expect.any(String),
     });
   });

@@ -23,7 +23,10 @@ export const authenticate = (
   const {
     [strategy]: { middleware: strategyMiddleware },
   } = registry;
-  const base = [strategyMiddleware(), asyncHandler(handleTokens())];
+  const base = [
+    asyncHandler(strategyMiddleware()),
+    asyncHandler(handleTokens()),
+  ];
 
   if (options.onFailure === 'reject') {
     return [...base, apiFailedAuthenticate(), getUser()];
