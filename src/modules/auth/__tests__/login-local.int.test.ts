@@ -26,7 +26,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username, password });
 
     expect(resp.status).toBe(200);
@@ -51,7 +51,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username, password });
 
     expect(resp.status).toBe(200);
@@ -72,7 +72,7 @@ describe('POST /auth/login/local', () => {
 
     await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username, password: 'wrong-password' });
 
     const tokenResult = await refreshTokenRepo.findYoungest(createdUser.id);
@@ -91,7 +91,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username, password: 'wrong-password' });
 
     expect(resp.status).toBe(401);
@@ -106,7 +106,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({
         username: 'nonexistent-user',
         password: faker.internet.password(),
@@ -124,7 +124,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ password: faker.internet.password() });
 
     expect(resp.status).toBe(401);
@@ -139,7 +139,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username: faker.internet.userName() });
 
     expect(resp.status).toBe(401);
@@ -154,7 +154,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({});
 
     expect(resp.status).toBe(401);
@@ -176,7 +176,7 @@ describe('POST /auth/login/local', () => {
 
     const resp = await request(app)
       .post('/auth/login/local')
-      .type('form')
+
       .send({ username, password });
 
     expect(resp.status).toBe(500);

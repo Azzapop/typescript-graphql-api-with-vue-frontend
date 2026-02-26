@@ -1,4 +1,3 @@
-import { urlencoded } from 'express';
 import { asyncHandler } from '~libs/async-handler';
 import { authenticate, initAuth } from '~libs/auth-middleware';
 import { errorHandler } from '~libs/error-handler';
@@ -13,7 +12,6 @@ export const entry = (context: ModuleContext = {}) =>
       appName: 'auth-api',
       configure: (router) => {
         router.use(initAuth());
-        router.use(urlencoded({ extended: true }));
 
         router.post(
           '/login/local',

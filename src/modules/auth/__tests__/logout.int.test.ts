@@ -12,7 +12,7 @@ const loginAndGetCookies = async (
 ): Promise<string[]> => {
   const resp = await request(app)
     .post('/auth/login/local')
-    .type('form')
+
     .send({ username, password });
 
   expect(resp.status).toBe(200);
