@@ -1,4 +1,9 @@
-import { cleanWorkerDatabase, createTestApp, loginAndGetCookies, tick } from '#test';
+import {
+  cleanWorkerDatabase,
+  createTestApp,
+  loginAndGetCookies,
+  tick,
+} from '#test';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
