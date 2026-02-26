@@ -6,7 +6,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as authTokens from '~libs/auth-tokens';
 import { refreshTokenRepo, userRepo } from '~libs/repositories';
 
-const extractCookieValue = (cookies: string[], name: string): string | undefined => {
+const extractCookieValue = (
+  cookies: string[],
+  name: string
+): string | undefined => {
   const match = cookies.find((c) => c.startsWith(`${name}=`));
   return match?.split(';')[0]?.slice(name.length + 1);
 };
@@ -68,7 +71,10 @@ describe('POST /auth/refresh', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
 
@@ -80,11 +86,11 @@ describe('POST /auth/refresh', () => {
     expect(tokenAfterLogin.data).not.toBeNull();
     const loginTokenId = tokenAfterLogin.data?.id;
 
-    await request(app)
-      .post('/auth/refresh')
-      .set('Cookie', loginCookies);
+    await request(app).post('/auth/refresh').set('Cookie', loginCookies);
 
-    const tokenAfterRefresh = await refreshTokenRepo.findYoungest(createdUser.id);
+    const tokenAfterRefresh = await refreshTokenRepo.findYoungest(
+      createdUser.id
+    );
     expect(tokenAfterRefresh.success).toBe(true);
     if (!tokenAfterRefresh.success) throw new Error('Unexpected result shape');
     expect(tokenAfterRefresh.data).not.toBeNull();
@@ -100,8 +106,14 @@ describe('POST /auth/refresh', () => {
 
     vi.useFakeTimers();
     const loginCookies = await loginAndGetCookies(app, username, password);
-    const originalAccessToken = extractCookieValue(loginCookies, 'access_token');
-    const originalRefreshToken = extractCookieValue(loginCookies, 'refresh_token');
+    const originalAccessToken = extractCookieValue(
+      loginCookies,
+      'access_token'
+    );
+    const originalRefreshToken = extractCookieValue(
+      loginCookies,
+      'refresh_token'
+    );
 
     // Advance 1 second so the access token exp claim differs
     tick(1000);
@@ -182,7 +194,10 @@ describe('POST /auth/refresh', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
     const { id: userId } = createdUser;
@@ -202,9 +217,7 @@ describe('POST /auth/refresh', () => {
     expect(beforeReplay.data).not.toBeNull();
 
     // Replay attack with the original login cookies — triggers family clear
-    await request(app)
-      .post('/auth/refresh')
-      .set('Cookie', loginCookies);
+    await request(app).post('/auth/refresh').set('Cookie', loginCookies);
 
     // Token family should now be empty in the database
     const afterReplay = await refreshTokenRepo.findYoungest(userId);
@@ -231,9 +244,7 @@ describe('POST /auth/refresh', () => {
     const newCookies = Array.isArray(newCookieHeaders) ? newCookieHeaders : [];
 
     // Replay attack with old cookies — triggers family clear
-    await request(app)
-      .post('/auth/refresh')
-      .set('Cookie', loginCookies);
+    await request(app).post('/auth/refresh').set('Cookie', loginCookies);
 
     // Even the new cookies should now be invalid (family was cleared)
     const afterClear = await request(app)

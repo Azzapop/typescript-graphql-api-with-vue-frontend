@@ -2,7 +2,11 @@ import { cleanWorkerDatabase, createTestApp } from '#test';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { localCredentialsRepo, refreshTokenRepo, userRepo } from '~libs/repositories';
+import {
+  localCredentialsRepo,
+  refreshTokenRepo,
+  userRepo,
+} from '~libs/repositories';
 
 describe('POST /auth/login/local', () => {
   beforeEach(async () => {
@@ -45,7 +49,10 @@ describe('POST /auth/login/local', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
 
@@ -66,7 +73,10 @@ describe('POST /auth/login/local', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
 

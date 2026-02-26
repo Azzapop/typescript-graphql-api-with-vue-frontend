@@ -50,16 +50,17 @@ describe('DELETE /auth/logout', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
     const { id: userId, tokenVersion: originalTokenVersion } = createdUser;
 
     const cookies = await loginAndGetCookies(app, username, password);
 
-    await request(app)
-      .delete('/auth/logout')
-      .set('Cookie', cookies);
+    await request(app).delete('/auth/logout').set('Cookie', cookies);
 
     const userResult = await userRepo.getById(userId);
     expect(userResult.success).toBe(true);
@@ -71,7 +72,10 @@ describe('DELETE /auth/logout', () => {
     const app = await createTestApp();
     const username = faker.internet.userName();
     const password = faker.internet.password();
-    const createResult = await userRepo.createWithLocalCredentials({ username, password });
+    const createResult = await userRepo.createWithLocalCredentials({
+      username,
+      password,
+    });
     if (!createResult.success) throw new Error('Failed to create user');
     const { data: createdUser } = createResult;
     const { id: userId } = createdUser;
@@ -84,9 +88,7 @@ describe('DELETE /auth/logout', () => {
     if (!beforeLogout.success) throw new Error('Unexpected result shape');
     expect(beforeLogout.data).not.toBeNull();
 
-    await request(app)
-      .delete('/auth/logout')
-      .set('Cookie', cookies);
+    await request(app).delete('/auth/logout').set('Cookie', cookies);
 
     // Token family should now be empty
     const afterLogout = await refreshTokenRepo.findYoungest(userId);
