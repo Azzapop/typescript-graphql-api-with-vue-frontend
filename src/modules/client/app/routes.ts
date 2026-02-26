@@ -1,13 +1,13 @@
 import type { RouteRecordRaw } from 'vue-router';
-import ErrorPage from './pages/ErrorPage/ErrorPage.vue';
-import GraphQLErrorTestPage from './pages/GraphQLErrorTest/GraphQLErrorTestPage.vue';
-import GraphQLSSRErrorTestPage from './pages/GraphQLSSRErrorTest/GraphQLSSRErrorTestPage.vue';
-import HomePage from './pages/Home/HomePage.vue';
-import NetworkErrorTestPage from './pages/NetworkErrorTest/NetworkErrorTestPage.vue';
-import NoAccessPage from './pages/NoAccess/NoAccessPage.vue';
-import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
-import UserProfilePage from './pages/UserProfile/UserProfilePage.vue';
-import LoginPage from './pages/auth/login/LoginPage.vue';
+import GraphQLSSRErrorTestPage from './pages/error-testing/graphql-ssr/GraphQLSSRErrorTestPage.vue';
+import GraphQLErrorTestPage from './pages/error-testing/graphql/GraphQLErrorTestPage.vue';
+import NetworkErrorTestPage from './pages/error-testing/network/NetworkErrorTestPage.vue';
+import ErrorPage from './pages/error/ErrorPage.vue';
+import HomePage from './pages/home/HomePage.vue';
+import LoginPage from './pages/login/LoginPage.vue';
+import NoAccessPage from './pages/no-access/NoAccessPage.vue';
+import NotFoundPage from './pages/not-found/NotFoundPage.vue';
+import UserProfilePage from './pages/user-profile/UserProfilePage.vue';
 
 export const ROUTES = [
   {
