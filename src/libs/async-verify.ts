@@ -10,12 +10,12 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const asyncVerify = <T extends (...args: any[]) => Promise<any>>(
+export const asyncVerify = <T extends (...args: any[]) => Promise<any> | void>(
   fn: T
 ): ((...args: Parameters<T>) => void) => {
   const wrapper = (...args: Parameters<T>): void => {
     const done = args[args.length - 1] as (err: any, ...rest: any[]) => void;
-    fn(...args).catch((err: unknown) => done(err));
+    Promise.resolve(fn(...args)).catch((err: unknown) => done(err));
   };
 
   return wrapper;

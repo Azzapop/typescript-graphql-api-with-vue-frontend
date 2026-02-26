@@ -3,7 +3,7 @@ import { Strategy as CustomStrategy } from 'passport-custom';
 import { asyncVerify } from '~libs/async-verify';
 import { validateRefreshToken } from './validate-refresh-token';
 
-const verifyRefreshTokenCallback: VerifyCallback = asyncVerify(async (req, done) => {
+const verifyRefreshTokenCallback: VerifyCallback = async (req, done) => {
   const {
     cookies: { refresh_token: refreshToken },
   } = req;
@@ -20,8 +20,8 @@ const verifyRefreshTokenCallback: VerifyCallback = asyncVerify(async (req, done)
 
   req.issueNewTokens = true;
   done(null, user);
-});
+};
 
 export const refreshTokenStrategy = new CustomStrategy(
-  verifyRefreshTokenCallback
+  asyncVerify(verifyRefreshTokenCallback)
 );

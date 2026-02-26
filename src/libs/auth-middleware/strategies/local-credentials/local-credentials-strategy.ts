@@ -6,7 +6,7 @@ import { logger } from '~libs/logger';
 import { localCredentialsRepo } from '~libs/repositories';
 
 // passport-local calls the callback function type a different name
-const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = asyncVerify(async (
+const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = async (
   req,
   username,
   password,
@@ -44,9 +44,9 @@ const verifyLocalCredentialsCallback: VerifyFunctionWithRequest = asyncVerify(as
 
   req.issueNewTokens = true;
   done(null, user);
-});
+};
 
 export const localCredentialsStrategy = new LocalStrategy(
   { passReqToCallback: true },
-  verifyLocalCredentialsCallback
+  asyncVerify(verifyLocalCredentialsCallback)
 );

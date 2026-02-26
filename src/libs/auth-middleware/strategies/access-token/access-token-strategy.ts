@@ -1,5 +1,6 @@
 import type { VerifyCallback } from 'passport-custom';
 import { Strategy as CustomStrategy } from 'passport-custom';
+import { asyncVerify } from '~libs/async-verify';
 import { validateAccessToken } from './validate-access-token';
 
 const verifyAccessTokenCallback: VerifyCallback = async (req, done) => {
@@ -20,5 +21,5 @@ const verifyAccessTokenCallback: VerifyCallback = async (req, done) => {
 };
 
 export const accessTokenStrategy = new CustomStrategy(
-  verifyAccessTokenCallback
+  asyncVerify(verifyAccessTokenCallback)
 );
