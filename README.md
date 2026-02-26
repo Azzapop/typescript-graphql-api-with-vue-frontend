@@ -41,8 +41,6 @@ See [docs/UNIT_TESTING_STRATEGY.md](./docs/UNIT_TESTING_STRATEGY.md) for detaile
 - update functions to only pass what is needed
 - nvim ejs syntax highlighting
 - nvim vue syntax highlighting and ts validation
-- ✅ unit tests (87 tests, 100% coverage of pure functions)
-- integration tests (see docs/INTEGRATION_TESTING_STRATEGY.md)
 - use find instead of get in stores
 - setup individual apps to have their own express server, plugs into main one through /<identifier> (only client left)
 - use operationId for the route types
@@ -62,11 +60,8 @@ See [docs/UNIT_TESTING_STRATEGY.md](./docs/UNIT_TESTING_STRATEGY.md) for detaile
 - const for token cookies names
 - honestly just clean up the whole script for generate auth types
 - better auth lib and handling for the client
-- browser entry over server entry
-- gitignore i18n compiled files
 - Split public and private clients to make auth handling neater, this will also tidy up the hydration handling
 - fix load order so css is loaded first
-- better name for db stores, so we dont mix them up with client stores
 
 ### GraphQL Mappers
 

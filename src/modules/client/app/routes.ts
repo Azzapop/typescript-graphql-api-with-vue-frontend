@@ -4,9 +4,9 @@ import GraphQLErrorTestPage from './pages/GraphQLErrorTest/GraphQLErrorTestPage.
 import GraphQLSSRErrorTestPage from './pages/GraphQLSSRErrorTest/GraphQLSSRErrorTestPage.vue';
 import HomePage from './pages/Home/HomePage.vue';
 import NetworkErrorTestPage from './pages/NetworkErrorTest/NetworkErrorTestPage.vue';
+import NoAccessPage from './pages/NoAccess/NoAccessPage.vue';
 import NotFoundPage from './pages/NotFound/NotFoundPage.vue';
 import UserProfilePage from './pages/UserProfile/UserProfilePage.vue';
-import NoAccessPage from './pages/auth/NoAccess/NoAccessPage.vue';
 import LoginPage from './pages/auth/login/LoginPage.vue';
 
 export const ROUTES = [
@@ -37,13 +37,13 @@ export const ROUTES = [
   },
   {
     name: 'not-found',
-    path: '/pages/notfound',
+    path: '/not-found',
     component: NotFoundPage,
     meta: { public: true },
   },
   {
-    name: 'access',
-    path: '/access',
+    name: 'no-access',
+    path: '/no-access',
     component: NoAccessPage,
     meta: { public: true },
   },
@@ -58,6 +58,11 @@ export const ROUTES = [
     path: '/login',
     component: LoginPage,
     meta: { public: true },
+  },
+  // Catch all to display not found
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFoundPage,
   },
 ] satisfies RouteRecordRaw[];
 
