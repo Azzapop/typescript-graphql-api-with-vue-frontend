@@ -1,4 +1,4 @@
-import { cleanWorkerDatabase, createTestApp, loginAndGetCookie } from '#test';
+import { cleanWorkerDatabase, createTestApp, loginAndGetCookies } from '#test';
 import { faker } from '@faker-js/faker';
 import request from 'supertest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -31,11 +31,11 @@ describe('POST /graphql - me query', () => {
     const password = faker.internet.password();
     await userRepo.createWithLocalCredentials({ username, password });
 
-    const cookie = await loginAndGetCookie(app, username, password);
+    const cookies = await loginAndGetCookies(app, username, password);
 
     const resp = await request(app)
       .post('/graphql')
-      .set('Cookie', cookie)
+      .set('Cookie', cookies)
       .send({ query: ME_QUERY });
 
     expect(resp.status).toBe(200);
@@ -59,11 +59,11 @@ describe('POST /graphql - me query', () => {
       data: { userId: createdUser.id, email },
     });
 
-    const cookie = await loginAndGetCookie(app, username, password);
+    const cookies = await loginAndGetCookies(app, username, password);
 
     const resp = await request(app)
       .post('/graphql')
-      .set('Cookie', cookie)
+      .set('Cookie', cookies)
       .send({ query: ME_QUERY });
 
     expect(resp.status).toBe(200);
@@ -77,7 +77,7 @@ describe('POST /graphql - me query', () => {
     const password = faker.internet.password();
     await userRepo.createWithLocalCredentials({ username, password });
 
-    const cookie = await loginAndGetCookie(app, username, password);
+    const cookies = await loginAndGetCookies(app, username, password);
 
     vi.spyOn(userProfileRepo, 'getByUserId').mockRejectedValueOnce(
       new Error('DB connection lost')
@@ -85,14 +85,11 @@ describe('POST /graphql - me query', () => {
 
     const resp = await request(app)
       .post('/graphql')
-      .set('Cookie', cookie)
+      .set('Cookie', cookies)
       .send({ query: ME_QUERY });
 
     expect(resp.status).toBe(200);
     expect(resp.body.errors).toBeDefined();
-    expect(resp.body.errors[0].extensions.code).toBe('INTERNAL_SERVER_ERROR');
-  });
-});
     expect(resp.body.errors[0].extensions.code).toBe('INTERNAL_SERVER_ERROR');
   });
 });
